@@ -25,12 +25,12 @@ Este repositorio contiene el código fuente del Proyecto-KATRINA para la fundaci
 ### Frontend  
 - **React** - Biblioteca para la creación de interfaces de usuario interactivas y dinámicas.  
 - **Remix** - Framework para el desarrollo de aplicaciones web rápidas y optimizadas.  
-- **Tailwind CSS + DaisyUI** - Sistema de estilos para una interfaz moderna y accesible.  
+
 
 ### Backend  
 - **.NET 9** - Framework para el desarrollo de aplicaciones escalables y seguras.  
 - **C#** - Lenguaje de programación utilizado para la lógica del servidor.  
-- **MVC + Entity Framework** - Patrón de arquitectura para organizar el código y gestionar la base de datos de manera eficiente.
+
 
 ### Herramientas de Desarrollo  
 - **GitHub** - Plataforma para la gestión de versiones y colaboración en el código.  
