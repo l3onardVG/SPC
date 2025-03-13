@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "2Aax+FggFZc=",
+  "success": true,
+  "projectFilePath": "C:\\Nodo_Dev\\RetoProfundizacion\\Proyecto_SPC\\Backend\\ProyectoSPC.API\\ProyectoSPC.API.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\angie\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.3\\microsoft.aspnetcore.openapi.9.0.3.nupkg.sha512",
+    "C:\\Users\\angie\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512"
+  ],
+  "logs": []
+}
