@@ -4,7 +4,7 @@
 
 ## Secretos para Contar
 
-Este repositorio contiene el código fuente del Proyecto-KATRINA para la fundación Secretos para Contar, una plataforma web que facilita el acceso a libros y materiales digitales. Los usuarios pueden explorar audiocuentos, biografías en audio, videos y otros recursos interactivos para mejorar su experiencia de lectura.
+Este repositorio contiene el código fuente del Proyecto_SPC para la fundación Secretos para Contar, una plataforma web que facilita el acceso a libros y materiales digitales. Los usuarios pueden explorar audiocuentos, biografías en audio, videos y otros recursos interactivos para mejorar su experiencia de lectura.
 
 ### **Sitio Web** 
 [Secretos para Contar](https://secretosparacontar.org/)
