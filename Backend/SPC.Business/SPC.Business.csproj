@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="../SPC.Data/SPC.Data.csproj" />
+  </ItemGroup>
+
 </Project>
