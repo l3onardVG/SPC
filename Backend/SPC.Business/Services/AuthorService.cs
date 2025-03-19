@@ -4,13 +4,12 @@ using SPC.Data;
 using SPC.Data.Models;
 using System.Net;
 
+namespace SPC.Business.Services;
 
-
-public class AlbumService : IAuthorService
+public class AuthorService : IAuthorService
 {
     private readonly IUnitOfWork _unitOfWork;
-    private List<Author> _listaAlbum = new();
-    public AlbumService(IUnitOfWork unitOfWork)
+    public AuthorService(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
     }
@@ -62,7 +61,7 @@ public class AlbumService : IAuthorService
 
     public async Task<BaseMessage<Author>> FindByProperties(string name, int year)
     {
-        var lista = await _unitOfWork.AuthorRepository.GetAllAsync(x => x.Name.Contains(name) && x.Year == year);
+        var lista = await _unitOfWork.AuthorRepository.GetAllAsync(x => x.Name.Contains(name));
         return lista.Any() ?  BuildResponse(lista.ToList(), "", HttpStatusCode.OK, lista.Count()) :
             BuildResponse(lista.ToList(), "", HttpStatusCode.NotFound, 0);
     }
