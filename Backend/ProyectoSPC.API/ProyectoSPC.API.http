@@ -1,6 +1,0 @@
-@ProyectoSPC.API_HostAddress = http://localhost:5081
-
-GET {{ProyectoSPC.API_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
