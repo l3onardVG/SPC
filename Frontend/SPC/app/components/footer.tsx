@@ -1,3 +1,5 @@
+import { Link } from "@remix-run/react";
+
 export default function Footer() {
   return (
     <footer className="bg-[#618EB4] text-white p-6 flex justify-between items-center relative">
@@ -18,12 +20,12 @@ export default function Footer() {
         </h6>
         <div className="grid grid-cols-2 gap-6 text-sm">
           <div className="text-right">
-            <a
-              href="#"
+            <Link
+              to="#"
               className="font-semibold underline font-[BeVietnam Pro]"
             >
               Trabaja con nosotros
-            </a>
+            </Link>
             <br />
             <a
               href="mailto:info@secretosparacontar.org"
@@ -59,21 +61,21 @@ export default function Footer() {
       </div>
 
       <div className="flex space-x-3 text-lg gap-2">
-        <a href="#" className="hover:text-gray-300">
+        <Link to="#" className="hover:text-gray-300">
           <i className="fab fa-facebook"></i>
-        </a>
-        <a href="#" className="hover:text-gray-300">
+        </Link>
+        <Link to="#" className="hover:text-gray-300">
           <i className="fab fa-x"></i>
-        </a>
-        <a href="#" className="hover:text-gray-300">
+        </Link>
+        <Link to="#" className="hover:text-gray-300">
           <i className="fab fa-instagram"></i>
-        </a>
-        <a href="#" className="hover:text-gray-300">
+        </Link>
+        <Link to="#" className="hover:text-gray-300">
           <i className="fab fa-linkedin"></i>
-        </a>
-        <a href="#" className="hover:text-gray-300">
+        </Link>
+        <Link to="#" className="hover:text-gray-300">
           <i className="fab fa-youtube"></i>
-        </a>
+        </Link>
       </div>
     </footer>
   );
