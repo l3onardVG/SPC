@@ -23,6 +23,11 @@ export default function Login() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (localStorage.getItem("username") === formData.email) {
+      alert("usuaario correcto");
+    } else {
+      alert("usuario incorrecto");
+    }
     console.log("Datos enviados:", formData);
   };
 
