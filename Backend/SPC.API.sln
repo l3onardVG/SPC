@@ -9,13 +9,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPC.Business", "SPC.Busines
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPC.Data", "SPC.Data\SPC.Data.csproj", "{1DB75B05-52E7-4CA5-94D0-4893FF7D1693}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPC.Testing", "SPC.Testing\SPC.Testing.csproj", "{DFDE3D50-D3F5-468F-81DA-D95A63F1F3CE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{522A2CB3-1515-4CCD-930B-E7C82513A929}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -30,5 +29,12 @@ Global
 		{1DB75B05-52E7-4CA5-94D0-4893FF7D1693}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1DB75B05-52E7-4CA5-94D0-4893FF7D1693}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1DB75B05-52E7-4CA5-94D0-4893FF7D1693}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFDE3D50-D3F5-468F-81DA-D95A63F1F3CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFDE3D50-D3F5-468F-81DA-D95A63F1F3CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFDE3D50-D3F5-468F-81DA-D95A63F1F3CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFDE3D50-D3F5-468F-81DA-D95A63F1F3CE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal
