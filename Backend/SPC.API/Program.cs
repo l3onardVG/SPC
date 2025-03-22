@@ -21,6 +21,9 @@ builder.Services.AddDbContext<NikolaContext>(
 // Inyección de dependecias
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAuthorService,AuthorService>();
+builder.Services.AddScoped<IBookService,BookService>();
+builder.Services.AddScoped<IUserService,UserService>();
+builder.Services.AddScoped<IBookLogService,BookLogService>();
 
 
 var app = builder.Build();
