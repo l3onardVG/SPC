@@ -9,4 +9,8 @@ public interface IBookService
   Task<BaseMessage<Book>> UpdateBook(Book book);
   Task<BaseMessage<Book>> DeleteBook(Book book);
   Task<BaseMessage<Book>> DeleteBookId(int id);
+
+  #region Learning to Test
+  Task<string> TestBookCreation(Book book);
+  #endregion
 }

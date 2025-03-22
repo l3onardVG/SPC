@@ -20,6 +20,11 @@ public class BookService : IBookService
 
   public async Task<BaseMessage<Book>> AddBook(Book book)
   {
+    var isValid = ValidateModel(book);
+    if(!string.IsNullOrEmpty(isValid))
+    {
+      return BuildResponse(new(), isValid, HttpStatusCode.BadRequest);
+    }
     try{
       await _unitOfWork.BookRepository.AddAsync(book);
       await _unitOfWork.SaveAsync();
@@ -144,5 +149,33 @@ public class BookService : IBookService
       ResponseElements = lista
     };
   }
+
+  private string ValidateModel(Book book)
+  {
+    string message = string.Empty;
+
+    if(string.IsNullOrEmpty(book.Name))
+    {
+      message += "El nombre es requerido";
+    }
+    if(book.YearOfPubliction < 1450 || book.YearOfPubliction > DateTime.Now.Year)
+    {
+      message += "El año de publicación debe ser entre 1450 y 2025";
+    }
+    if(string.IsNullOrEmpty(book.Editorial))
+    {
+      message += "La editorial es requerida";
+    }
+
+    return message;
+  }
+
+  #region Learning to Test
+  public async Task<string> TestBookCreation(Book book)
+  {
+    return ValidateModel(book);
+  }
+  #endregion
+
 
 }

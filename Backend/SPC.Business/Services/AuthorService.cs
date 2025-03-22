@@ -16,6 +16,11 @@ public class AuthorService : IAuthorService
 
     public async Task<BaseMessage<Author>> AddAuthor(Author author)
     {
+      var isValid = ValidateModel(author);
+      if(!string.IsNullOrEmpty(isValid))
+      {
+        return BuildResponse(new(), isValid, HttpStatusCode.BadRequest);
+      }
         try{
 
             await _unitOfWork.AuthorRepository.AddAsync(author);
@@ -163,4 +168,28 @@ public class AuthorService : IAuthorService
       };
     }
 
+  private string ValidateModel(Author author)
+  {
+    string message = String.Empty;
+
+    if (string.IsNullOrEmpty(author.Name))
+    {
+      message += "El nombre es requerido";
+    }
+    if(string.IsNullOrEmpty(author.Surname))
+    {
+      message += "El apellido es requerido";
+    }
+
+    return message;
+  }
+
+  #region Learning to Test
+  public async Task<string> TestAuthorCreation(Author author)
+  {
+    return ValidateModel(author);
+  }
+  #endregion
+
+  
 }
