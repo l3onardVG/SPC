@@ -7,5 +7,7 @@ public interface IAuthorService
     Task<BaseMessage<Author>> FindById(int id);
     Task<BaseMessage<Author>> FindByName(string name);
     Task<BaseMessage<Author>> FindByProperties(string name, int year);
-
+    Task<BaseMessage<Author>> UpdateAuthor(Author author);
+    Task<BaseMessage<Author>> DeleteAuthor(Author author);
+    Task<BaseMessage<Author>> DeleteAuthorId(int id);
 }
