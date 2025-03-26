@@ -14,7 +14,7 @@ public class BookLogService : IBookLogService
 
   public async Task<BaseMessage<BookLog>> GetList()
   {
-    var list = await _unitOfWork.BookLogRepository.GetAllAsync();
+    var list = await _unitOfWork.BookLogRepository.GetAllAsync(includeProperties: "User,Book");
     return list.Any() ? BuildResponse(list.ToList(), "", HttpStatusCode.OK, list.Count()) : BuildResponse(list.ToList(), "", HttpStatusCode.NotFound, 0);
   }
 

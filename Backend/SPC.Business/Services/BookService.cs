@@ -14,7 +14,7 @@ public class BookService : IBookService
 
   public async Task<BaseMessage<Book>> GetList()
   {
-    var list = await _unitOfWork.BookRepository.GetAllAsync();
+    var list = await _unitOfWork.BookRepository.GetAllAsync(includeProperties: "Author");
     return list.Any() ? BuildResponse(list.ToList(), "", HttpStatusCode.OK, list.Count()) : BuildResponse(list.ToList(), "", HttpStatusCode.NotFound, 0);
   }
 
