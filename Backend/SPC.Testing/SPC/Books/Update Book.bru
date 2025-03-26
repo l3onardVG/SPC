@@ -1,0 +1,30 @@
+meta {
+  name: Update Book
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://localhost:5197/api/book/updatebook
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "authorId": 3,
+    "name": "Name",
+    "isbN13": "978-3-16-148410-0",
+    "editorial": "editorial",
+    "yearOfPubliction": 2021,
+    "format": 0,
+    "genrre": 0,
+    "language": "English",
+    "cover": "cover1jpg",
+    "edition": "1st",
+    "summary": "summary",
+    "deleted": false,
+    "long": 350,
+    "id": 2
+  }
+}
