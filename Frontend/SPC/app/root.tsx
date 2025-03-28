@@ -9,6 +9,8 @@ import type { LinksFunction } from "@remix-run/node";
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./tailwind.css";
+import Navbar from "./components/navbar";
+import Footer from "./components/footer";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -33,7 +35,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
+        <Navbar />
         {children}
+        <Footer />
         <ScrollRestoration />
         <Scripts />
       </body>

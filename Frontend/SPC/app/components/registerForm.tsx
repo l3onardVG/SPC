@@ -51,8 +51,6 @@ export default function RegisterForm() {
 
   return (
     <>
-      <Navbar />
-
       <div className="min-h-screen flex items-center justify-center bg-white px-4 pt-4">
         <div className="card w-full max-w-3xl bg-white shadow-lg p-8">
           <div className="w-full lg:w-2/3 flex flex-col justify-center p-8" />
@@ -262,8 +260,6 @@ export default function RegisterForm() {
           </form>
         </div>
       </div>
-
-      <Footer />
     </>
   );
 }

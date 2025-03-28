@@ -6,7 +6,7 @@ const DonateButton = () => {
   return (
     <Link
       to="/donation"
-      className="fixed bottom-32 right-6 bg-[#002847] text-white px-6 py-3 rounded-lg shadow-lg text-lg font-bold font-[Be Vietnam Pro] flex items-center gap-2 transition-transform transform hover:scale-105"
+      className="fixed bottom-32 right-6 bg-[#002847] text-white px-6 py-3 rounded-lg shadow-lg text-lg font-bold font-[Be Vietnam Pro] flex items-center gap-2 transition-transform transform hover:scale-105 z-10"
     >
       Dona ahora
       <FontAwesomeIcon icon={faHeart} className="text-[#fa1807]" />
