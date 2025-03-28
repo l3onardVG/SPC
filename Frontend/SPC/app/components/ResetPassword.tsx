@@ -1,11 +1,10 @@
 import { useState } from "react";
 
-export default function RegisterForm() {
+export default function ResetPassword() {
   const [formData, setFormData] = useState({
     password: "",
     confirmPassword: "",
   });
-
 
   const [error, setError] = useState("");
 
@@ -18,7 +17,6 @@ export default function RegisterForm() {
       [name]: value,
     }));
   };
-
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -82,7 +80,7 @@ export default function RegisterForm() {
               required
             />
           </div>
-          
+
           <div className="flex flex-col">
             <label
               htmlFor="confirmPassword"
