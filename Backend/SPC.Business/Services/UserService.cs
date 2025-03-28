@@ -30,7 +30,7 @@ public class UserService : IUserService
   public async Task<TokenResponse> Login(LoginModel loginModel)
   {
       var user = await _userManager.FindByNameAsync(loginModel.UserName) ;
-      if (user == null && await _userManager.CheckPasswordAsync(user, loginModel.Password))
+      if (user != null && await _userManager.CheckPasswordAsync(user, loginModel.Password))
       {
           var userRoles = await _userManager.GetRolesAsync(user);
           var authClaims = new List<Claim>
