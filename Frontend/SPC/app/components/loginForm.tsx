@@ -97,7 +97,7 @@ export default function Login() {
                   Iniciar sesión
                 </button>
                 <Link
-                  to="#"
+                  to="/Recover"
                   className="text-sm text-[#002847] hover:underline text-center underline"
                 >
                   ¿Olvidaste tu contraseña?
