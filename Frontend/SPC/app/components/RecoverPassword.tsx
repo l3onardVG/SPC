@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function RegisterForm() {
+export default function RecoverPassword() {
   const [formData, setFormData] = useState({
     email: "",
   });
