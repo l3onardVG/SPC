@@ -1,6 +1,4 @@
 import { useState } from "react";
-import Navbar from "~/components/navbar";
-import Footer from "~/components/footer";
 
 export default function DonationForm({ name }: { name: string }) {
   const [formData, setFormData] = useState({
@@ -8,7 +6,7 @@ export default function DonationForm({ name }: { name: string }) {
     amount: "",
     date: new Date().toLocaleDateString("en-CA"),
     paymentMethod: "",
-    currency: "USD",
+    currency: "COP",
   });
 
   const handleChange = (
@@ -27,7 +25,6 @@ export default function DonationForm({ name }: { name: string }) {
 
   return (
     <>
-      <Navbar />
       <div className="min-h-screen flex items-center justify-center bg-white px-4 pt-4">
         <div className="card w-full max-w-3xl bg-white shadow-lg p-8">
           <div className="w-full lg:w-2/3 flex flex-col justify-center p-8" />
@@ -150,7 +147,6 @@ export default function DonationForm({ name }: { name: string }) {
           </form>
         </div>
       </div>
-      <Footer />
     </>
   );
 }
