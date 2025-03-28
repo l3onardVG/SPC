@@ -19,7 +19,7 @@ public class Book : BaseEntity<int>
   public bool Deleted{get; set;}
   public int Long{get; set;}
 
-  public virtual Author Author { get; set; }
+  public virtual Author? Author { get; set; }
 }
 
 public enum Format

@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "SPC",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

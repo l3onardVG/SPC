@@ -1,0 +1,22 @@
+meta {
+  name: Update Author
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://localhost:5197/api/author/updateauthor
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Name",
+    "surname": "Surname",
+    "about": "About",
+    "isAlive": true,
+    "deleted": false,
+    "id": 1
+  }
+}

@@ -14,19 +14,23 @@ public class AuthorService : IAuthorService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<BaseMessage<Author>> AddAuthor(Author album)
+    public async Task<BaseMessage<Author>> AddAuthor(Author author)
     {
-
+      var isValid = ValidateModel(author);
+      if(!string.IsNullOrEmpty(isValid))
+      {
+        return BuildResponse(new(), isValid, HttpStatusCode.BadRequest);
+      }
         try{
 
-            await _unitOfWork.AuthorRepository.AddAsync(album);
+            await _unitOfWork.AuthorRepository.AddAsync(author);
             await _unitOfWork.SaveAsync();
         }
         catch(Exception ex)
         {
             return new BaseMessage<Author>() {
                 Message = $"[Exception]: {ex.Message}",
-                StatusCode = System.Net.HttpStatusCode.InternalServerError,
+                StatusCode = HttpStatusCode.InternalServerError,
                 TotalElements = 0,
                 ResponseElements = new ()
             };
@@ -35,9 +39,9 @@ public class AuthorService : IAuthorService
 
         return new BaseMessage<Author>() {
             Message = "",
-            StatusCode = System.Net.HttpStatusCode.OK,
+            StatusCode = HttpStatusCode.OK,
             TotalElements = 1,
-            ResponseElements = new List<Author>{album}
+            ResponseElements = new List<Author>{author}
         };
 
     }
@@ -73,16 +77,119 @@ public class AuthorService : IAuthorService
             BuildResponse(lista.ToList(), "", HttpStatusCode.NotFound, 0);
     }
 
-    private BaseMessage<Author> BuildResponse(List<Author> lista, string message = "", HttpStatusCode status = HttpStatusCode.OK,
-        int totalElements = 0)
+     public async Task<BaseMessage<Author>> UpdateAuthor(Author author)
+  {
+    try{
+      await _unitOfWork.AuthorRepository.Update(author);
+      await _unitOfWork.SaveAsync();
+    }
+    catch (Exception ex)
     {
-        return new BaseMessage<Author>(){
-            Message = message,
-            StatusCode = status,
-            TotalElements = totalElements,
-            ResponseElements = lista
-        };
+      return new BaseMessage<Author>()
+      {
+        Message = $"[Exception]: {ex.Message}",
+        StatusCode = HttpStatusCode.InternalServerError,
+        TotalElements = 0,
+        ResponseElements = new ()
+      };
     }
 
+    return new BaseMessage<Author>()
+    {
+      Message = "",
+      StatusCode = HttpStatusCode.OK,
+      TotalElements = 1,
+      ResponseElements = new List<Author>{author}
+    };
+  }
+  
+  public async Task<BaseMessage<Author>> DeleteAuthor(Author author)
+  {
+    try{
+      await _unitOfWork.AuthorRepository.Delete(author);
+      await _unitOfWork.SaveAsync();
+    }
+    catch (Exception ex)
+    {
+      return new BaseMessage<Author>()
+      {
+        Message = $"[Exception]: {ex.Message}",
+        StatusCode = HttpStatusCode.InternalServerError,
+        TotalElements = 0,
+        ResponseElements = new ()
+      };
+    }
 
+    return new BaseMessage<Author>()
+    {
+      Message = "",
+      StatusCode = HttpStatusCode.OK,
+      TotalElements = 1,
+      ResponseElements = new List<Author>{author}
+    };
+  }
+
+  public async Task<BaseMessage<Author>> DeleteAuthorId(int id)
+  {
+    Author? author = new();
+    try{
+      author = await _unitOfWork.AuthorRepository.FindAsync(id);
+      await _unitOfWork.AuthorRepository.Delete(id);
+      await _unitOfWork.SaveAsync();
+    }
+    catch (Exception ex)
+    {
+      return new BaseMessage<Author>()
+      {
+        Message = $"[Exception]: {ex.Message}",
+        StatusCode = HttpStatusCode.InternalServerError,
+        TotalElements = 0,
+        ResponseElements = new ()
+      };
+    }
+
+    return new BaseMessage<Author>()
+    {
+      Message = "",
+      StatusCode = HttpStatusCode.OK,
+      TotalElements = 1,
+      ResponseElements = new List<Author>{author}
+    };
+  }
+
+    private BaseMessage<Author> BuildResponse(List<Author> lista, string message = "", HttpStatusCode status = HttpStatusCode.OK, int totalElements = 0)
+    {
+      return new BaseMessage<Author>()
+      {
+        Message = message,
+        StatusCode = status,
+        TotalElements = totalElements,
+        ResponseElements = lista
+      };
+    }
+
+  private string ValidateModel(Author author)
+  {
+    string message = String.Empty;
+
+    if (string.IsNullOrEmpty(author.Name))
+    {
+      message += "El nombre es requerido";
+    }
+    if(string.IsNullOrEmpty(author.Surname))
+    {
+      message += "El apellido es requerido";
+    }
+
+    return message;
+  }
+
+  #region Learning to Test
+  public async Task<string> TestAuthorCreation(Author author)
+  {
+    return ValidateModel(author);
+  }
+  #endregion
+
+  
 }
