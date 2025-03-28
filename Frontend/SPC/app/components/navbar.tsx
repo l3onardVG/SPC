@@ -1,17 +1,25 @@
 import { Link } from "@remix-run/react";
+import { useEffect, useState } from "react";
 import DarkModeToggle from "~/components/DarkModeToggle";
 
 export default function Navbar() {
+  const [role, setRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    // setRole(sessionStorage.getItem("userRole"));
+    setRole("admin");
+  }, []);
+
   return (
     <nav className="navbar bg-[#618EB4] px-6 h-24 shadow-md flex justify-between items-center fixed w-full z-50">
       <div className="navbar-start flex items-center">
-        <a href="/" className="flex items-center">
-          <img src="\LogoSPC.png" alt="Logo" className="h-20 w-auto px-16" />
-        </a>
+        <Link to="/" className="flex items-center">
+          <img src="\LogoSPC.png" alt="Logo" className="h-20 w-auto px-20" />
+        </Link>
       </div>
 
       <div className="navbar-center hidden lg:flex ml-[-350px]">
-        <ul className="menu menu-horizontal px-1 text-white text-lg font-[Be Vietnam Pro] font-bold space-x-10">
+        <ul className="menu menu-horizontal px-1 text-white text-lg font-[Be Vietnam Pro] font-bold space-x-1">
           <li>
             <Link to="/">Inicio</Link>
           </li>
@@ -37,6 +45,13 @@ export default function Navbar() {
           <li>
             <Link to="#">Tienda</Link>
           </li>
+          {role === "admin" && (
+            <li>
+              <Link to="/admin" className="text-white px-4 py-2 rounded">
+                Panel Admin
+              </Link>
+            </li>
+          )}
         </ul>
       </div>
 

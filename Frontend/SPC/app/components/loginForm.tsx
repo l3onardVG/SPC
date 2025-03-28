@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Link } from "@remix-run/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import Navbar from "~/components/navbar";
-import Footer from "~/components/footer";
+import Navbar from "../components/navbar";
+import Footer from "../components/footer";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
