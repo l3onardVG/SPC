@@ -1,6 +1,4 @@
 import { useState } from "react";
-import Navbar from "~/components/navbar";
-import Footer from "~/components/footer";
 
 export default function LibraryPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -16,11 +14,12 @@ export default function LibraryPage() {
 
   return (
     <>
-      <Navbar />
-
       <div className="min-h-screen flex items-center justify-center bg-white px-4 pt-4">
         <div className="flex justify-center mb-6">
-          <form onSubmit={handleSearchSubmit} className="w-full max-w-md flex flex-col items-center">
+          <form
+            onSubmit={handleSearchSubmit}
+            className="w-full max-w-md flex flex-col items-center"
+          >
             <div className="input-group w-full mb-4">
               <label className="input input-bordered w-full flex items-center bg-transparent border-narrow border-black">
                 <svg
@@ -52,19 +51,19 @@ export default function LibraryPage() {
             {/* Button Section */}
             <div className="flex space-x-1 w-auto mb-1">
               <button
-                type="button" 
+                type="button"
                 className="btn bg-[WHITE] border-narrow border-black w-auto text-black font-bold flex items-center"
               >
                 Libro digital
               </button>
               <button
-                type="button" 
+                type="button"
                 className="btn bg-[WHITE] border-narrow border-black w-auto text-black font-bold flex items-center"
               >
                 Audiolibro
               </button>
               <button
-                type="button" 
+                type="button"
                 className="btn bg-[WHITE] border-narrow border-black w-auto text-black font-bold flex items-center"
               >
                 Videolibro
@@ -133,11 +132,6 @@ export default function LibraryPage() {
           </div>
         </div>
       </div>
-
-      <Footer />
     </>
   );
 }
-
-
-
