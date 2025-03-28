@@ -1,4 +1,5 @@
 using System.Net;
+using SPC.Business.Dtos;
 using SPC.Business.Interfaces;
 using SPC.Data;
 using SPC.Data.Models;
@@ -150,6 +151,26 @@ public class BookService : IBookService
       ResponseElements = lista
     };
   }
+  
+  public async Task<IEnumerable<Book>> SearchBooksAsync(BookSearchDto searchDto)
+    {
+        return await _unitOfWork.BookRepository.GetAllAsync(
+            filter: book => 
+                (!searchDto.AuthorId.HasValue || book.AuthorId == searchDto.AuthorId) &&
+                (string.IsNullOrEmpty(searchDto.AuthorName) || 
+                    (book.Author.Name + " " + book.Author.Surname).Contains(searchDto.AuthorName)) &&
+                (!searchDto.Genrre.HasValue || book.Genrre == searchDto.Genrre) &&
+                (string.IsNullOrEmpty(searchDto.Language) || book.Language.Contains(searchDto.Language)) &&
+                (!searchDto.Format.HasValue || book.Format == searchDto.Format) &&
+                (!searchDto.YearOfPublication.HasValue || book.YearOfPubliction == searchDto.YearOfPublication) &&
+                (string.IsNullOrEmpty(searchDto.Editorial) || book.Editorial.Contains(searchDto.Editorial)) &&
+                (string.IsNullOrEmpty(searchDto.ISBN13) || book.ISBN13.Contains(searchDto.ISBN13)) &&
+                (string.IsNullOrEmpty(searchDto.Name) || book.Name.Contains(searchDto.Name)) &&
+                (!searchDto.IsAuthorAlive.HasValue || book.Author.IsAlive == searchDto.IsAuthorAlive) &&
+                !book.Deleted,
+            includeProperties: "Author"
+        );
+    }
 
   private string ValidateModel(Book book)
   {
@@ -173,7 +194,6 @@ public class BookService : IBookService
     }
 
     return message;
-
     
   }
 
@@ -188,6 +208,3 @@ public class BookService : IBookService
     return ValidateModel(book);
   }
   #endregion
-
-
-}

@@ -1,10 +1,10 @@
-import Login from "~/components/loginForm";
+import AboutUs from "~/components/aboutUs";
 import DonateButton from "~/components/DonateButton";
 
-export default function RegisterPage() {
+export default function DonationPage() {
   return (
     <>
-      <Login />
+      <AboutUs />
       <DonateButton />
     </>
   );

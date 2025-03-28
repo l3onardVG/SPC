@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using SPC.Business.Dtos;
 using SPC.Business.Interfaces;
 using SPC.Data.Models;
 namespace SPC.API.Controllers
@@ -61,6 +62,20 @@ namespace SPC.API.Controllers
     {
       var result = await _bookService.DeleteBookId(id);
       return Ok(result);
-    }  
+    }
+    
+    [HttpGet("search")]
+    public async Task<ActionResult<IEnumerable<Book>>> SearchBooks([FromQuery] BookSearchDto searchDto)
+    {
+        try
+        {
+            var books = await _bookService.SearchBooksAsync(searchDto);
+            return Ok(books);
+        }
+        catch (Exception exception)
+        {
+            return StatusCode(500, $"Internal server error: {exception.Message}");
+        }
+    }
   }
 }

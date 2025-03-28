@@ -1,3 +1,6 @@
+import { Link } from "@remix-run/react";
+import DarkModeToggle from "~/components/DarkModeToggle";
+
 export default function Navbar() {
   return (
     <nav className="navbar bg-[#618EB4] px-6 h-24 shadow-md flex justify-between items-center fixed w-full z-50">
@@ -10,47 +13,45 @@ export default function Navbar() {
       <div className="navbar-center hidden lg:flex ml-[-350px]">
         <ul className="menu menu-horizontal px-1 text-white text-lg font-[Be Vietnam Pro] font-bold space-x-10">
           <li>
-            <a href="#">Inicio</a>
+            <Link to="/">Inicio</Link>
           </li>
           <li>
-            <a href="#">Nosotros</a>
+            <Link to="aboutUs">Nosotros</Link>
           </li>
           <li>
             <details>
               <summary>Biblioteca</summary>
               <ul className="p-2 bg-[#618EB4] text-white rounded-md font-[Be Vietnam Pro] font-bold">
                 <li>
-                  <a href="#">Libros</a>
+                  <Link to="#">Libros</Link>
                 </li>
                 <li>
-                  <a href="#">Audiolibros</a>
+                  <Link to="#">Audiolibros</Link>
                 </li>
                 <li>
-                  <a href="#">Autores</a>
+                  <Link to="#">Autores</Link>
                 </li>
               </ul>
             </details>
           </li>
           <li>
-            <a href="#">Tienda</a>
+            <Link to="#">Tienda</Link>
           </li>
         </ul>
       </div>
 
       <div className="navbar-end  space-x-20 ">
-        <a
-          href="#"
+        <Link
+          to="/login"
           className="text-white flex items-center gap-2 text-lg font-[Be Vietnam Pro] font-bold"
         >
           <i className="fas fa-user-circle text-lg font-[Be Vietnam Pro] font-bold"></i>
           Mi cuenta
-        </a>
-        <button className="text-white">
-          <i className="fas fa-moon"></i>
-        </button>
+        </Link>
+        <DarkModeToggle />
 
         <div className="dropdown">
-          <div tabIndex={0} className="btn btn-ghost"></div>
+          <button tabIndex={0} className="btn btn-ghost"></button>
         </div>
       </div>
     </nav>
