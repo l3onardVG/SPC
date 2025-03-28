@@ -208,9 +208,38 @@ public async Task<bool> RegisterAdmin(RegisterModel userModel)
         return true;
     }
 
-    public Task<bool> RegisterUser(RegisterModel userModel)
-    {
-        throw new NotImplementedException();
+    public async Task<bool> RegisterUser(RegisterModel userModel)
+     {
+        var userExist = await _userManager.FindByNameAsync(userModel.UserName);
+        if (userExist != null)
+        {
+            return false;
+        }
+
+        ApplicationUser user = new ApplicationUser()
+        {
+            Email = userModel.Email,
+            SecurityStamp = Guid.NewGuid().ToString(),
+            UserName = userModel.UserName,
+        };
+        var result = await _userManager.CreateAsync(user, userModel.Password);
+        if (!result.Succeeded)
+        {
+            return false;
+        }
+        if(!await _roleManager.RoleExistsAsync(UserRoles.Admin))
+        {
+            await _roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
+        }
+        if(!await _roleManager.RoleExistsAsync(UserRoles.Users))
+        {
+            await _roleManager.CreateAsync(new IdentityRole(UserRoles.Users));
+        }
+        if (!await _roleManager.RoleExistsAsync(UserRoles.Admin))
+        {
+            await _userManager.AddToRoleAsync(user,UserRoles.Admin);
+        }
+        return true;
     }
 
     public async Task SeedAdmin()
