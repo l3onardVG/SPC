@@ -3,11 +3,15 @@ namespace SPC.Business.Interfaces;
 
 public interface IUserService
 {
-  Task<BaseMessage<User>> GetList();
-  Task<BaseMessage<User>> AddUser(User user);
-  Task<BaseMessage<User>> FindById(int id);
-  Task<BaseMessage<User>> UpdateUser(User user);
-  Task<BaseMessage<User>> DeleteUser(User user);
-  Task<BaseMessage<User>> DeleteUserId(int id);
+  Task<bool> RegisterAdmin(RegisterModel userModel);
+  Task<bool> RegisterUser(RegisterModel userModel);
+  Task<TokenResponse> Login (LoginModel loginModel);
+  Task SeedAdmin();
+  Task<BaseMessage<ApplicationUser>> GetList();
+  //Task<BaseMessage<User>> AddUser(User user);
+  Task<BaseMessage<ApplicationUser>> FindById(string id);
+  Task<BaseMessage<ApplicationUser>> UpdateUser(ApplicationUser user);
+  Task<BaseMessage<ApplicationUser>> DeleteUser(ApplicationUser user);
+  Task<BaseMessage<ApplicationUser>> DeleteUserId(string id);
 
 }

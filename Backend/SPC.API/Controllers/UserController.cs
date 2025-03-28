@@ -25,15 +25,15 @@ namespace SPC.API.Controllers
 
     [HttpPost]
     [Route("AddUser")]
-    public async Task<IActionResult> AddUser(User user)
+    public async Task<IActionResult> AddUser(RegisterModel user)
     {
-      var result = await _userService.AddUser(user);
+      var result = await _userService.RegisterUser(user);
       return Ok(result);
     }
 
     [HttpGet]
     [Route("GetUserById/{id}")]
-    public async Task<IActionResult> GetUserById(int id)
+    public async Task<IActionResult> GetUserById(string id)
     {
       var result = await _userService.FindById(id);
       return Ok(result);
@@ -41,7 +41,7 @@ namespace SPC.API.Controllers
 
     [HttpPut]
     [Route("UpdateUser")]
-    public async Task<IActionResult> Update(User user)
+    public async Task<IActionResult> Update(ApplicationUser user)
     {
       var result = await _userService.UpdateUser(user);
       return Ok(result);
@@ -49,7 +49,7 @@ namespace SPC.API.Controllers
 
     [HttpDelete]
     [Route("DeleteUser")]
-    public async Task<IActionResult> DeleteUser(User user)
+    public async Task<IActionResult> DeleteUser(ApplicationUser user)
     {
       await _userService.DeleteUser(user);
       return Ok(user);
@@ -57,7 +57,7 @@ namespace SPC.API.Controllers
 
     [HttpDelete]
     [Route("DeleteUserById/{id}")]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(string id)
     {
       var result = await _userService.DeleteUserId(id);
       return Ok(result);
