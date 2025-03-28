@@ -1,7 +1,4 @@
 import { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Navbar from "~/components/navbar";
-import Footer from "~/components/footer";
 
 export default function RegisterForm() {
   const [formData, setFormData] = useState({
@@ -40,19 +37,20 @@ export default function RegisterForm() {
 
   return (
     <>
-      <Navbar />
-
       <div className="min-h-screen flex items-center justify-center bg-white px-4 pt-4">
         <div className="card w-full max-w-3xl bg-white shadow-lg p-8">
           <h2 className="text-3xl font-bold text-center text-[#002847] mb-8 font-[Be Vietnam Pro]">
             Recuperar contraseña
           </h2>
           <p className="text-center text-gray-600 mb-8 font-[Be Vietnam Pro]">
-          Ingresa tu dirección de correo electrónico y te enviaremos un mail con las instrucciones para recuperar tu contraseña.
+            Ingresa tu dirección de correo electrónico y te enviaremos un mail
+            con las instrucciones para recuperar tu contraseña.
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 gap-4"> {/* Corrected div tag */}
+            <div className="grid grid-cols-1 gap-4">
+              {" "}
+              {/* Corrected div tag */}
               <div className="flex flex-col">
                 <label
                   htmlFor="email"
@@ -85,8 +83,6 @@ export default function RegisterForm() {
           </form>
         </div>
       </div>
-
-      <Footer />
     </>
   );
 }
