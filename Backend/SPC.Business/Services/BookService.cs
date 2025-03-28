@@ -2,6 +2,7 @@ using System.Net;
 using SPC.Business.Interfaces;
 using SPC.Data;
 using SPC.Data.Models;
+using System.Text.RegularExpressions;
 namespace SPC.Business.Services;
 
 public class BookService : IBookService
@@ -158,6 +159,10 @@ public class BookService : IBookService
     {
       message += "El nombre es requerido";
     }
+    if(string.IsNullOrEmpty(book.ISBN13) || !ISBNIsValid(book.ISBN13))
+    {
+      message += "El ISBN es requerido y con un formato válido";
+    }
     if(book.YearOfPubliction < 1450 || book.YearOfPubliction > DateTime.Now.Year)
     {
       message += "El año de publicación debe ser entre 1450 y 2025";
@@ -168,6 +173,13 @@ public class BookService : IBookService
     }
 
     return message;
+
+    
+  }
+
+  static bool ISBNIsValid(string input)
+  {
+    return Regex.IsMatch(input, @"^[0-9-]+$");
   }
 
   #region Learning to Test
