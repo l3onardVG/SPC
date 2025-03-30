@@ -9,4 +9,6 @@ public interface IBookLogService
   Task<BaseMessage<BookLog>> UpdateBookLog(BookLog bookLog);
   Task<BaseMessage<BookLog>> DeleteBookLog(BookLog bookLog);
   Task<BaseMessage<BookLog>> DeleteBookLogId(int id);
+  Task<BaseMessage<BookLog>> GetRatingsForBook(int bookId);
+  Task UpdateBookRating(int bookId);
 }

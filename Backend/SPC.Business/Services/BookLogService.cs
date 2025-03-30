@@ -21,8 +21,25 @@ public class BookLogService : IBookLogService
   public async Task<BaseMessage<BookLog>> AddBookLog(BookLog bookLog)
   {
     try {
+      if(bookLog.Action == SPC.Data.Models.Action.Rate)
+      {
+        if(bookLog.Rating is null || bookLog.Rating < 1 || bookLog.Rating > 5){
+          return new BaseMessage<BookLog>()
+            {
+              Message = "La calificación debe estar entre 1 y 5.",
+              StatusCode = HttpStatusCode.BadRequest,
+              TotalElements = 0,
+              ResponseElements = new()
+            };
+        }
+
+      }
       await _unitOfWork.BookLogRepository.AddAsync(bookLog);
       await _unitOfWork.SaveAsync();
+
+      if(bookLog.Action == SPC.Data.Models.Action.Rate){
+        await UpdateBookRating(bookLog.BookId);
+      }
     }
     catch (Exception ex)
     {
@@ -132,6 +149,50 @@ public class BookLogService : IBookLogService
       TotalElements = 1,
       ResponseElements = new List<BookLog>{bookLog}
     };
+  }
+
+  public async Task UpdateBookRating(int bookId)
+  {
+    var ratings = await _unitOfWork.BookLogRepository.GetAllAsync(filter: x => (x.BookId == bookId) && (x.Rating != null));
+
+    var book = await _unitOfWork.BookRepository.FindAsync(bookId);
+    if (book != null)
+    {
+      var ratingValues = ratings.Select(r => r.Rating.GetValueOrDefault()).ToList();
+      book.AverageRating = ratingValues.Any() ? ratingValues.Average() : 0;
+      await _unitOfWork.BookRepository.Update(book);
+      await _unitOfWork.SaveAsync();
+    }
+  }
+
+  public async Task<BaseMessage<BookLog>> GetRatingsForBook(int bookId)
+  {
+    try{
+      var bookLogs = await _unitOfWork.BookLogRepository.GetAllAsync(includeProperties: "Book", filter: x => x.BookId == bookId && x.Rating != null);
+      var ratings = await _unitOfWork.BookLogRepository.GetAllAsync(filter: x => (x.BookId == bookId) && (x.Rating != null));
+       var ratingValues = ratings.Select(r => r.Rating.GetValueOrDefault()).ToList();
+    
+    var prom = ratingValues.Any() ? ratingValues.Average() : 0;
+    
+    return new BaseMessage<BookLog>()
+      {
+      Message = $"{prom}",
+      StatusCode = HttpStatusCode.OK,
+      TotalElements = bookLogs.Count(),
+      ResponseElements = bookLogs.ToList(),
+      };
+    
+    }catch(Exception ex)
+    {
+       return new BaseMessage<BookLog>()
+      {
+        Message = $"[Exception]: {ex.Message}",
+        StatusCode = HttpStatusCode.InternalServerError,
+        TotalElements = 0,
+        ResponseElements = new ()
+      };
+    }
+
   }
 
   private BaseMessage<BookLog> BuildResponse(List<BookLog> list, string message = "", HttpStatusCode status = HttpStatusCode.OK, int totalElements = 0)
