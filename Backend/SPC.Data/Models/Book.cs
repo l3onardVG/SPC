@@ -18,8 +18,8 @@ public class Book : BaseEntity<int>
   public string Summary{get; set;}
   public bool Deleted{get; set;}
   public int Long{get; set;}
-
   public virtual Author? Author { get; set; }
+  public double AverageRating { get; set; } = 0;
 }
 
 public enum Format

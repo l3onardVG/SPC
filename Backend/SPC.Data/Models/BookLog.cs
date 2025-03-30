@@ -10,9 +10,11 @@ public class BookLog : BaseEntity<int>
   [ForeignKey("BookId")]
   public int BookId{get; set;}
   public DateTime Timestamp{get; set;}
+  public int? Rating{get; set;}
+  public string? Comment{get; set;}
 
-    public virtual ApplicationUser? User { get; set; }
-    public virtual Book? Book { get; set; }
+  public virtual ApplicationUser? User { get; set; }
+  public virtual Book? Book { get; set; }
 
 }
 
@@ -24,5 +26,6 @@ public enum Action
   View,
   Delete,
   Update,
-  Create
+  Create,
+  Rate
 }
