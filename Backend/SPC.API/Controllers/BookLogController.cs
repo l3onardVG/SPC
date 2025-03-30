@@ -62,5 +62,12 @@ namespace SPC.API.Controllers
       var result = await _bookLogService.DeleteBookLogId(id);
       return Ok(result);
     }
+
+    [HttpGet("ratings/{bookId}")]
+    public async Task<IActionResult> GetRatings(int bookId)
+    {
+        var ratings = await _bookLogService.GetRatingsForBook(bookId);
+        return Ok(ratings);
+    }
   }
 }
