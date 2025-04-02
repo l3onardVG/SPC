@@ -1,0 +1,15 @@
+meta {
+  name: Change User Role
+  type: http
+  seq: 6
+}
+
+post {
+  url: http://localhost:5197/api/user/changeUserRole/Users/8b2194d2-b6a0-48a7-9291-c5109f79d59c
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{access_token}}
+}

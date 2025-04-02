@@ -328,6 +328,33 @@ public class UserService : IUserService
         return true;
     }
 
+    public async Task<bool> UpdateUserRol(string userId, string roleName)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            return false;
+        }
+
+        var currentRoles = await _userManager.GetRolesAsync(user);
+        if (currentRoles.Any())
+        {
+            await _userManager.RemoveFromRolesAsync(user, currentRoles);
+        }
+
+        if (!await _userManager.IsInRoleAsync(user, roleName))
+        {
+            if (!await _roleManager.RoleExistsAsync(roleName))
+            {
+                await _roleManager.CreateAsync(new IdentityRole(roleName));
+            }
+
+            var result = await _userManager.AddToRoleAsync(user, roleName);
+            return result.Succeeded;
+        }
+        return true;
+    }
+
     public async Task SeedAdmin()
     {
         await RegisterAdmin(new RegisterModel()
