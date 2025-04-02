@@ -18,6 +18,7 @@ namespace SPC.API.Controllers
         }
 
         [HttpGet]
+        [AdminOrReadOnly]
         [Route("GetAllUsers")]
         public async Task<IActionResult> GetAllUsers()
         {
@@ -32,6 +33,7 @@ namespace SPC.API.Controllers
             var result = await _userService.RegisterUser(user);
             return Ok(result);
         }
+        
         [HttpPost]
         [Route("AddAdmin")]
         public async Task<IActionResult> AddAdmin(RegisterModel user)
@@ -71,6 +73,20 @@ namespace SPC.API.Controllers
             var result = await _userService.DeleteUserId(id);
             return Ok(result);
         }
+
+/* [HttpPost]
+        [Route("uploadImage")]
+
+        public async Task<IActionResult> UploadImage(IFormFile file)
+    {
+        if (file == null || file.Length == 0)
+        {
+            return BadRequest("No file uploaded.");
+        }
+        //logica para convertir file en texto byte -> str
+
+        return Ok(new { Message = "File uploaded successfully", FilePath = filePath });
+    } */
 
     }
 }
