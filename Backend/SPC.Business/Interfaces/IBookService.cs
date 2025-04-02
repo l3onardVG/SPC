@@ -1,5 +1,6 @@
 using SPC.Business.Dtos;
 using SPC.Data.Models;
+using Microsoft.AspNetCore.Http;
 namespace SPC.Business.Interfaces;
 
 public interface IBookService
@@ -11,6 +12,7 @@ public interface IBookService
     Task<BaseMessage<Book>> DeleteBook(Book book);
     Task<BaseMessage<Book>> DeleteBookId(int id);
     Task<IEnumerable<Book>> SearchBooksAsync(BookSearchDto searchDto);
+    Task<BaseMessage<Book>> UploadBookImage(int bookId, IFormFile file);
 
     #region Learning to Test
     Task<string> TestBookCreation(Book book);
