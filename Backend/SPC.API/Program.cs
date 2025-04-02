@@ -10,8 +10,17 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using DotNetEnv;  // Import the package
+
 
 var builder = WebApplication.CreateBuilder(args);
+Env.Load("../.env");
+
+builder.Configuration["ConnectionStrings:NikolaDatabase"] = Env.GetString("NIKOLA_DATABASE");
+builder.Configuration["JWT:SecretKey"] = Env.GetString("JWT_SECRET_KEY");
+builder.Configuration["JWT:ValidAudience"] = Env.GetString("JWT_VALID_AUDIENCE");
+builder.Configuration["JWT:ValidIssuer"] = Env.GetString("JWT_VALID_ISSUER");
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -35,6 +44,9 @@ builder.Services.AddScoped<IBookLogService, BookLogService>();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<NikolaContext>()
     .AddDefaultTokenProviders();
+
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap.Clear();
 
 builder.Services.AddAuthentication(options =>
 {

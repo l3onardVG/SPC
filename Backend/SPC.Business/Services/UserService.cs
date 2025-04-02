@@ -30,13 +30,15 @@ public class UserService : IUserService
 
     public async Task<TokenResponse> Login(LoginModel loginModel)
     {
-        var user = await _userManager.FindByNameAsync(loginModel.UserName);
+        var user = await _userManager.FindByEmailAsync(loginModel.Email);
         if (user != null && await _userManager.CheckPasswordAsync(user, loginModel.Password))
         {
             var userRoles = await _userManager.GetRolesAsync(user);
             var authClaims = new List<Claim>
           {
-              new Claim(ClaimTypes.Name, user.UserName),
+              new Claim(ClaimTypes.Email, user.Email),
+              new Claim(ClaimTypes.Name,user.Name),
+              new Claim(ClaimTypes.Surname, user.Surname),
               new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
           };
 
@@ -57,7 +59,7 @@ public class UserService : IUserService
             {
                 Token = new JwtSecurityTokenHandler().WriteToken(token),
                 Expiration = token.ValidTo,
-                UserName = user.UserName
+                Email = user.Email
             };
         }
         return new TokenResponse();
@@ -207,7 +209,7 @@ public class UserService : IUserService
 
     public async Task<bool> RegisterAdmin(RegisterModel userModel)
     {
-        var userExist = await _userManager.FindByNameAsync(userModel.UserName);
+        var userExist = await _userManager.FindByEmailAsync(userModel.Email);
         if (userExist != null)
         {
             return false;
@@ -217,7 +219,7 @@ public class UserService : IUserService
         {
             Email = userModel.Email,
             SecurityStamp = Guid.NewGuid().ToString(),
-            UserName = userModel.UserName,
+            UserName = userModel.Email,
         };
         var result = await _userManager.CreateAsync(user, userModel.Password);
         if (!result.Succeeded)
@@ -232,7 +234,7 @@ public class UserService : IUserService
         {
             await _roleManager.CreateAsync(new IdentityRole(UserRoles.Users));
         }
-        if (!await _roleManager.RoleExistsAsync(UserRoles.Admin))
+        if (await _roleManager.RoleExistsAsync(UserRoles.Admin))
         {
             await _userManager.AddToRoleAsync(user, UserRoles.Admin);
         }
@@ -241,7 +243,7 @@ public class UserService : IUserService
 
     public async Task<bool> RegisterUser(RegisterModel userModel)
     {
-        var userExist = await _userManager.FindByNameAsync(userModel.UserName);
+        var userExist = await _userManager.FindByEmailAsync(userModel.Email);
         if (userExist != null)
         {
             return false;
@@ -251,7 +253,7 @@ public class UserService : IUserService
         {
             Email = userModel.Email,
             SecurityStamp = Guid.NewGuid().ToString(),
-            UserName = userModel.UserName,
+            //UserName = userModel.UserName,
         };
         var result = await _userManager.CreateAsync(user, userModel.Password);
         if (!result.Succeeded)
@@ -279,7 +281,7 @@ public class UserService : IUserService
         {
             Email = "admin@eafit.edu.co",
             Password = "fdkreeArd24%",
-            UserName = "admin"
+            //UserName = "admin"
         });
     }
 }

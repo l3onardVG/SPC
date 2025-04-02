@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SPC.Business.Interfaces;
 using SPC.Data.Models;
@@ -5,6 +6,7 @@ namespace SPC.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
 
     public class UserController : ControllerBase
     {
@@ -28,6 +30,13 @@ namespace SPC.API.Controllers
         public async Task<IActionResult> AddUser(RegisterModel user)
         {
             var result = await _userService.RegisterUser(user);
+            return Ok(result);
+        }
+        [HttpPost]
+        [Route("AddAdmin")]
+        public async Task<IActionResult> AddAdmin(RegisterModel user)
+        {
+            var result = await _userService.RegisterAdmin(user);
             return Ok(result);
         }
 
