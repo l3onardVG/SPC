@@ -268,9 +268,9 @@ public class UserService : IUserService
         {
             await _roleManager.CreateAsync(new IdentityRole(UserRoles.Users));
         }
-        if (!await _roleManager.RoleExistsAsync(UserRoles.Admin))
+        if (await _roleManager.RoleExistsAsync(UserRoles.Users))
         {
-            await _userManager.AddToRoleAsync(user, UserRoles.Admin);
+            await _userManager.AddToRoleAsync(user, UserRoles.Users);
         }
         return true;
     }
