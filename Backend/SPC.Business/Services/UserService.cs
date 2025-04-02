@@ -219,7 +219,13 @@ public class UserService : IUserService
         {
             Email = userModel.Email,
             SecurityStamp = Guid.NewGuid().ToString(),
-            UserName = userModel.Email,
+            UserName = userModel.Email.Split('@')[0],
+            Name = userModel.Name,
+            Surname = userModel.Surname,
+            DocumentType = userModel.DocumentType,
+            DocumentNumber = userModel.DocumentNumber,
+            UserType = userModel.UserType,
+            TermsAceptance = userModel.TermsAceptance,
         };
         var result = await _userManager.CreateAsync(user, userModel.Password);
         if (!result.Succeeded)
@@ -253,7 +259,13 @@ public class UserService : IUserService
         {
             Email = userModel.Email,
             SecurityStamp = Guid.NewGuid().ToString(),
-            //UserName = userModel.UserName,
+            UserName = userModel.Email.Split('@')[0],
+            Name = userModel.Name,
+            Surname = userModel.Surname,
+            DocumentType = userModel.DocumentType,
+            DocumentNumber = userModel.DocumentNumber,
+            UserType = userModel.UserType,
+            TermsAceptance = userModel.TermsAceptance,
         };
         var result = await _userManager.CreateAsync(user, userModel.Password);
         if (!result.Succeeded)
@@ -268,9 +280,9 @@ public class UserService : IUserService
         {
             await _roleManager.CreateAsync(new IdentityRole(UserRoles.Users));
         }
-        if (!await _roleManager.RoleExistsAsync(UserRoles.Admin))
+        if (await _roleManager.RoleExistsAsync(UserRoles.Users))
         {
-            await _userManager.AddToRoleAsync(user, UserRoles.Admin);
+            await _userManager.AddToRoleAsync(user, UserRoles.Users);
         }
         return true;
     }
