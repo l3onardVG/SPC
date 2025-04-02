@@ -2,20 +2,20 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SPC.Data.Models;
 
-public class NikolaContext :  IdentityDbContext<ApplicationUser>
+public class NikolaContext : IdentityDbContext<ApplicationUser>
 {
     public NikolaContext(DbContextOptions<NikolaContext> options) : base(options)
     {
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
     }
 
-    public DbSet<Author> Author {get;set;}
-    public DbSet<Book> Book {get;set;}
-    public DbSet<BookLog> BookLog {get;set;}
+    public DbSet<Author> Author { get; set; }
+    public DbSet<Book> Book { get; set; }
+    public DbSet<BookLog> BookLog { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        if(builder == null)
+        if (builder == null)
         {
             return;
         }

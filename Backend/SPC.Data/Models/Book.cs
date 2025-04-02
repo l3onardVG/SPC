@@ -24,16 +24,16 @@ public class Book : BaseEntity<int>
 
 public enum Format
 {
-  Book,
-  AudioBook
+    Book,
+    AudioBook
 }
 public enum Genrre
 {
-  LiteraryFiction,
-  HistoricalFiction,
-  ScienceFiction,
-  Fantasy,
-  Adventure,
-  MagicalRealism,
-  Other
+    LiteraryFiction,
+    HistoricalFiction,
+    ScienceFiction,
+    Fantasy,
+    Adventure,
+    MagicalRealism,
+    Other
 }
