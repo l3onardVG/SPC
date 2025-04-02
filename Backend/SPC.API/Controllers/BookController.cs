@@ -77,5 +77,27 @@ namespace SPC.API.Controllers
                 return StatusCode(500, $"Internal server error: {exception.Message}");
             }
         }
+
+        [HttpPost]
+        [Route("uploadImage/{id}")]
+        public async Task<IActionResult> UploadImage(int id, IFormFile file)
+        {
+            try
+            {
+                var result = await _bookService.UploadBookImage(id, file);
+                
+                return result.StatusCode switch
+                {
+                    System.Net.HttpStatusCode.OK => Ok(result),
+                    System.Net.HttpStatusCode.NotFound => NotFound(result),
+                    System.Net.HttpStatusCode.BadRequest => BadRequest(result),
+                    _ => StatusCode((int)System.Net.HttpStatusCode.InternalServerError, result)
+                };
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 }

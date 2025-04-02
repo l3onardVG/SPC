@@ -4,6 +4,7 @@ using SPC.Business.Interfaces;
 using SPC.Data;
 using SPC.Data.Models;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Http;
 namespace SPC.Business.Services;
 
 public class BookService : IBookService
@@ -143,6 +144,47 @@ public class BookService : IBookService
             TotalElements = 1,
             ResponseElements = new List<Book> { book }
         };
+    }
+
+    public async Task<BaseMessage<Book>> UploadBookImage(int bookId, IFormFile file)
+    {
+        // Check if file is null or empty
+        if (file == null || file.Length == 0)
+        {
+            return BuildResponse(new(), "No file was uploaded", HttpStatusCode.BadRequest);
+        }
+
+        // Validate file size (5MB max)
+        if (file.Length > 5 * 1024 * 1024)
+        {
+            return BuildResponse(new(), "File size exceeds 5MB limit", HttpStatusCode.BadRequest);
+        }
+
+        // Validate content type
+        if (file.ContentType != "image/jpeg" && file.ContentType != "image/jpg" && file.ContentType != "image/png")
+        {
+            return BuildResponse(new(), "Only JPEG/JPG and PNG files are allowed", HttpStatusCode.BadRequest);
+        }
+
+        // Get the book
+        var bookResponse = await FindById(bookId);
+        if (bookResponse.StatusCode == HttpStatusCode.NotFound)
+        {
+            return BuildResponse(new(), "Book not found", HttpStatusCode.NotFound);
+        }
+
+        var book = bookResponse.ResponseElements.First();
+
+        // Convert file to Base64
+        using (var memoryStream = new MemoryStream())
+        {
+            await file.CopyToAsync(memoryStream);
+            byte[] imageBytes = memoryStream.ToArray();
+            book.cover = Convert.ToBase64String(imageBytes);
+        }
+
+        // Update the book
+        return await UpdateBook(book);
     }
 
     private BaseMessage<Book> BuildResponse(List<Book> lista, string message = "", HttpStatusCode status = HttpStatusCode.OK, int totalElements = 0)
