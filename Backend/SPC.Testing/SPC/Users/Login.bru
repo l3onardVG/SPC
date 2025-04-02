@@ -5,7 +5,20 @@ meta {
 }
 
 post {
-  url: 
-  body: none
+  url: http://localhost:5197/api/Authentication/login
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "Email": "manuel@gmail.com",
+    "Password": "Adgie7$%wert123"
+  }
+}
+
+script:post-response {
+  
+  bru.setEnvVar("access_token", res.body.token);
+  
 }

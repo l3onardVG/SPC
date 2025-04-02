@@ -23,10 +23,10 @@ public class AuthenticationController : ControllerBase
     IUserService userService
     )
     {
-    _userManager = userManager;
-    _roleManager = roleManager;
-    _configuration = configuration;
-    _userService = userService;
+        _userManager = userManager;
+        _roleManager = roleManager;
+        _configuration = configuration;
+        _userService = userService;
     }
 
     [HttpPost("login")]

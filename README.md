@@ -47,6 +47,25 @@ Antes de comenzar, asegúrate de tener instalado lo siguiente en tu sistema:
 * Git
 * Docker y Docker Compose
 * .NET SDK
+### Antes de empezar
+Crea un archivo con el nombre
+`Backend/.env` con el siguiente contenido
+
+````
+NIKOLA_DATABASE=Host=localhost;Username=<username>;Password=<password>;Database=<database>
+JWT_SECRET_KEY=<jwt_secret_key>
+JWT_VALID_AUDIENCE=http://localhost:5197
+JWT_VALID_ISSUER=http://localhost:5197
+
+````
+Crea un archivo con el nombre
+`DB/docker.env` con el siguiente contenido
+
+````
+POSTGRES_USER=<user>
+POSTGRES_PASSWORD=<password>
+POSTGRES_DB=<db>
+````
 
 ### ⚙️ Pasos para iniciar el proyecto
 
