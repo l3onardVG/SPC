@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace SPC.Data;
 public interface IRepository<TId, TEntity>
-where TId: struct
+where TId : struct
 where TEntity : BaseEntity<TId>
 {
     Task AddAsync(TEntity entity);

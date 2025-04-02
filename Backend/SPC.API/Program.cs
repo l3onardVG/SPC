@@ -28,20 +28,22 @@ builder.Services.AddDbContext<NikolaContext>(
 
 // Inyección de dependecias
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<IAuthorService,AuthorService>();
-builder.Services.AddScoped<IBookService,BookService>();
-builder.Services.AddScoped<IUserService,UserService>();
-builder.Services.AddScoped<IBookLogService,BookLogService>();
+builder.Services.AddScoped<IAuthorService, AuthorService>();
+builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IBookLogService, BookLogService>();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<NikolaContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddAuthentication(options => {
+builder.Services.AddAuthentication(options =>
+{
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 })
-.AddJwtBearer(options =>{
+.AddJwtBearer(options =>
+{
     options.SaveToken = true;
     options.RequireHttpsMetadata = false;
     options.TokenValidationParameters = new TokenValidationParameters()
@@ -76,7 +78,7 @@ app.Run();
 #region PopulateDB
 async void PopulateDB(WebApplication app)
 {
-    using(var scope = app.Services.CreateScope())
+    using (var scope = app.Services.CreateScope())
     {
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
         if (!userManager.Users.Any())

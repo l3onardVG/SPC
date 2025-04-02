@@ -24,7 +24,7 @@ where TEntity : BaseEntity<TId>
 
     public virtual async Task Delete(TEntity entity)
     {
-        if(_context.Entry(entity).State == EntityState.Detached)
+        if (_context.Entry(entity).State == EntityState.Detached)
         {
             _dbSet.Attach(entity);
         }
@@ -48,18 +48,18 @@ where TEntity : BaseEntity<TId>
         string includeProperties = "")
     {
         IQueryable<TEntity> query = _dbSet;
-        if(filter is not null)
+        if (filter is not null)
         {
             query = query.Where(filter);
         }
 
         foreach (var includeProperty in includeProperties.Split(
-            new char[]{','}, StringSplitOptions.RemoveEmptyEntries))
+            new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
         {
             query = query.Include(includeProperty);
         }
 
-        if(orderBy is not null)
+        if (orderBy is not null)
         {
             return await orderBy(query).ToListAsync();
         }

@@ -58,9 +58,9 @@ public class UnitOfWork : IUnitOfWork
     #region IDisposable
     protected virtual void Dispose(bool disposing)
     {
-        if(!_disposed)
+        if (!_disposed)
         {
-            if(disposing)
+            if (disposing)
             {
                 _context.DisposeAsync();
             }
