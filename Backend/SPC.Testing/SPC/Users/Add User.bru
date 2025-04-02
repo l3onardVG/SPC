@@ -10,11 +10,19 @@ post {
   auth: inherit
 }
 
+headers {
+  Authorization: Bearer {{access_token}}
+}
+
 body:json {
   {
-    "name": "name",
-    "surname": "surname",
-    "email": "email@gmail.com",
-    "role": 1
+    "name": "user",
+    "surname": "user",
+    "documenttype": "CC",
+    "documentnumber": "1000000000",
+    "usertype": "Student",
+    "termsAceptance": true,
+    "email": "user@eafit.edu.co",
+    "password": "User2025*"
   }
 }
