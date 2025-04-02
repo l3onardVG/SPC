@@ -110,11 +110,37 @@ public class UserService : IUserService
 
     public async Task<BaseMessage<ApplicationUser>> UpdateUser(ApplicationUser user)
     {
+        var userExist = await _userManager.FindByEmailAsync(user.Email);
+        if (userExist == null)
+        {
+            return new BaseMessage<ApplicationUser>()
+            {
+                Message = "Usuario no encontrado.",
+                StatusCode = HttpStatusCode.NotFound,
+                TotalElements = 0,
+                ResponseElements = new()
+            };
+        }
         try
         {
-            await _userManager.UpdateAsync(user);
-            //await _unitOfWork.UserRepository.Update(user);
-            //await _unitOfWork.SaveAsync();
+            userExist.Name = user.Name;
+            userExist.Surname = user.Surname;
+            userExist.Email = user.Email;
+            userExist.DocumentType = user.DocumentType;
+            userExist.DocumentNumber = user.DocumentNumber;
+            userExist.UserType = user.UserType;
+
+            var result = await _userManager.UpdateAsync(userExist);
+            if (!result.Succeeded)
+            {
+                return new BaseMessage<ApplicationUser>()
+                {
+                    Message = $"Error al actualizar usuario: {string.Join(", ", result.Errors.Select(e => e.Description))}",
+                    StatusCode = HttpStatusCode.BadRequest,
+                    TotalElements = 0,
+                    ResponseElements = new()
+                };
+            }
         }
         catch (Exception ex)
         {
@@ -132,17 +158,26 @@ public class UserService : IUserService
             Message = "",
             StatusCode = HttpStatusCode.OK,
             TotalElements = 1,
-            ResponseElements = new List<ApplicationUser> { user }
+            ResponseElements = new List<ApplicationUser> { userExist }
         };
     }
 
     public async Task<BaseMessage<ApplicationUser>> DeleteUser(ApplicationUser user)
     {
+        var userExist = await _userManager.FindByEmailAsync(user.Email);
+        if (userExist == null)
+        {
+            return new BaseMessage<ApplicationUser>()
+            {
+                Message = "Usuario no encontrado.",
+                StatusCode = HttpStatusCode.NotFound,
+                TotalElements = 0,
+                ResponseElements = new()
+            };
+        }
         try
         {
-            await _userManager.DeleteAsync(user);
-            //await _unitOfWork.UserRepository.Delete(user);
-            //await _unitOfWork.SaveAsync();
+            await _userManager.DeleteAsync(userExist);
         }
         catch (Exception ex)
         {
@@ -169,11 +204,17 @@ public class UserService : IUserService
         ApplicationUser? user = new();
         try
         {
-            //user = await _unitOfWork.UserRepository.FindAsync(id);
             user = await _userManager.FindByIdAsync(id);
+            if(user == null){
+                return new BaseMessage<ApplicationUser>()
+                {
+                    Message = "Usuario no encontrado.",
+                    StatusCode = HttpStatusCode.NotFound,
+                    TotalElements = 0,
+                    ResponseElements = new()
+                };
+            }
             await _userManager.DeleteAsync(user);
-            //await _userManager.UserRepository.Delete(id);
-            //await _unitOfWork.SaveAsync();
         }
         catch (Exception ex)
         {
