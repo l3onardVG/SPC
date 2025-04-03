@@ -1,0 +1,15 @@
+meta {
+  name: Upload Pdf
+  type: http
+  seq: 7
+}
+
+post {
+  url: http://localhost:5197/api/book/uploadFile/1
+  body: multipartForm
+  auth: inherit
+}
+
+body:multipart-form {
+  file: @file(/Users/leonard.villegas/Desktop/today-english/Factura_N-20293.pdf)
+}

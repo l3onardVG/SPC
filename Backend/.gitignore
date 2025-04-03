@@ -10,6 +10,10 @@
 *.userosscache
 *.sln.docstates
 
+# Ignore Upload files
+SPC.API/Uploads
+*SPC.API/Uploads
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
