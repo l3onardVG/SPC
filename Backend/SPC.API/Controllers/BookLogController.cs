@@ -36,6 +36,10 @@ namespace SPC.API.Controllers
         public async Task<IActionResult> GetBookLogById(int id)
         {
             var result = await _bookLogService.FindById(id);
+            if (result.StatusCode == HttpStatusCode.NotFound)
+            {
+                return NotFound(result);
+            }
             return Ok(result);
         }
 
@@ -59,8 +63,12 @@ namespace SPC.API.Controllers
     [Route("DeleteBookLogById/{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-      var result = await _bookLogService.DeleteBookLogId(id);
-      return Ok(result);
+        var result = await _bookLogService.DeleteBookLogId(id);
+        if (result.StatusCode == HttpStatusCode.NotFound)
+        {
+            return NotFound(result);
+        }
+        return Ok(result);
     }
 
     [HttpGet("ratings/{bookId}")]

@@ -62,7 +62,7 @@ public class BookService : IBookService
 
         return book != null ?
           BuildResponse(new List<Book>() { book }, "", HttpStatusCode.OK, 1) :
-          BuildResponse(new List<Book>(), "", HttpStatusCode.NotFound, 0);
+          BuildResponse(new List<Book>(), "Book Not Found", HttpStatusCode.NotFound, 0);
     }
 
     public async Task<BaseMessage<Book>> UpdateBook(Book book)
@@ -125,6 +125,16 @@ public class BookService : IBookService
         try
         {
             book = await _unitOfWork.BookRepository.FindAsync(id);
+            if (book == null)
+            {
+                return new BaseMessage<Book>()
+                {
+                    Message = "Book Not Found",
+                    StatusCode = HttpStatusCode.NotFound,
+                    TotalElements = 0,
+                    ResponseElements = new()
+                };
+            }
             await _unitOfWork.BookRepository.Delete(book);
             await _unitOfWork.SaveAsync();
         }

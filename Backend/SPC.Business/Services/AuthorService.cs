@@ -51,12 +51,12 @@ public class AuthorService : IAuthorService
 
     public async Task<BaseMessage<Author>> FindById(int id)
     {
-        Author? album = new();
-        album = await _unitOfWork.AuthorRepository.FindAsync(id);
+        Author? author = new();
+        author = await _unitOfWork.AuthorRepository.FindAsync(id);
 
-        return album != null ?
-            BuildResponse(new List<Author>() { album }, "", HttpStatusCode.OK, 1) :
-            BuildResponse(new List<Author>(), "", HttpStatusCode.NotFound, 0);
+        return author != null ?
+            BuildResponse(new List<Author>() { author }, "", HttpStatusCode.OK, 1) :
+            BuildResponse(new List<Author>(), "Author Not Found", HttpStatusCode.NotFound, 0);
     }
 
     public async Task<BaseMessage<Author>> FindByName(string name)
@@ -140,6 +140,16 @@ public class AuthorService : IAuthorService
         try
         {
             author = await _unitOfWork.AuthorRepository.FindAsync(id);
+            if (author == null)
+            {
+                return new BaseMessage<Author>()
+                {
+                    Message = "Author Not Found",
+                    StatusCode = HttpStatusCode.NotFound,
+                    TotalElements = 0,
+                    ResponseElements = new()
+                };
+            }
             await _unitOfWork.AuthorRepository.Delete(id);
             await _unitOfWork.SaveAsync();
         }

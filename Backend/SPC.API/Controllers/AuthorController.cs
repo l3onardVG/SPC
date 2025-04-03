@@ -35,8 +35,12 @@ namespace SPC.API.Controllers
         [Route("GetAuthorById/{id}")]
         public async Task<IActionResult> GetAuthorById(int id)
         {
-            var albums = await _authorService.FindById(id);
-            return Ok(albums);
+            var author = await _authorService.FindById(id);
+            if (author.StatusCode == HttpStatusCode.NotFound)
+            {
+                return NotFound(author);
+            }
+            return Ok(author);
         }
 
         [HttpPut]
@@ -60,6 +64,19 @@ namespace SPC.API.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _authorService.DeleteAuthorId(id);
+            if (result.StatusCode == HttpStatusCode.NotFound)
+            {
+                return NotFound(result);
+            }
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [AdminOrReadOnly]
+        [Route("AddAuthors")]
+        public async Task<IActionResult> AddAuthors(List<Author> authors)
+        {
+            var result = await _authorService.AddAuthors(authors);
             return Ok(result);
         }
 

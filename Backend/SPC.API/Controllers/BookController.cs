@@ -39,6 +39,10 @@ namespace SPC.API.Controllers
         public async Task<IActionResult> GetBookLogById(int id)
         {
             var result = await _bookService.FindById(id);
+            if (result.StatusCode == HttpStatusCode.NotFound)
+            {
+                return NotFound(result);
+            }
             return Ok(result);
         }
 
@@ -63,6 +67,10 @@ namespace SPC.API.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _bookService.DeleteBookId(id);
+            if (result.StatusCode == HttpStatusCode.NotFound)
+            {
+                return NotFound(result);
+            }
             return Ok(result);
         }
 
@@ -163,6 +171,15 @@ namespace SPC.API.Controllers
             {
                  return StatusCode(400, $"Error: {ex.Message}");
             }
+        }
+
+        [HttpPost]
+        [AdminOrReadOnly]
+        [Route("AddBooks")]
+        public async Task<IActionResult> AddBooks(List<Book> books)
+        {
+            var result = await _bookService.AddBooks(books);
+            return Ok(result);
         }
 
     }
