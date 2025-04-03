@@ -10,10 +10,12 @@ namespace SPC.API.Controllers
     public class BookController : ControllerBase
     {
         private readonly IBookService _bookService;
+        private readonly IWebHostEnvironment _env;
 
-        public BookController(IBookService bookService)
+        public BookController(IBookService bookService, IWebHostEnvironment env)
         {
             _bookService = bookService;
+            _env = env;
         }
 
         [HttpGet]
@@ -99,5 +101,69 @@ namespace SPC.API.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+
+        [HttpPost]
+        [Route("uploadFile/{id}")]
+        public async Task<IActionResult> UploadFile(int id, IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+            return BadRequest("No file uploaded.");
+            }
+            // Define storage path (inside "Uploads" folder)
+            string uploadFolder = Path.Combine(_env.ContentRootPath, "Uploads");
+            if (!Directory.Exists(uploadFolder))
+            {
+                Directory.CreateDirectory(uploadFolder);
+            }
+            // Save the file with a unique name
+            string uniqueFileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
+            string filePath = Path.Combine(uploadFolder, uniqueFileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+            // Retrieve the element
+            try
+            {
+                var bookResponse = await _bookService.FindById(id);
+                var book = bookResponse.ResponseElements.First();
+                book.FilePath = filePath;
+                var response = await _bookService.UpdateBook(book);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(400, $"Book Not found: {ex.Message}");
+            }
+        }
+
+
+        [HttpGet("GetBookFile/{id}")]
+        public async Task<IActionResult> GetFile(int id)
+        {
+            try
+            {
+                var bookResponse = await _bookService.FindById(id);
+                var book = bookResponse.ResponseElements.First();
+                var filePath = book.FilePath;
+                if (!System.IO.File.Exists(filePath))
+                {
+                    return NotFound("File not found.");
+                }
+
+                var contentType = "application/octet-stream";
+                var fileName = book.Name;
+
+                return PhysicalFile(filePath, contentType, fileName);
+
+            } catch (Exception ex)
+            {
+                 return StatusCode(400, $"Error: {ex.Message}");
+            }
+        }
+
     }
 }
