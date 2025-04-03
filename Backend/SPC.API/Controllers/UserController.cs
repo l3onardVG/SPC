@@ -26,6 +26,7 @@ namespace SPC.API.Controllers
             return Ok(users);
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("AddUser")]
         public async Task<IActionResult> AddUser(RegisterModel user)

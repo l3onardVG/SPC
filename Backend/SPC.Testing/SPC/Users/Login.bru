@@ -10,15 +10,19 @@ post {
   auth: none
 }
 
+headers {
+  Authorization: Bearer {{access_token}}
+}
+
 body:json {
   {
-    "Email": "manuel@gmail.com",
-    "Password": "Adgie7$%wert123"
+    "Email": "admin@eafit.edu.co",
+    "Password": "fdkreeArd24%"
   }
 }
 
 script:post-response {
   
-  bru.setEnvVar("access_token", res.body.token);
+  bru.setVar("access_token", res.body.token);
   
 }
