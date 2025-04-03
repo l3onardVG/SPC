@@ -1,3 +1,5 @@
+using System.Net;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SPC.Business.Interfaces;
 using SPC.Data.Models;
@@ -6,6 +8,7 @@ namespace SPC.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class AuthorController : ControllerBase
     {
         private readonly IAuthorService _authorService;
@@ -24,6 +27,7 @@ namespace SPC.API.Controllers
         }
 
         [HttpPost]
+        [AdminOrReadOnly]
         [Route("AddAuthor")]
         public async Task<IActionResult> AddAuthor(Author author)
         {
@@ -44,6 +48,7 @@ namespace SPC.API.Controllers
         }
 
         [HttpPut]
+        [AdminOrReadOnly]
         [Route("UpdateAuthor")]
         public async Task<IActionResult> UpdateAuthor(Author author)
         {
@@ -52,6 +57,7 @@ namespace SPC.API.Controllers
         }
 
         [HttpDelete]
+        [AdminOrReadOnly]
         [Route("DeleteAuthor")]
         public async Task<IActionResult> DeleteAuthor(Author author)
         {
@@ -60,6 +66,7 @@ namespace SPC.API.Controllers
         }
 
         [HttpDelete]
+        [AdminOrReadOnly]
         [Route("DeleteAuthorById/{id}")]
         public async Task<IActionResult> Delete(int id)
         {

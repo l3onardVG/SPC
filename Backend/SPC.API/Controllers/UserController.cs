@@ -1,3 +1,4 @@
+using System.Net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SPC.Business.Interfaces;
@@ -26,6 +27,7 @@ namespace SPC.API.Controllers
             return Ok(users);
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("AddUser")]
         public async Task<IActionResult> AddUser(RegisterModel user)
@@ -87,21 +89,5 @@ namespace SPC.API.Controllers
             var result = await _userService.UpdateUserRol(userId, roleName);
             return Ok(result);
         }
-
-
-/* [HttpPost]
-        [Route("uploadImage")]
-
-        public async Task<IActionResult> UploadImage(IFormFile file)
-    {
-        if (file == null || file.Length == 0)
-        {
-            return BadRequest("No file uploaded.");
-        }
-        //logica para convertir file en texto byte -> str
-
-        return Ok(new { Message = "File uploaded successfully", FilePath = filePath });
-    } */
-
     }
 }
