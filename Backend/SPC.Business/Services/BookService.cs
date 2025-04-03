@@ -189,6 +189,52 @@ public class BookService : IBookService
         return await UpdateBook(book);
     }
 
+     public async Task<BaseMessage<Book>> AddBooks(List<Book> books)
+    {
+        if (books == null || !books.Any())
+        {
+            return BuildResponse(new(), "The book list cannot be empty.", HttpStatusCode.BadRequest);
+        }
+
+        foreach (var book in books)
+        {
+            var isValid = ValidateModel(book);
+            if (!string.IsNullOrEmpty(isValid))
+            {
+                return BuildResponse(new(), isValid, HttpStatusCode.BadRequest);
+            }
+        }
+
+        try
+        {
+            foreach (var book in books)
+            {
+                await _unitOfWork.BookRepository.AddAsync(book);
+            }
+            await _unitOfWork.SaveAsync();
+        }
+        catch (Exception ex)
+        {
+            return new BaseMessage<Book>()
+            {
+                Message = $"[Exception]: {ex.Message}",
+                StatusCode = HttpStatusCode.InternalServerError,
+                TotalElements = 0,
+                ResponseElements = new()
+            };
+        }
+
+
+        return new BaseMessage<Book>()
+        {
+            Message = "",
+            StatusCode = HttpStatusCode.OK,
+            TotalElements = 1,
+            ResponseElements = books.ToList()
+        };
+
+    }
+
     private BaseMessage<Book> BuildResponse(List<Book> lista, string message = "", HttpStatusCode status = HttpStatusCode.OK, int totalElements = 0)
     {
         return new BaseMessage<Book>()
@@ -228,9 +274,13 @@ public class BookService : IBookService
         {
             message += "El nombre es requerido";
         }
-        if (string.IsNullOrEmpty(book.ISBN13) || !ISBNIsValid(book.ISBN13))
+        if(string.IsNullOrEmpty(book.ISBN13))
         {
-            message += "El ISBN es requerido y con un formato válido";
+            message += "El ISBN13 es requerido";
+        }
+        if (!ISBNIsValid(book.ISBN13))
+        {
+            message += $"El ISBN debe tener un formato válido";
         }
         if (book.YearOfPubliction < 1450 || book.YearOfPubliction > DateTime.Now.Year)
         {
@@ -247,7 +297,8 @@ public class BookService : IBookService
 
     static bool ISBNIsValid(string input)
     {
-        return Regex.IsMatch(input, @"^[0-9-]+$");
+        return Regex.IsMatch(input, @"^978-\d{1,5}-\d{1,7}-?\d{0,7}-?\d?$");
+
     }
 
     #region Learning to Test

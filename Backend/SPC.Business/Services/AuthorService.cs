@@ -163,6 +163,52 @@ public class AuthorService : IAuthorService
         };
     }
 
+    public async Task<BaseMessage<Author>> AddAuthors(List<Author> authors)
+    {
+        if (authors == null || !authors.Any())
+        {
+            return BuildResponse(new(), "The author list cannot be empty.", HttpStatusCode.BadRequest);
+        }
+
+        foreach (var author in authors)
+        {
+            var isValid = ValidateModel(author);
+            if (!string.IsNullOrEmpty(isValid))
+            {
+                return BuildResponse(new(), isValid, HttpStatusCode.BadRequest);
+            }
+        }
+
+        try
+        {
+            foreach (var author in authors)
+            {
+                await _unitOfWork.AuthorRepository.AddAsync(author);
+            }
+            await _unitOfWork.SaveAsync();
+        }
+        catch (Exception ex)
+        {
+            return new BaseMessage<Author>()
+            {
+                Message = $"[Exception]: {ex.Message}",
+                StatusCode = HttpStatusCode.InternalServerError,
+                TotalElements = 0,
+                ResponseElements = new()
+            };
+        }
+
+
+        return new BaseMessage<Author>()
+        {
+            Message = "",
+            StatusCode = HttpStatusCode.OK,
+            TotalElements = 1,
+            ResponseElements = authors.ToList()
+        };
+
+    }
+
     private BaseMessage<Author> BuildResponse(List<Author> lista, string message = "", HttpStatusCode status = HttpStatusCode.OK, int totalElements = 0)
     {
         return new BaseMessage<Author>()
