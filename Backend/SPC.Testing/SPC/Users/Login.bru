@@ -1,7 +1,7 @@
 meta {
   name: Login
   type: http
-  seq: 7
+  seq: 5
 }
 
 post {
@@ -12,13 +12,13 @@ post {
 
 body:json {
   {
-    "Email": "manuel@gmail.com",
-    "Password": "Adgie7$%wert123"
+    "email": "admin@eafit.edu.co",
+    "password": "fdkreeArd24%"
   }
 }
 
 script:post-response {
   
-  bru.setEnvVar("access_token", res.body.token);
+  bru.setVar("access_token", res.body.token);
   
 }

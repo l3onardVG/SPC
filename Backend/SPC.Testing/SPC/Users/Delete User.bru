@@ -1,7 +1,7 @@
 meta {
   name: Delete User
   type: http
-  seq: 5
+  seq: 8
 }
 
 delete {
@@ -10,12 +10,18 @@ delete {
   auth: inherit
 }
 
+headers {
+  Authorization: Bearer {{access_token}}
+}
+
 body:json {
   {
-    "name": "Name",
-    "surname": "Surname",
-    "email": "Email@gmail.com",
-    "role": 1,
-    "id": 1
+    "name": "administrador",
+    "surname": "administrador",
+    "documenttype": "CC",
+    "documentnumber": "1000000000",
+    "usertype": "Admin",
+    "termsAceptance": true,
+    "email": "admin@eafit.edu.co"
   }
 }

@@ -33,7 +33,9 @@ namespace SPC.API.Controllers
             var result = await _userService.RegisterUser(user);
             return Ok(result);
         }
+        
         [HttpPost]
+        [AdminOrReadOnly]
         [Route("AddAdmin")]
         public async Task<IActionResult> AddAdmin(RegisterModel user)
         {
@@ -72,6 +74,16 @@ namespace SPC.API.Controllers
             var result = await _userService.DeleteUserId(id);
             return Ok(result);
         }
+
+        [HttpPost]
+        [AdminOrReadOnly]
+        [Route("changeUserRole/{roleName}/{userId}")]
+        public async Task<IActionResult> ChangeRole(string userId, string roleName)
+        {
+            var result = await _userService.UpdateUserRol(userId, roleName);
+            return Ok(result);
+        }
+
 
 /* [HttpPost]
         [Route("uploadImage")]
