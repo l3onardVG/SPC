@@ -110,11 +110,37 @@ public class UserService : IUserService
 
     public async Task<BaseMessage<ApplicationUser>> UpdateUser(ApplicationUser user)
     {
+        var userExist = await _userManager.FindByEmailAsync(user.Email);
+        if (userExist == null)
+        {
+            return new BaseMessage<ApplicationUser>()
+            {
+                Message = "Usuario no encontrado.",
+                StatusCode = HttpStatusCode.NotFound,
+                TotalElements = 0,
+                ResponseElements = new()
+            };
+        }
         try
         {
-            await _userManager.UpdateAsync(user);
-            //await _unitOfWork.UserRepository.Update(user);
-            //await _unitOfWork.SaveAsync();
+            userExist.Name = user.Name;
+            userExist.Surname = user.Surname;
+            userExist.Email = user.Email;
+            userExist.DocumentType = user.DocumentType;
+            userExist.DocumentNumber = user.DocumentNumber;
+            userExist.UserType = user.UserType;
+
+            var result = await _userManager.UpdateAsync(userExist);
+            if (!result.Succeeded)
+            {
+                return new BaseMessage<ApplicationUser>()
+                {
+                    Message = $"Error al actualizar usuario: {string.Join(", ", result.Errors.Select(e => e.Description))}",
+                    StatusCode = HttpStatusCode.BadRequest,
+                    TotalElements = 0,
+                    ResponseElements = new()
+                };
+            }
         }
         catch (Exception ex)
         {
@@ -132,17 +158,26 @@ public class UserService : IUserService
             Message = "",
             StatusCode = HttpStatusCode.OK,
             TotalElements = 1,
-            ResponseElements = new List<ApplicationUser> { user }
+            ResponseElements = new List<ApplicationUser> { userExist }
         };
     }
 
     public async Task<BaseMessage<ApplicationUser>> DeleteUser(ApplicationUser user)
     {
+        var userExist = await _userManager.FindByEmailAsync(user.Email);
+        if (userExist == null)
+        {
+            return new BaseMessage<ApplicationUser>()
+            {
+                Message = "Usuario no encontrado.",
+                StatusCode = HttpStatusCode.NotFound,
+                TotalElements = 0,
+                ResponseElements = new()
+            };
+        }
         try
         {
-            await _userManager.DeleteAsync(user);
-            //await _unitOfWork.UserRepository.Delete(user);
-            //await _unitOfWork.SaveAsync();
+            await _userManager.DeleteAsync(userExist);
         }
         catch (Exception ex)
         {
@@ -169,11 +204,17 @@ public class UserService : IUserService
         ApplicationUser? user = new();
         try
         {
-            //user = await _unitOfWork.UserRepository.FindAsync(id);
             user = await _userManager.FindByIdAsync(id);
+            if(user == null){
+                return new BaseMessage<ApplicationUser>()
+                {
+                    Message = "Usuario no encontrado.",
+                    StatusCode = HttpStatusCode.NotFound,
+                    TotalElements = 0,
+                    ResponseElements = new()
+                };
+            }
             await _userManager.DeleteAsync(user);
-            //await _userManager.UserRepository.Delete(id);
-            //await _unitOfWork.SaveAsync();
         }
         catch (Exception ex)
         {
@@ -219,7 +260,13 @@ public class UserService : IUserService
         {
             Email = userModel.Email,
             SecurityStamp = Guid.NewGuid().ToString(),
-            UserName = userModel.Email,
+            UserName = userModel.Email.Split('@')[0],
+            Name = userModel.Name,
+            Surname = userModel.Surname,
+            DocumentType = userModel.DocumentType,
+            DocumentNumber = userModel.DocumentNumber,
+            UserType = userModel.UserType,
+            TermsAceptance = userModel.TermsAceptance,
         };
         var result = await _userManager.CreateAsync(user, userModel.Password);
         if (!result.Succeeded)
@@ -254,7 +301,13 @@ public class UserService : IUserService
             Email = userModel.Email,
             UserName = userModel.Email,
             SecurityStamp = Guid.NewGuid().ToString(),
-            //UserName = userModel.UserName,
+            UserName = userModel.Email.Split('@')[0],
+            Name = userModel.Name,
+            Surname = userModel.Surname,
+            DocumentType = userModel.DocumentType,
+            DocumentNumber = userModel.DocumentNumber,
+            UserType = userModel.UserType,
+            TermsAceptance = userModel.TermsAceptance,
         };
         var result = await _userManager.CreateAsync(user, userModel.Password);
         if (!result.Succeeded)
@@ -277,6 +330,33 @@ public class UserService : IUserService
         if (await _roleManager.RoleExistsAsync(UserRoles.Users))
         {
             await _userManager.AddToRoleAsync(user, UserRoles.Users);
+        }
+        return true;
+    }
+
+    public async Task<bool> UpdateUserRol(string userId, string roleName)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            return false;
+        }
+
+        var currentRoles = await _userManager.GetRolesAsync(user);
+        if (currentRoles.Any())
+        {
+            await _userManager.RemoveFromRolesAsync(user, currentRoles);
+        }
+
+        if (!await _userManager.IsInRoleAsync(user, roleName))
+        {
+            if (!await _roleManager.RoleExistsAsync(roleName))
+            {
+                await _roleManager.CreateAsync(new IdentityRole(roleName));
+            }
+
+            var result = await _userManager.AddToRoleAsync(user, roleName);
+            return result.Succeeded;
         }
         return true;
     }

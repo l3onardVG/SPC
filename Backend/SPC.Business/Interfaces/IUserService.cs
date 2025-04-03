@@ -9,10 +9,10 @@ public interface IUserService
     Task<TokenResponse> Login(LoginModel loginModel);
     Task SeedAdmin();
     Task<BaseMessage<UserDetail>> GetList();
-    //Task<BaseMessage<User>> AddUser(User user);
     Task<BaseMessage<UserDetail>> FindById(string id);
     Task<BaseMessage<ApplicationUser>> UpdateUser(ApplicationUser user);
     Task<BaseMessage<ApplicationUser>> DeleteUser(ApplicationUser user);
     Task<BaseMessage<ApplicationUser>> DeleteUserId(string id);
+    Task<bool> UpdateUserRol(string userId, string roleName);
 
 }

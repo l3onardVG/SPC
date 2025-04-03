@@ -15,11 +15,19 @@ headers {
   Content-Type: application/json
 }
 
+headers {
+  Authorization: Bearer {{access_token}}
+}
+
 body:json {
   {
-    "username": "testuser",
-    "email": "test@example.com",
-    "password": "123456",
-    "role": "1"
+    "name": "user",
+    "surname": "user",
+    "documenttype": "CC",
+    "documentnumber": "1000000000",
+    "usertype": "Student",
+    "termsAceptance": true,
+    "email": "user@eafit.edu.co",
+    "password": "User2025*"
   }
 }
