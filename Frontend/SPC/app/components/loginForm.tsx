@@ -1,15 +1,32 @@
-import { useState } from "react";
-import { Link } from "@remix-run/react";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "@remix-run/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { AuthService } from "../services/AuthorizationService";
 
 export default function Login() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     rememberMe: false,
   });
+
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("savedEmail");
+    const savedPassword = localStorage.getItem("savedPassword");
+    if (savedEmail && savedPassword) {
+      setFormData({
+        email: savedEmail,
+        password: savedPassword,
+        rememberMe: true,
+      });
+    }
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -19,14 +36,28 @@ export default function Login() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (localStorage.getItem("username") === formData.email) {
-      alert("usuaario correcto");
-    } else {
-      alert("usuario incorrecto");
+    try {
+      const response = await AuthService.login(formData);
+      localStorage.setItem("token", response.token);
+
+      if (formData.rememberMe) {
+        localStorage.setItem("savedEmail", formData.email);
+        localStorage.setItem("savedPassword", formData.password);
+      } else {
+        localStorage.removeItem("savedEmail");
+        localStorage.removeItem("savedPassword");
+      }
+
+      setShowModal(true);
+      setTimeout(() => {
+        setShowModal(false);
+        navigate("/");
+      }, 2000);
+    } catch (error) {
+      setErrorMessage("Usuario o contraseña incorrectos");
     }
-    console.log("Datos enviados:", formData);
   };
 
   return (
@@ -50,6 +81,7 @@ export default function Login() {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
+                  autoComplete="email"
                   className="input input-bordered w-full mt-1 border-black bg-transparent placeholder-black text-black"
                 />
               </div>
@@ -66,6 +98,7 @@ export default function Login() {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
+                    autoComplete="current-password"
                     className="input input-bordered w-full mt-1 border-black bg-transparent placeholder-black pr-10 text-black"
                   />
                   <button
@@ -92,6 +125,10 @@ export default function Login() {
                   />
                   Recordarme
                 </label>
+
+                {errorMessage && (
+                  <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
+                )}
                 <button
                   type="submit"
                   className="btn bg-[#EB704B] border-none shadow-none w-full text-white font-bold"
@@ -124,6 +161,16 @@ export default function Login() {
           </div>
         </div>
       </div>
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96 text-center">
+            <h2 className="text-2xl font-bold text-black">¡Bienvenido!</h2>
+            <p className="text-gray-700 mt-2">
+              Tu inicio de sesión fue exitoso.
+            </p>
+          </div>
+        </div>
+      )}
     </>
   );
 }
