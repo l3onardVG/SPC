@@ -89,7 +89,7 @@
         "Summary":"Este libro es una oportunidad para ejercitar el pensamiento a partir de divertidos juegos y actividades que nos pueden ayudar a desarrollar habilidades como la lógica, la observación, la atención y la memoria. Así que prepárate para pensar, jugar, imaginar, soñar, calcular, analizar, deducir y, sobre todo, gozar. Pero ten en cuenta que para jugar hay que entrenarse. ",
         "Deleted":false,
         "Long":68
-      }
+      },
       {
         "id":"b5",
         "AuthorId":"a3",
@@ -272,7 +272,7 @@
         "Name":"Lecturas para todos los días",
         "ISBN13":"-",
         "Editorial":"Secretos para contar",
-        "YearOfPubliction":,
+        "YearOfPubliction":2016,
         "Format":"Book",
         "Genrre": "LiteraryFiction",
         "Language":"ES",
@@ -326,10 +326,7 @@
         "Language":"ES",
         "cover":"",
         "Edition":"1A edicion",
-        "Summary":"Un libro de consulta con 3 propósitos fundamentales: 
-1. Dar a conocer las propiedades curativas de 50 plantas medicinales, y la forma más práctica de usarlas y de aprovechar sus beneficios. Plantas reconocidas dentro del vademécum del Ministerio de Salud por sus propiedades en la prevención y tratamiento de enfermedades comunes. 
-2. Una guía donde están las dolencias más comunes, y cómo tratarlas con alguna de las 50 plantas que propone el libro. 
-3. Dar a conocer las preparaciones básicas que se pueden hacer con estas plantas y mostrar cómo se deben almacenar para tenerlas siempre a mano cuando se necesiten.",
+        "Summary":"Un libro de consulta con 3 propósitos fundamentales:  1. Dar a conocer las propiedades curativas de 50 plantas medicinales, y la forma más práctica de usarlas y de aprovechar sus beneficios. Plantas reconocidas dentro del vademécum del Ministerio de Salud por sus propiedades en la prevención y tratamiento de enfermedades comunes.  2. Una guía donde están las dolencias más comunes, y cómo tratarlas con alguna de las 50 plantas que propone el libro.  3. Dar a conocer las preparaciones básicas que se pueden hacer con estas plantas y mostrar cómo se deben almacenar para tenerlas siempre a mano cuando se necesiten.",
         "Deleted":false,
         "Long":200
       },
@@ -448,23 +445,4 @@
     ]
   }
   
-  /*
-  
-    public enum Format
-    {
-      Book,
-      AudioBook
-    }
-  
-    public enum Genrre
-  {
-    LiteraryFiction,
-    HistoricalFiction,
-    ScienceFiction,
-    Fantasy,
-    Adventure,
-    MagicalRealism,
-    Other
-  }
-  */
   
