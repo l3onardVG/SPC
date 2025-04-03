@@ -10,21 +10,25 @@ put {
   auth: inherit
 }
 
+headers {
+  Authorization: Bearer {{access_token}}
+}
+
 body:json {
   {
-    "authorId": 3,
-    "name": "Name",
-    "isbN13": "978-3-16-148410-0",
-    "editorial": "editorial",
-    "yearOfPubliction": 2021,
-    "format": 0,
-    "genrre": 0,
-    "language": "English",
-    "cover": "cover1jpg",
-    "edition": "1st",
-    "summary": "summary",
-    "deleted": false,
-    "long": 350,
-    "id": 2
+    "Id": 1,
+    "AuthorId": 1,
+    "Name": "Cuentos y pasatiempos",
+    "ISBN13": "978-958-33-8473-8",
+    "Editorial": "Planeta vivo",
+    "YearOfPubliction": 2007,
+    "Format": 0,
+    "Genrre": 0,
+    "Language": "ES",
+    "cover": "",
+    "Edition": "1A edicion",
+    "Summary": "Cuentos y pasatiempos es un recorrido literario por las relaciones interpersonales. Cuentos y poemas sobre la pareja, la paternidad y la maternidad, los hermanos, las abuelas, los amigos y los vecinos. Un libro ideal para la lectura de los niños, donde los textos, además de ofrecer lindas reflexiones sobre las relaciones que tejemos con los otros, nos entretienen con historias divertidas y conmovedoras.",
+    "Deleted": false,
+    "Long": 150
   }
 }
