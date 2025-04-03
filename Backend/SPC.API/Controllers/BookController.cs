@@ -1,3 +1,5 @@
+using System.Net;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SPC.Business.Dtos;
 using SPC.Business.Interfaces;
@@ -6,6 +8,7 @@ namespace SPC.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
 
     public class BookController : ControllerBase
     {
@@ -27,6 +30,7 @@ namespace SPC.API.Controllers
         }
 
         [HttpPost]
+        [AdminOrReadOnly]
         [Route("AddBook")]
         public async Task<IActionResult> AddBook(Book book)
         {
@@ -39,10 +43,15 @@ namespace SPC.API.Controllers
         public async Task<IActionResult> GetBookLogById(int id)
         {
             var result = await _bookService.FindById(id);
+            if (result.StatusCode == HttpStatusCode.NotFound)
+            {
+                return NotFound(result);
+            }
             return Ok(result);
         }
 
         [HttpPut]
+        [AdminOrReadOnly]
         [Route("UpdateBook")]
         public async Task<IActionResult> UpdateBook(Book book)
         {
@@ -51,6 +60,7 @@ namespace SPC.API.Controllers
         }
 
         [HttpDelete]
+        [AdminOrReadOnly]
         [Route("DeleteBook")]
         public async Task<IActionResult> DeleteBook(Book book)
         {
@@ -59,10 +69,15 @@ namespace SPC.API.Controllers
         }
 
         [HttpDelete]
+        [AdminOrReadOnly]
         [Route("DeleteBookById/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _bookService.DeleteBookId(id);
+            if (result.StatusCode == HttpStatusCode.NotFound)
+            {
+                return NotFound(result);
+            }
             return Ok(result);
         }
 
@@ -81,6 +96,7 @@ namespace SPC.API.Controllers
         }
 
         [HttpPost]
+        [AdminOrReadOnly]
         [Route("uploadImage/{id}")]
         public async Task<IActionResult> UploadImage(int id, IFormFile file)
         {
@@ -104,6 +120,7 @@ namespace SPC.API.Controllers
 
 
         [HttpPost]
+        [AdminOrReadOnly]
         [Route("uploadFile/{id}")]
         public async Task<IActionResult> UploadFile(int id, IFormFile file)
         {
@@ -163,6 +180,15 @@ namespace SPC.API.Controllers
             {
                  return StatusCode(400, $"Error: {ex.Message}");
             }
+        }
+
+        [HttpPost]
+        [AdminOrReadOnly]
+        [Route("AddBooks")]
+        public async Task<IActionResult> AddBooks(List<Book> books)
+        {
+            var result = await _bookService.AddBooks(books);
+            return Ok(result);
         }
 
     }

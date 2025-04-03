@@ -1,28 +1,21 @@
-{
-  "authors": [
-    {
-      "Name": "Tita",
-      "Surname": "Maya",
-      "About": "Luz Mercedes Maya Agudelo, “Tita Maya” experta en diseño pedagógico, estrategias educativas y desarrollo de herramientas de formación a través de la música y orras expresiones artísticas. Con experiencia en docencia, investigación y en la creacion y dirección de centros de educación no formal, inicia su camino desde el mundo de la música a temprana edad. Ha sido profesora de música a lo largo de 35 años en el Colegio de Música de Medellín, sede El Poblado, y su directora desde 1997. Fundadora en 1985 de la Corporación Cantoalegre, ha sido su directora hasta la fecha. Es fundadora y directora general y editorial de la Fundación Secretos para contar.",
-      "IsAlive": true,
-      "Deleted": false
-    },
-    {
-      "Name": "Muchos Autores",
-      "Surname": "",
-      "About": "",
-      "IsAlive": true,
-      "Deleted": false
-    },
-    {
-      "Name": "Secretos para contar",
-      "Surname": "",
-      "About": "",
-      "IsAlive": true,
-      "Deleted": false
-    }
-  ],
-  "books": [
+meta {
+  name: Add Books
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:5197/api/book/addbooks
+  body: json
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer {{access_token}}
+}
+
+body:json {
+  [
     {
       "AuthorId": 1,
       "Name": "Cuentos y pasatiempos",

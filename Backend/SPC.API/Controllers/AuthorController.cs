@@ -1,3 +1,5 @@
+using System.Net;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SPC.Business.Interfaces;
 using SPC.Data.Models;
@@ -6,6 +8,7 @@ namespace SPC.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class AuthorController : ControllerBase
     {
         private readonly IAuthorService _authorService;
@@ -24,6 +27,7 @@ namespace SPC.API.Controllers
         }
 
         [HttpPost]
+        [AdminOrReadOnly]
         [Route("AddAuthor")]
         public async Task<IActionResult> AddAuthor(Author author)
         {
@@ -35,11 +39,16 @@ namespace SPC.API.Controllers
         [Route("GetAuthorById/{id}")]
         public async Task<IActionResult> GetAuthorById(int id)
         {
-            var albums = await _authorService.FindById(id);
-            return Ok(albums);
+            var author = await _authorService.FindById(id);
+            if (author.StatusCode == HttpStatusCode.NotFound)
+            {
+                return NotFound(author);
+            }
+            return Ok(author);
         }
 
         [HttpPut]
+        [AdminOrReadOnly]
         [Route("UpdateAuthor")]
         public async Task<IActionResult> UpdateAuthor(Author author)
         {
@@ -48,6 +57,7 @@ namespace SPC.API.Controllers
         }
 
         [HttpDelete]
+        [AdminOrReadOnly]
         [Route("DeleteAuthor")]
         public async Task<IActionResult> DeleteAuthor(Author author)
         {
@@ -56,10 +66,24 @@ namespace SPC.API.Controllers
         }
 
         [HttpDelete]
+        [AdminOrReadOnly]
         [Route("DeleteAuthorById/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _authorService.DeleteAuthorId(id);
+            if (result.StatusCode == HttpStatusCode.NotFound)
+            {
+                return NotFound(result);
+            }
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [AdminOrReadOnly]
+        [Route("AddAuthors")]
+        public async Task<IActionResult> AddAuthors(List<Author> authors)
+        {
+            var result = await _authorService.AddAuthors(authors);
             return Ok(result);
         }
 

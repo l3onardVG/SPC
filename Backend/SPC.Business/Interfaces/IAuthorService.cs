@@ -10,6 +10,7 @@ public interface IAuthorService
     Task<BaseMessage<Author>> UpdateAuthor(Author author);
     Task<BaseMessage<Author>> DeleteAuthor(Author author);
     Task<BaseMessage<Author>> DeleteAuthorId(int id);
+    Task<BaseMessage<Author>> AddAuthors(List<Author> authors);
 
     #region Learning to Test
     Task<string> TestAuthorCreation(Author author);

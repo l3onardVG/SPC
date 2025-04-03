@@ -13,6 +13,7 @@ public interface IBookService
     Task<BaseMessage<Book>> DeleteBookId(int id);
     Task<IEnumerable<Book>> SearchBooksAsync(BookSearchDto searchDto);
     Task<BaseMessage<Book>> UploadBookImage(int bookId, IFormFile file);
+    Task<BaseMessage<Book>> AddBooks(List<Book> books);
 
     #region Learning to Test
     Task<string> TestBookCreation(Book book);

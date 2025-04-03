@@ -10,6 +10,10 @@ post {
   auth: inherit
 }
 
+headers {
+  Authorization: Bearer {{access_token}}
+}
+
 body:multipart-form {
   file: @file(/Users/leonard.villegas/Desktop/today-english/Factura_N-20293.pdf)
 }

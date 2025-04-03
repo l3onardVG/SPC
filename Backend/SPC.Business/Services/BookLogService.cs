@@ -130,6 +130,16 @@ public class BookLogService : IBookLogService
         try
         {
             bookLog = await _unitOfWork.BookLogRepository.FindAsync(id);
+            if (bookLog == null)
+            {
+                return new BaseMessage<BookLog>()
+                {
+                    Message = "BookLog Not Found",
+                    StatusCode = HttpStatusCode.NotFound,
+                    TotalElements = 0,
+                    ResponseElements = new()
+                };
+            }
             await _unitOfWork.BookLogRepository.Delete(id);
             await _unitOfWork.SaveAsync();
         }

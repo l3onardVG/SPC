@@ -1,3 +1,4 @@
+using System.Net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SPC.Business.Interfaces;
@@ -73,6 +74,10 @@ namespace SPC.API.Controllers
         public async Task<IActionResult> Delete(string id)
         {
             var result = await _userService.DeleteUserId(id);
+            if (result.StatusCode == HttpStatusCode.NotFound)
+            {
+                return NotFound(result);
+            }
             return Ok(result);
         }
 
@@ -84,21 +89,5 @@ namespace SPC.API.Controllers
             var result = await _userService.UpdateUserRol(userId, roleName);
             return Ok(result);
         }
-
-
-/* [HttpPost]
-        [Route("uploadImage")]
-
-        public async Task<IActionResult> UploadImage(IFormFile file)
-    {
-        if (file == null || file.Length == 0)
-        {
-            return BadRequest("No file uploaded.");
-        }
-        //logica para convertir file en texto byte -> str
-
-        return Ok(new { Message = "File uploaded successfully", FilePath = filePath });
-    } */
-
     }
 }
