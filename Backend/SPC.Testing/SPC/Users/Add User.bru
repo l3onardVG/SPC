@@ -7,11 +7,12 @@ meta {
 post {
   url: http://localhost:5197/api/user/adduser
   body: json
-  auth: inherit
+  auth: none
 }
 
 headers {
   Authorization: Bearer {{access_token}}
+  Content-Type: application/json
 }
 
 body:json {

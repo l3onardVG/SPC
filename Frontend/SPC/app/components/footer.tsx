@@ -5,7 +5,7 @@ export default function Footer() {
     <footer className="bg-[#618EB4] text-white p-6 flex justify-between items-center relative">
       <div className="flex flex-col items-center">
         <img
-          src="public/logospc-bn.png"
+          src="logospc-bn.png"
           alt="Logo blanco/negro"
           className="h-20 w-auto"
         />

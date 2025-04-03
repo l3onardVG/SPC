@@ -17,6 +17,20 @@ using DotNetEnv;  // Import the package
 var builder = WebApplication.CreateBuilder(args);
 Env.Load("../.env");
 
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(MyAllowSpecificOrigins,
+        policy =>
+        {
+            policy.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost")// Permitir el frontend
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials();
+        });
+});
+
 builder.Configuration["ConnectionStrings:NikolaDatabase"] = Env.GetString("NIKOLA_DATABASE");
 builder.Configuration["JWT:SecretKey"] = Env.GetString("JWT_SECRET_KEY");
 builder.Configuration["JWT:ValidAudience"] = Env.GetString("JWT_VALID_AUDIENCE");
@@ -80,6 +94,11 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+app.UseCors(MyAllowSpecificOrigins); 
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseHttpsRedirection();
 app.MapControllers();
