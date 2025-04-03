@@ -12,7 +12,7 @@ export default function PanelAdmin() {
   const opciones = [
     { nombre: "Estadísticas", contenido: "Estadísticas" },
     { nombre: "Libros", contenido: "Libros" },
-    { nombre: "Audiolibros y videos", contenido: "Audiolibros y videos" },
+    { nombre: "Audiolibros", contenido: "Audiolibros" },
     { nombre: "Autores", contenido: "Autores" },
     { nombre: "Usuarios", contenido: "Usuarios" },
   ];
@@ -23,7 +23,7 @@ export default function PanelAdmin() {
         return <EstadisticasAdmin />;
       case "Libros":
         return <LibrosAdmin />;
-      case "Audiolibros y videos":
+      case "Audiolibros":
         return <AudiolibrosAdmin />;
       case "Autores":
         return <AutoresAdmin />;

@@ -10,10 +10,14 @@ post {
   auth: none
 }
 
+headers {
+  Authorization: Bearer {{access_token}}
+}
+
 body:json {
   {
-    "email": "admin@eafit.edu.co",
-    "password": "fdkreeArd24%"
+    "Email": "admin@eafit.edu.co",
+    "Password": "fdkreeArd24%"
   }
 }
 

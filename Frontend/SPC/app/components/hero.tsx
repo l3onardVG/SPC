@@ -6,7 +6,7 @@ export default function Hero() {
       <div
         className="hero min-h-[85vh] bg-cover bg-center bg-[#CFD5C8] relative"
         style={{
-          backgroundImage: "url('public/inicio.png')",
+          backgroundImage: "url('inicio.png')",
           backgroundSize: "cover",
           backgroundPosition: "center 80%",
           clipPath:

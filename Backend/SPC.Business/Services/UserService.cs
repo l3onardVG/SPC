@@ -299,6 +299,7 @@ public class UserService : IUserService
         ApplicationUser user = new ApplicationUser()
         {
             Email = userModel.Email,
+            UserName = userModel.Email,
             SecurityStamp = Guid.NewGuid().ToString(),
             UserName = userModel.Email.Split('@')[0],
             Name = userModel.Name,
@@ -311,8 +312,13 @@ public class UserService : IUserService
         var result = await _userManager.CreateAsync(user, userModel.Password);
         if (!result.Succeeded)
         {
-            return false;
+        Console.WriteLine("Error al crear el usuario:");
+        foreach (var error in result.Errors)
+        {
+            Console.WriteLine($"{error.Description}");
         }
+        return false;
+    }
         if (!await _roleManager.RoleExistsAsync(UserRoles.Admin))
         {
             await _roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));

@@ -9,3 +9,7 @@ export interface User {
     | "Otro/Externo";
   habilitado: boolean;
 }
+
+export interface AuthenticatedUser extends User {
+  nombre: string;
+}
