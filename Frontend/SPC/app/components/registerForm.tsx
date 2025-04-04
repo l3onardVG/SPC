@@ -3,8 +3,8 @@ import { registerUser } from "../services/RegisterService";
 
 export default function RegisterForm() {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    Name: "",
+    Surname: "",
     documentType: "",
     documentNumber: "",
     userType: "",
@@ -15,7 +15,7 @@ export default function RegisterForm() {
   });
 
   const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -43,7 +43,6 @@ export default function RegisterForm() {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setSuccessMessage("");
 
     const errorMessage = validateForm();
     if (errorMessage) {
@@ -53,9 +52,12 @@ export default function RegisterForm() {
 
     try {
       await registerUser(formData);
-      setSuccessMessage("¡Registro exitoso! Redirigiendo...");
+
       setTimeout(() => {
-        window.location.href = "/login";
+        setShowModal(true); // Mostrar modal de éxito
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 2000);
       }, 2000);
     } catch (error) {
       setError(error instanceof Error ? error.message : "Error desconocido");
@@ -73,26 +75,26 @@ export default function RegisterForm() {
         <form onSubmit={handleRegister} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="flex flex-col">
-              <label htmlFor="firstName" className="text-black mb-0">
+              <label htmlFor="Name" className="text-black mb-0">
                 Nombres
               </label>
               <input
                 type="text"
-                name="firstName"
-                value={formData.firstName}
+                name="Name"
+                value={formData.Name}
                 onChange={handleChange}
                 className="input input-bordered w-full mt-1 border-black bg-transparent text-black"
                 required
               />
             </div>
             <div className="flex flex-col">
-              <label htmlFor="lastName" className="text-black mb-0">
+              <label htmlFor="sURName" className="text-black mb-0">
                 Apellidos
               </label>
               <input
                 type="text"
-                name="lastName"
-                value={formData.lastName}
+                name="Surname"
+                value={formData.Surname}
                 onChange={handleChange}
                 className="input input-bordered w-full mt-1 border-black bg-transparent text-black"
                 required
@@ -185,6 +187,9 @@ export default function RegisterForm() {
                 onChange={handleChange}
                 className="input input-bordered w-full mt-1 border-black bg-transparent text-black"
                 required
+                minLength={6}
+                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{6,}$"
+                title="La contraseña debe tener al menos 6 caracteres, incluir una letra mayúscula, una letra minúscula y un carácter no alfanumérico."
               />
             </div>
             <div className="flex flex-col">
@@ -218,7 +223,20 @@ export default function RegisterForm() {
           </div>
 
           {error && <p className="text-red-500">{error}</p>}
-          {successMessage && <p className="text-green-500">{successMessage}</p>}
+
+          {showModal && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+              <div className="bg-white p-8 rounded-lg shadow-lg">
+                <h3 className="text-2xl font-semibold text-center text-[#002847]">
+                  ¡Registro exitoso!
+                </h3>
+                <p className="text-sm text-[#002847] hover:underline text-center mt-4">
+                  Tu cuenta ha sido creada correctamente. Redirigiendo a la
+                  página de inicio de sesión...
+                </p>
+              </div>
+            </div>
+          )}
 
           <div className="flex justify-center">
             <button

@@ -1,9 +1,9 @@
 export interface RegisterModel {
-  firstName: string;
-  lastName: string;
-  documentType: string;
-  documentNumber: string;
-  userType: string;
+  Name: string;
+  Surname: string;
+  DocumentType: string;
+  DocumentNumber: string;
+  UserType: string;
   email: string;
   password: string;
   confirmPassword: string;
