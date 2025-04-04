@@ -88,7 +88,7 @@ export default function RegisterForm() {
               />
             </div>
             <div className="flex flex-col">
-              <label htmlFor="sURName" className="text-black mb-0">
+              <label htmlFor="Surname" className="text-black mb-0">
                 Apellidos
               </label>
               <input
