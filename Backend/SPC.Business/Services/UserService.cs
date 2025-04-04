@@ -299,7 +299,6 @@ public class UserService : IUserService
         ApplicationUser user = new ApplicationUser()
         {
             Email = userModel.Email,
-            UserName = userModel.Email,
             SecurityStamp = Guid.NewGuid().ToString(),
             UserName = userModel.Email.Split('@')[0],
             Name = userModel.Name,

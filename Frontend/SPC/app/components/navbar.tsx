@@ -132,8 +132,21 @@ export default function Navbar() {
             <li className="p-2 hover:bg-[#4A769D]">
               <Link to="aboutUs">Nosotros</Link>
             </li>
-            <li className="p-2 hover:bg-[#4A769D]">
-              <Link to="/listLibros">Libros</Link>
+            <li>
+              <details>
+                <summary>Biblioteca</summary>
+                <ul className="p-2 bg-[#618EB4] text-white rounded-md font-[Be Vietnam Pro] font-bold">
+                  <li>
+                    <Link to="/listLibros">Libros</Link>
+                  </li>
+                  <li>
+                    <Link to="#">Audiolibros</Link>
+                  </li>
+                  <li>
+                    <Link to="#">Autores</Link>
+                  </li>
+                </ul>
+              </details>
             </li>
             <li className="p-2 hover:bg-[#4A769D]">
               <Link to="#">Tienda</Link>
