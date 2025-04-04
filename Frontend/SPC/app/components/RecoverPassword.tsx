@@ -33,6 +33,8 @@ export default function RecoverPassword() {
     }
     console.log("Usuario registrado:", formData);
     setError("");
+
+    window.location.href = "Reset";
   };
 
   return (
@@ -49,8 +51,6 @@ export default function RecoverPassword() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 gap-4">
-              {" "}
-              {/* Corrected div tag */}
               <div className="flex flex-col">
                 <label
                   htmlFor="email"
@@ -59,7 +59,7 @@ export default function RecoverPassword() {
                   Correo Electrónico
                 </label>
                 <input
-                  type="email" // Changed from "password" to "email"
+                  type="email"
                   name="email"
                   id="email"
                   value={formData.email}
