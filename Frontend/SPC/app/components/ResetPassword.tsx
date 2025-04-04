@@ -28,13 +28,11 @@ export default function ResetPassword() {
       return;
     }
 
-    // Mostrar el modal de éxito
     setModalVisible(true);
 
-    // Redirigir al login después de mostrar el modal
     setTimeout(() => {
-      window.location.href = "/login"; // Cambia "/login" a la ruta de tu página de login
-    }, 2000); // Redirigir después de 2 segundos
+      window.location.href = "/login";
+    }, 2000);
   };
 
   const closeModal = () => {
