@@ -1,0 +1,154 @@
+docs {
+  # 📚 **Bruno Collection - API Testing**  
+  
+  ## 📌 **Description**  
+  This **Bruno** collection contains test requests for the **CRUD operations of authors, books, logs, and users**, along with additional endpoints for data import, authentication, and file handling.  
+  
+  ## 📂 **Collection Structure**  
+  - **Authors** → Full CRUD (`GET`, `GET by ID`, `POST`, `PUT`, `DELETE`, `DELETE by ID`).  
+  - **Books** →  
+    - ✅ Full CRUD (`GET`, `GET by ID`, `POST`, `PUT`, `DELETE`, `DELETE by ID`).  
+    - ✅ `POST` to upload **PDF**.  
+    - ✅ `GET` to download **PDF**.  
+    - ✅ `POST` to upload **image** and return it as **Base64**.  
+  - **BookLogs** → Full CRUD (`GET`, `GET by ID`, `POST`, `PUT`, `DELETE`, `DELETE by ID`).  
+  - **Users** →  
+    - ✅ Full CRUD (`GET`, `GET by ID`, `POST`, `PUT`, `DELETE`, `DELETE by ID`).  
+    - ✅ `POST /login` (does not require `Authorization` header).
+    - ✅ `POST /changeUserRole/{roleName}/{userId}` to update a user's role.
+  - **Data** →  
+    - ✅ `POST` to add a list of authors.  
+    - ✅ `POST` to add a list of books.  
+  
+  ## 🚀 **POST Request Structures**  
+  
+  ### **Create Author**  
+  
+  ```json
+  {
+    "name": "name",
+    "surname": "surname",
+    "about": "about",
+    "isAlive": true,
+    "deleted": false
+  }
+  ```  
+  
+  ### **Create Book**  
+  
+  ```json
+  {
+    "authorId": 3,
+    "name": "name",
+    "isbN13": "978-3-16-148410-0",
+    "editorial": "editorial",
+    "yearOfPubliction": 2021,
+    "format": 0,
+    "genrre": 0,
+    "language": "English",
+    "cover": "cover1jpg",
+    "edition": "1st",
+    "summary": "summary",
+    "deleted": false,
+    "long": 350
+  }
+  ```  
+  
+  ### **Create Book Log**  
+  
+  ```json
+  {
+    "action": 3,
+    "userId": 3,
+    "bookId": 7
+  }
+  ```  
+  
+  ### **Create User**  
+  
+  ```json
+  {
+    "name": "user",
+    "surname": "user",
+    "documenttype": "CC",
+    "documentnumber": "1000000000",
+    "usertype": "Teacher",
+    "termsAceptance": true,
+    "email": "user@eafit.edu.co",
+    "password": "User2025*"
+  }
+  ```  
+  
+  ### **Bulk Add Authors**  
+  
+  ```json
+  [
+   {
+      "Name": "",
+      "Surname": "",
+      "About": "",
+      "IsAlive": true,
+      "Deleted": false
+    },
+    {
+      "Name": "",
+      "Surname": "",
+      "About": "",
+      "IsAlive": true,
+      "Deleted": false
+    }
+  ]
+  ```  
+  
+  ### **Bulk Add Books**  
+  
+  ```json
+  [
+    {
+      "authorId": 3,
+      "name": "name",
+      "isbN13": "978-3-16-148410-0",
+      "editorial": "editorial",
+      "yearOfPubliction": 2021,
+      "format": 0,
+      "genrre": 0,
+      "language": "English",
+      "cover": "cover1jpg",
+      "edition": "1st",
+      "summary": "summary",
+      "deleted": false,
+      "long": 350
+    },
+    {
+      "authorId": 3,
+      "name": "name",
+      "isbN13": "978-3-16-148410-0",
+      "editorial": "editorial",
+      "yearOfPubliction": 2021,
+      "format": 0,
+      "genrre": 0,
+      "language": "English",
+      "cover": "cover1jpg",
+      "edition": "1st",
+      "summary": "summary",
+      "deleted": false,
+      "long": 350
+    }
+  ]
+  ```  
+  
+  ## 🔒 **Authentication**  
+  All requests (except `POST /login`) require an **authentication token** in the **`Authorization` header**.    
+  
+  ## 🛠 **How to Use the Collection**  
+  1. Import the collection into **Bruno**.  
+  2. Use `POST /login` to test authentication.  
+  3. Set the **token** in the `Authorization` header for other requests.  
+  4. Execute the requests and verify the expected responses.  
+  
+  📌 **Notes:**  
+  - If you try to access a restricted endpoint without permissions, the API will respond with **403 Forbidden**.  
+  - If you search for a non-existent resource by ID, the API will return **404 Not Found**.  
+  
+  
+}

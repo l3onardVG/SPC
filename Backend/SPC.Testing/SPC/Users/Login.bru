@@ -1,11 +1,28 @@
 meta {
   name: Login
   type: http
-  seq: 7
+  seq: 5
 }
 
 post {
-  url: 
-  body: none
+  url: http://localhost:5197/api/Authentication/login
+  body: json
   auth: none
+}
+
+headers {
+  Authorization: Bearer {{access_token}}
+}
+
+body:json {
+  {
+    "Email": "admin@eafit.edu.co",
+    "Password": "fdkreeArd24%"
+  }
+}
+
+script:post-response {
+  
+  bru.setVar("access_token", res.body.token);
+  
 }

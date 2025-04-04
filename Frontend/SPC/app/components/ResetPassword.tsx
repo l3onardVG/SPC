@@ -7,6 +7,7 @@ export default function ResetPassword() {
   });
 
   const [error, setError] = useState("");
+  const [modalVisible, setModalVisible] = useState(false); // Estado para controlar el modal
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -18,7 +19,7 @@ export default function ResetPassword() {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
 
@@ -27,32 +28,15 @@ export default function ResetPassword() {
       return;
     }
 
-    try {
-      const response = await fetch(
-        "http://localhost:5000/api/usuarios/reset-password",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ password: formData.password }),
-        }
-      );
+    setModalVisible(true);
 
-      if (!response.ok) {
-        throw new Error("Error al restablecer la contraseña");
-      }
+    setTimeout(() => {
+      window.location.href = "/login";
+    }, 2000);
+  };
 
-      console.log("Contraseña restablecida con éxito");
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error("Error:", error.message);
-        setError(error.message);
-      } else {
-        console.error("Error desconocido");
-        setError("Error desconocido al restablecer la contraseña");
-      }
-    }
+  const closeModal = () => {
+    setModalVisible(false);
   };
 
   return (
@@ -109,6 +93,22 @@ export default function ResetPassword() {
           </button>
         </form>
       </div>
+
+      {modalVisible && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50 z-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg w-80 text-center">
+            <h3 className="text-xl font-bold text-[#002847] mb-4">
+              Contraseña restablecida con éxito
+            </h3>
+            <button
+              onClick={closeModal}
+              className="btn bg-[#EB704B] border-none shadow-none w-full text-white font-bold font-[Be Vietnam Pro]"
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

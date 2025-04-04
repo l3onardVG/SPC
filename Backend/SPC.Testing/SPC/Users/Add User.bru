@@ -7,14 +7,23 @@ meta {
 post {
   url: http://localhost:5197/api/user/adduser
   body: json
-  auth: inherit
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{access_token}}
+  Content-Type: application/json
 }
 
 body:json {
   {
-    "name": "name",
-    "surname": "surname",
-    "email": "email@gmail.com",
-    "role": 1
+    "name": "user",
+    "surname": "user",
+    "documenttype": "CC",
+    "documentnumber": "1000000000",
+    "usertype": "Student",
+    "termsAceptance": true,
+    "email": "user@eafit.edu.co",
+    "password": "User2025*"
   }
 }

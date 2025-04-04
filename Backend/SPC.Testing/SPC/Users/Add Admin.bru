@@ -1,0 +1,28 @@
+meta {
+  name: Add Admin
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:5197/api/user/addadmin
+  body: json
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer {{access_token}}
+}
+
+body:json {
+  {
+    "name": "administrador",
+    "surname": "administrador",
+    "documenttype": "CC",
+    "documentnumber": "1000000000",
+    "usertype": "Admin",
+    "termsAceptance": true,
+    "email": "admin@eafit.edu.co",
+    "password": "Admin20*"
+  }
+}
