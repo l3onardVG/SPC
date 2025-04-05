@@ -1,4 +1,4 @@
-<p style="text-align: right;"><img src="public/logoSPC.png" alt="Logo" width="90"/></p>
+<p style="text-align: right;"><img src="Frontend\SPC\public\LogoSPC.png" alt="Logo" width="90"/></p>
 
 # **Proyecto: Secretos para Contar**
 
