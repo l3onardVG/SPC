@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:latest
+    container_name: spc_postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - spc_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 2s
+      retries: 10
+      start_period: 0s
+    restart: unless-stopped
+
+  # ASP.NET Core API
+  api:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    container_name: spc_api
+    ports:
+      - "5197:5197"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_URLS=${ASPNETCORE_URLS}
+      - NIKOLA_DATABASE=${NIKOLA_DATABASE}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - JWT_VALID_AUDIENCE=${JWT_VALID_AUDIENCE}
+      - JWT_VALID_ISSUER=${JWT_VALID_ISSUER}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - spc_network
+    restart: unless-stopped
+
+  # Remix Frontend
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    container_name: spc_frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      api:
+        condition: service_started
+    networks:
+      - spc_network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  spc_network:
+    driver: bridge 

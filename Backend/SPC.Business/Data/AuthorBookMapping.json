@@ -1,0 +1,84 @@
+{
+  "authorMappings": [
+    {
+      "jsonAuthorId": 1,
+      "authorName": "Tita",
+      "authorSurname": "Maya",
+      "description": "Tita Maya - Fundadora de Secretos para contar"
+    },
+    {
+      "jsonAuthorId": 2,
+      "authorName": "Muchos Autores",
+      "authorSurname": "",
+      "description": "Compilaciones de múltiples autores"
+    },
+    {
+      "jsonAuthorId": 3,
+      "authorName": "Secretos para contar",
+      "authorSurname": "",
+      "description": "Fundación Secretos para contar"
+    }
+  ],
+  "bookAuthorMappings": [
+    {
+      "bookName": "Cuentos y pasatiempos",
+      "jsonAuthorId": 1,
+      "expectedAuthor": "Tita Maya"
+    },
+    {
+      "bookName": "Entre cuento y cuento",
+      "jsonAuthorId": 2,
+      "expectedAuthor": "Muchos Autores"
+    },
+    {
+      "bookName": "Erase una vez en Colombia",
+      "jsonAuthorId": 2,
+      "expectedAuthor": "Muchos Autores"
+    },
+    {
+      "bookName": "A que te cojo raton",
+      "jsonAuthorId": 3,
+      "expectedAuthor": "Secretos para contar"
+    },
+    {
+      "bookName": "Calor de hogar",
+      "jsonAuthorId": 3,
+      "expectedAuthor": "Secretos para contar"
+    },
+    {
+      "bookName": "Con los pelos de punta",
+      "jsonAuthorId": 2,
+      "expectedAuthor": "Muchos Autores"
+    },
+    {
+      "bookName": "Cuentos maravillosos",
+      "jsonAuthorId": 2,
+      "expectedAuthor": "Muchos Autores"
+    },
+    {
+      "bookName": "Cuentos para contar",
+      "jsonAuthorId": 2,
+      "expectedAuthor": "Muchos Autores"
+    },
+    {
+      "bookName": "Cuentos para desenredar enredos",
+      "jsonAuthorId": 3,
+      "expectedAuthor": "Secretos para contar"
+    },
+    {
+      "bookName": "Del campo a la mesa",
+      "jsonAuthorId": 3,
+      "expectedAuthor": "Secretos para contar"
+    },
+    {
+      "bookName": "El hombre y su cultura",
+      "jsonAuthorId": 2,
+      "expectedAuthor": "Muchos Autores"
+    },
+    {
+      "bookName": "Historias y lugares",
+      "jsonAuthorId": 2,
+      "expectedAuthor": "Muchos Autores"
+    }
+  ]
+} 
