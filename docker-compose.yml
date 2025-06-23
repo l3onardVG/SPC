@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:latest
+    container_name: spc_postgres
+    environment:
+      POSTGRES_USER: secretos
+      POSTGRES_PASSWORD: secretos
+      POSTGRES_DB: spc
+      POSTGRES_PORT: 5432
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - spc_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U secretos -d spc"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # ASP.NET Core API
+  api:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    container_name: spc_api
+    ports:
+      - "5197:5197"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5197
+      - NIKOLA_DATABASE=Host=db;Port=5432;Database=spc;Username=secretos;Password=secretos
+      - JWT_SECRET_KEY=your_secret_key_here
+      - JWT_VALID_AUDIENCE=http://localhost:5197
+      - JWT_VALID_ISSUER=http://localhost:5197
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - spc_network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  spc_network:
+    driver: bridge 
