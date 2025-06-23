@@ -11,6 +11,7 @@
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![DaisyUI](https://img.shields.io/badge/DaisyUI-FF69B4?style=for-the-badge)
 ![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=jsonwebtokens)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 
 ---
 
@@ -21,6 +22,7 @@
 - [Estructura y Características](#estructura-y-características-de-la-plataforma)
 - [Tecnologías Utilizadas](#tecnologías-utilizadas)
 - [Cómo Levantar el Proyecto](#cómo-levantar-el-proyecto)
+- [🐳 Docker Setup](#-docker-setup)
 - [Conoce al Equipo](#conoce-al-equipo)
 - [Contribución](#contribución)
 - [Referencias](#referencias)
@@ -198,95 +200,78 @@ Asegúrate de tener instalado:
 
 ### 📝 Configuración Inicial
 
-#### Clonar el repositorio
+## 🐳 **Docker Setup**
+
+### **Inicio Rápido con Docker**
+
+El proyecto incluye una configuración completa de Docker que permite ejecutar tanto el backend como la base de datos PostgreSQL con un solo comando.
+
+#### **🚀 Ejecutar con Docker**
 
 ```bash
-git clone git@github.com:Angiea18/Proyecto_SPC.git
+# Clonar el repositorio
+git clone <repository-url>
+cd Proyecto_SPC
+
+# Construir y ejecutar todos los servicios
+docker-compose up --build
+
+# Ejecutar en segundo plano
+docker-compose up -d --build
 ```
 
-### Backend
+#### **📋 Servicios Disponibles**
 
-#### 1. Backend/.env
+- **PostgreSQL Database**: `localhost:5432`
+- **ASP.NET Core API**: `http://localhost:5197`
+- **Swagger UI**: `http://localhost:5197/swagger`
 
-Crea el archivo `Backend/.env` con el siguiente contenido:
+#### **🔧 Comandos Útiles**
 
-```env
-NIKOLA_DATABASE=Host=localhost;Username=<username>;Password=<password>;Database=<database>
-JWT_SECRET_KEY=<jwt_secret_key>
-JWT_VALID_AUDIENCE=http://localhost:5197
-JWT_VALID_ISSUER=http://localhost:5197
+```bash
+# Ver estado de los servicios
+docker-compose ps
+
+# Ver logs en tiempo real
+docker-compose logs -f
+
+# Detener servicios
+docker-compose down
+
+# Reconstruir solo la API
+docker-compose build api
 ```
 
-#### 2. DB/docker.env
+#### **✨ Características del Setup Docker**
 
-Crea el archivo `DB/docker.env` con el siguiente contenido:
+- **Multi-stage build** para optimizar el tamaño de la imagen
+- **Migraciones automáticas** al iniciar el contenedor
+- **Health checks** para la base de datos
+- **Seguridad** con usuario no-root para la aplicación
+- **Networking** dedicado entre servicios
 
-```env
-POSTGRES_USER=<user>
-POSTGRES_PASSWORD=<password>
-POSTGRES_DB=<db>
-```
+#### **📚 Documentación Detallada**
 
-#### 3. Verificar que Docker esté corriendo
+Para información completa sobre la configuración de Docker, consulta:
+- **[README-Docker.md](README-Docker.md)** - Documentación detallada del setup Docker
+- Troubleshooting y configuración avanzada
+- Guías de desarrollo y producción
 
-```env
-docker info
-```
+#### **🔄 Migraciones Automáticas**
 
-#### 4. Levantar la base de datos
+El sistema incluye:
+- Ejecución automática de migraciones de Entity Framework
+- Seed de datos iniciales (usuario administrador)
+- Health checks para asegurar que la base de datos esté lista
 
-```env
-cd DB
-docker-compose up -d
-```
+#### **🔐 Seguridad**
 
-#### 5. Verificar el puerto donde esta corriendo la DB
+- Usuario no-root para la aplicación
+- Variables de entorno para configuración
+- JWT configurado para autenticación
+- Permisos mínimos necesarios
 
-```env
-cd ../Backend
-```
-
-#### 6. Configurar el backend
-
-```env
-cd ../Backend
-```
-
-#### 7. Instalar herramienta de EF
-
-```env
-dotnet tool install --global dotnet-ef
-```
-
-#### 8. Crear y aplicar migraciones
-
-```env
-dotnet ef migrations add InitialCreate --project SPC.Data --startup-project SPC.API/
-cd SPC.API
-dotnet ef database update
-```
-
-#### 9. Iniciar el servidor
-
-```env
-dotnet watch
-```
-
-### Frontend
-
-Es importante esta ubicado en el directorio Frontend/SPC
-
-#### 1. Instalar dependencias
-
-```env
-npm install
-```
-
-#### 2. Correr el proyecto
-
-```env
-npm run dev
-```
+---
 
 ## **Conoce al Equipo**
 
