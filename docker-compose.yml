@@ -35,7 +35,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5197
       - NIKOLA_DATABASE=Host=db;Port=5432;Database=spc;Username=secretos;Password=secretos
-      - JWT_SECRET_KEY=your_secret_key_here
+      - JWT_SECRET_KEY=WkC6hIjDEATTWWxdHlcEbnGd5hallhY6
       - JWT_VALID_AUDIENCE=http://localhost:5197
       - JWT_VALID_ISSUER=http://localhost:5197
     depends_on:

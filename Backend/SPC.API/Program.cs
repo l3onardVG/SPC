@@ -100,7 +100,7 @@ app.UseCors(MyAllowSpecificOrigins);
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseHttpsRedirection();
+// HTTPS redirection eliminado para Docker
 app.MapControllers();
 app.Run();
 

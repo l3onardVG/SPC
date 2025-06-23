@@ -26,5 +26,4 @@ cd /app
 
 # Cambiar al usuario appuser para ejecutar la aplicación
 echo "Cambiando al usuario appuser..."
-#exec su appuser -c "dotnet SPC.API.dll"
-exec su appuser -c "dotnet watch" 
+exec su appuser -c "dotnet SPC.API.dll"
