@@ -55,6 +55,7 @@ builder.Services.AddScoped<IAuthorService, AuthorService>();
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBookLogService, BookLogService>();
+builder.Services.AddScoped<ISeedService, SeedService>();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<NikolaContext>()
     .AddDefaultTokenProviders();
@@ -117,6 +118,10 @@ async void PopulateDB(WebApplication app)
             var seedMain = scope.ServiceProvider.GetRequiredService<IUserService>();
             await seedMain.SeedAdmin();
         }
+
+        // Seed de datos desde JSON
+        var seedService = scope.ServiceProvider.GetRequiredService<ISeedService>();
+        await seedService.SeedDataFromJsonAsync();
     }
 
 }

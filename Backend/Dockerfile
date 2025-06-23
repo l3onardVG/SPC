@@ -40,6 +40,12 @@ COPY --from=publish /app/publish .
 # Copiar todo el código fuente para las migraciones
 COPY --from=build --chown=appuser:appuser /src /src
 
+# Copiar archivo DB.json para seeding
+COPY --from=build --chown=appuser:appuser /src/SPC.Data/Data/DB.json /app/DB.json
+
+# Copiar archivo de mapeo de autores y libros
+COPY --from=build --chown=appuser:appuser /src/SPC.Data/Data/AuthorBookMapping.json /app/AuthorBookMapping.json
+
 # Copiar script de entrada
 COPY --chown=root:root entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
