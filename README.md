@@ -273,6 +273,151 @@ El sistema incluye:
 
 ---
 
+## 💻 **Desarrollo Local**
+
+Si prefieres desarrollar localmente sin Docker, puedes configurar el entorno de desarrollo siguiendo estos pasos:
+
+### **📋 Prerrequisitos para Desarrollo Local**
+
+- **.NET 9.0 SDK** o superior
+- **PostgreSQL** 12 o superior
+- **Node.js** 18 o superior (para el frontend)
+- **Git**
+
+### **🗄️ Configurar Base de Datos Local**
+
+#### **Opción 1: PostgreSQL Local**
+
+```bash
+# Instalar PostgreSQL (macOS con Homebrew)
+brew install postgresql
+brew services start postgresql
+
+# Crear base de datos y usuario
+psql postgres
+CREATE DATABASE spc;
+CREATE USER secretos WITH PASSWORD 'secretos';
+GRANT ALL PRIVILEGES ON DATABASE spc TO secretos;
+\q
+```
+
+#### **Opción 2: Docker solo para Base de Datos**
+
+```bash
+# Levantar solo PostgreSQL con Docker
+docker run --name spc_postgres_local \
+  -e POSTGRES_USER=secretos \
+  -e POSTGRES_PASSWORD=secretos \
+  -e POSTGRES_DB=spc \
+  -p 5432:5432 \
+  -d postgres:latest
+```
+
+### **⚙️ Configurar Backend Localmente**
+
+```bash
+# Navegar al directorio del backend
+cd Backend
+
+# Restaurar dependencias
+dotnet restore
+
+# Configurar variables de entorno
+# Crear archivo .env en la raíz del proyecto Backend
+echo "NIKOLA_DATABASE=Host=localhost;Port=5432;Database=spc;Username=secretos;Password=secretos" > .env
+echo "JWT_SECRET_KEY=WkC6hIjDEATTWWxdHlcEbnGd5hallhY6" >> .env
+echo "JWT_VALID_AUDIENCE=http://localhost:5197" >> .env
+echo "JWT_VALID_ISSUER=http://localhost:5197" >> .env
+
+# Ejecutar migraciones
+dotnet ef database update --project SPC.Data --startup-project SPC.API
+
+# Ejecutar el proyecto
+dotnet run --project SPC.API
+```
+
+### **🎨 Configurar Frontend Localmente**
+
+```bash
+# Navegar al directorio del frontend
+cd Frontend/SPC
+
+# Instalar dependencias
+npm install
+
+# Ejecutar en modo desarrollo
+npm run dev
+```
+
+### **🔧 Variables de Entorno para Desarrollo Local**
+
+Crea un archivo `.env` en la raíz del proyecto Backend con:
+
+```env
+# Base de Datos
+NIKOLA_DATABASE=Host=localhost;Port=5432;Database=spc;Username=secretos;Password=secretos
+
+# JWT Configuration
+JWT_SECRET_KEY=WkC6hIjDEATTWWxdHlcEbnGd5hallhY6
+JWT_VALID_AUDIENCE=http://localhost:5197
+JWT_VALID_ISSUER=http://localhost:5197
+
+# Entorno
+ASPNETCORE_ENVIRONMENT=Development
+```
+
+### **🚀 Comandos Útiles para Desarrollo**
+
+```bash
+# Ejecutar migraciones
+dotnet ef database update --project Backend/SPC.Data --startup-project Backend/SPC.API
+
+# Crear nueva migración
+dotnet ef migrations add NombreMigracion --project Backend/SPC.Data --startup-project Backend/SPC.API
+
+# Ejecutar seeding manual
+curl -X POST http://localhost:5197/api/seed/all
+
+# Ver logs de la aplicación
+dotnet run --project Backend/SPC.API --verbosity normal
+```
+
+### **📊 URLs de Desarrollo Local**
+
+- **Backend API**: `http://localhost:5197`
+- **Swagger UI**: `http://localhost:5197/swagger`
+- **Frontend**: `http://localhost:3000` (o el puerto que configure Vite)
+- **Base de Datos**: `localhost:5432`
+
+### **🔍 Troubleshooting Local**
+
+#### **Problemas de Conexión a Base de Datos**
+```bash
+# Verificar que PostgreSQL esté corriendo
+brew services list | grep postgresql
+
+# Verificar conexión
+psql -h localhost -U secretos -d spc
+```
+
+#### **Problemas de Migraciones**
+```bash
+# Limpiar y recrear base de datos
+dotnet ef database drop --project Backend/SPC.Data --startup-project Backend/SPC.API
+dotnet ef database update --project Backend/SPC.Data --startup-project Backend/SPC.API
+```
+
+#### **Problemas de Dependencias**
+```bash
+# Limpiar cache de NuGet
+dotnet nuget locals all --clear
+
+# Restaurar dependencias
+dotnet restore --force
+```
+
+---
+
 ## **Conoce al Equipo**
 
 **Angie Arango**
