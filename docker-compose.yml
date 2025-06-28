@@ -47,21 +47,20 @@ services:
     restart: unless-stopped
 
   # Remix Frontend
-  frontend:
-    build:
-      context: ./Frontend
-      dockerfile: Dockerfile
-    container_name: spc_frontend
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-    depends_on:
-      api:
-        condition: service_started
-    networks:
-      - spc_network
-    restart: unless-stopped
+    #frontend:
+    #build:
+     # context: ./Frontend
+      #dockerfile: Dockerfile
+    #container_name: spc_frontend
+    #ports:
+    #  - "3000:3000"
+    #environment:
+     # depends_on:
+     # api:
+       # condition: service_started
+    #networks:
+     # - spc_network
+   # restart: unless-stopped
 
 volumes:
   postgres_data:

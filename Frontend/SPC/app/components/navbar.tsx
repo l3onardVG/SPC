@@ -63,7 +63,7 @@ export default function Navbar() {
                   <Link to="/listBooks">Libros</Link>
                 </li>
                 <li>
-                  <Link to="#">Audiolibros</Link>
+                  <Link to="/audiobooks">Audiolibros</Link>
                 </li>
                 <li>
                   <Link to="#">Autores</Link>
@@ -140,7 +140,7 @@ export default function Navbar() {
                     <Link to="/listLibros">Libros</Link>
                   </li>
                   <li>
-                    <Link to="#">Audiolibros</Link>
+                    <Link to="/audiobooks">Audiolibros</Link>
                   </li>
                   <li>
                     <Link to="#">Autores</Link>
