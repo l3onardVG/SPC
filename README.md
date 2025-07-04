@@ -330,6 +330,7 @@ echo "JWT_VALID_AUDIENCE=http://localhost:5197" >> .env
 echo "JWT_VALID_ISSUER=http://localhost:5197" >> .env
 
 # Ejecutar migraciones
+cd Backend
 dotnet ef database update --project SPC.Data --startup-project SPC.API
 
 # Ejecutar el proyecto
