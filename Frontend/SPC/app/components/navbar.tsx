@@ -1,46 +1,19 @@
 import { Link, useNavigate } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import DarkModeToggle from "../components/DarkModeToggle";
+import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
-  const [role, setRole] = useState<string | null>(null);
-  const [user, setUser] = useState<{ name: string } | null>(null);
+  const { user, isAuthenticated, logout, isLoading } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const storedUser = localStorage.getItem("user");
-
-    if (token && storedUser) {
-      try {
-        const parsedUser = JSON.parse(storedUser);
-        if (Object.keys(parsedUser).length > 0) {
-          setUser(parsedUser);
-          setRole(parsedUser.role || "user");
-        }
-      } catch (error) {
-        console.error("Error parsing user data:", error);
-      }
-    }
-    setIsLoading(false);
-  }, []);
-
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setUser(null);
-    setRole(null);
-    navigate("/login");
+    logout();
   };
-  // useEffect(() => {
-  //   // setRole(sessionStorage.getItem("userRole"));
-  //   setRole("admin");
-  // }, []);
 
   return (
-    <nav className="navbar bg-[#618EB4] px-6 h-24 shadow-md flex justify-between items-center fixed w-full z-50">
+    <nav className="navbar bg-[#618EB4] px-6 h-24 shadow-md flex justify-between items-center fixed top-0 w-full z-50">
       <div className="navbar-start flex items-center">
         <Link to="/" className="flex items-center">
           <img src="\LogoSPC.png" alt="Logo" className="h-20 w-auto px-20" />
@@ -60,7 +33,7 @@ export default function Navbar() {
               <summary>Biblioteca</summary>
               <ul className="p-2 bg-[#618EB4] text-white rounded-md font-[Be Vietnam Pro] font-bold">
                 <li>
-                  <Link to="/listBooks">Libros</Link>
+                  <Link to="/books">Libros</Link>
                 </li>
                 <li>
                   <Link to="#">Audiolibros</Link>
@@ -74,7 +47,7 @@ export default function Navbar() {
           <li>
             <Link to="/listBookShop">Tienda</Link>
           </li>
-          {role === "admin" && (
+          {user && user.roles.includes('Admin') && (
             <li>
               <Link to="/admin" className="text-white px-4 py-2 rounded">
                 Panel Admin
@@ -85,34 +58,37 @@ export default function Navbar() {
       </div>
 
       <div className="navbar-end space-x-20">
-        {!isLoading &&
-          (user ? (
-            <div className="relative">
-              <button
-                tabIndex={0}
+        {!isLoading && (
+          <>
+            {isAuthenticated && user ? (
+              <div className="relative">
+                <button
+                  tabIndex={0}
+                  className="text-white flex items-center gap-2 text-lg font-[Be Vietnam Pro] font-bold"
+                >
+                  <i className="fas fa-user-circle text-lg"></i>
+                  {user.userName}
+                </button>
+                <ul className="absolute right-0 mt-2 w-48 bg-[#618EB4] text-white rounded-md shadow-lg">
+                  <button
+                    className="p-2 w-full text-left hover:bg-[#4A769D] cursor-pointer"
+                    onClick={handleLogout}
+                  >
+                    Cerrar sesión
+                  </button>
+                </ul>
+              </div>
+            ) : (
+              <Link
+                to="/login"
                 className="text-white flex items-center gap-2 text-lg font-[Be Vietnam Pro] font-bold"
               >
                 <i className="fas fa-user-circle text-lg"></i>
-                {user.name}
-              </button>
-              <ul className="absolute right-0 mt-2 w-48 bg-[#618EB4] text-white rounded-md shadow-lg">
-                <button
-                  className="p-2 w-full text-left hover:bg-[#4A769D] cursor-pointer"
-                  onClick={handleLogout}
-                >
-                  Cerrar sesión
-                </button>
-              </ul>
-            </div>
-          ) : (
-            <Link
-              to="/login"
-              className="text-white flex items-center gap-2 text-lg font-[Be Vietnam Pro] font-bold"
-            >
-              <i className="fas fa-user-circle text-lg"></i>
-              Mi cuenta
-            </Link>
-          ))}
+                Mi cuenta
+              </Link>
+            )}
+          </>
+        )}
         <DarkModeToggle />
       </div>
 
@@ -137,7 +113,7 @@ export default function Navbar() {
                 <summary>Biblioteca</summary>
                 <ul className="p-2 bg-[#618EB4] text-white rounded-md font-[Be Vietnam Pro] font-bold">
                   <li>
-                    <Link to="/listLibros">Libros</Link>
+                    <Link to="/books">Libros</Link>
                   </li>
                   <li>
                     <Link to="#">Audiolibros</Link>
@@ -151,7 +127,7 @@ export default function Navbar() {
             <li className="p-2 hover:bg-[#4A769D]">
               <Link to="#">Tienda</Link>
             </li>
-            {role === "admin" && (
+            {user && user.roles.includes('Admin') && (
               <li className="p-2 hover:bg-[#4A769D]">
                 <Link to="/admin">Panel Admin</Link>
               </li>
