@@ -8,6 +8,7 @@ export default function Login() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -17,6 +18,7 @@ export default function Login() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
+    setMounted(true);
     const savedEmail = localStorage.getItem("savedEmail");
     const savedPassword = localStorage.getItem("savedPassword");
     if (savedEmail && savedPassword) {
@@ -65,7 +67,7 @@ export default function Login() {
       <div className="min-h-screen flex items-center justify-center bg-white px-4 pt-24">
         <div className="w-full max-w-4xl flex flex-col lg:flex-row bg-white shadow-none rounded-lg overflow-hidden">
           <div className="w-full lg:w-2/3 flex flex-col justify-center p-8">
-            <h2 className="text-3xl font-bold text-center text-black">
+            <h2 className="text-3xl font-bold text-center text-gray-700 tracking-wide uppercase">
               Accede a tu cuenta
             </h2>
             <form className="mt-6" onSubmit={handleSubmit}>
@@ -164,7 +166,7 @@ export default function Login() {
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96 text-center">
-            <h2 className="text-2xl font-bold text-black">¡Bienvenido!</h2>
+            <h2 className="text-2xl font-bold text-gray-700 tracking-wide uppercase">¡Bienvenido!</h2>
             <p className="text-gray-700 mt-2">
               Tu inicio de sesión fue exitoso.
             </p>

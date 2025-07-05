@@ -10,24 +10,29 @@ using SPC.Business.Interfaces;
 using SPC.Data.Models;
 using System.Net;
 using SPC.Business.Dtos;
-
+using SPC.Data;
 
 public class UserService : IUserService
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
-    private IConfiguration _configuration;
+    private readonly IConfiguration _configuration;
+    private readonly NikolaContext _context;
+
     public UserService(
         UserManager<ApplicationUser> userManager,
         RoleManager<IdentityRole> roleManager,
-        IConfiguration configuration
+        IConfiguration configuration,
+        NikolaContext context
     )
     {
         _userManager = userManager;
         _roleManager = roleManager;
         _configuration = configuration;
+        _context = context;
     }
 
+// To be removed
     public async Task<TokenResponse> Login(LoginModel loginModel)
     {
         var user = await _userManager.FindByEmailAsync(loginModel.Email);
@@ -367,6 +372,228 @@ public class UserService : IUserService
             Email = "admin@eafit.edu.co",
             Password = "fdkreeArd24%",
             //UserName = "admin"
+            Name = "Jose",
+            Surname = "Garcia",
+            DocumentType = "CC",
+            DocumentNumber = "1234567890",
+            UserType = "Admin",
+            TermsAceptance = true
         });
+    }
+
+    public async Task<AuthResponseDto> LoginWithRefreshToken(LoginModel loginModel)
+    {
+        var user = await _userManager.FindByEmailAsync(loginModel.Email);
+        if (user != null && await _userManager.CheckPasswordAsync(user, loginModel.Password))
+        {
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var authClaims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Surname, user.Surname),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            };
+
+            foreach (var userRole in userRoles)
+            {
+                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+            }
+
+            // Generate access token
+            var authSignkey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:SecretKey"]));
+            var accessTokenExpiry = DateTime.UtcNow.AddHours(1); // 1 hour
+            var token = new JwtSecurityToken(
+                issuer: _configuration["JWT:ValidIssuer"],
+                audience: _configuration["JWT:ValidAudience"],
+                expires: accessTokenExpiry,
+                claims: authClaims,
+                signingCredentials: new SigningCredentials(authSignkey, SecurityAlgorithms.HmacSha256)
+            );
+
+            // Generate refresh token
+            var refreshToken = GenerateRefreshToken();
+            var refreshTokenExpiry = DateTime.UtcNow.AddDays(7);
+
+            // Save refresh token to database
+            var refreshTokenEntity = new RefreshToken
+            {
+                Token = refreshToken,
+                UserId = user.Id,
+                ExpiryDate = refreshTokenExpiry,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.RefreshTokens.Add(refreshTokenEntity);
+            await _context.SaveChangesAsync();
+
+            return new AuthResponseDto
+            {
+                AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
+                RefreshToken = refreshToken,
+                AccessTokenExpiry = accessTokenExpiry,
+                RefreshTokenExpiry = refreshTokenExpiry,
+                UserId = user.Id,
+                UserName = user.Name,
+                UserEmail = user.Email,
+                Name = user.Name,
+                Surname = user.Surname,
+                Roles = userRoles.ToList()
+            };
+        }
+
+        return new AuthResponseDto();
+    }
+
+    public async Task<AuthResponseDto> RefreshToken(RefreshTokenRequestDto request)
+    {
+        try
+        {
+            // Validate the expired access token to get user info
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes(_configuration["JWT:SecretKey"]);
+
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = true,
+                ValidIssuer = _configuration["JWT:ValidIssuer"],
+                ValidateAudience = true,
+                ValidAudience = _configuration["JWT:ValidAudience"],
+                ValidateLifetime = false // We want to accept expired tokens
+            };
+
+            var principal = tokenHandler.ValidateToken(request.AccessToken, tokenValidationParameters, out var validatedToken);
+
+            // Get user from database
+            var userEmail = principal.FindFirst(ClaimTypes.Email)?.Value;
+            var user = await _userManager.FindByEmailAsync(userEmail);
+
+            if (user == null)
+            {
+                return new AuthResponseDto();
+            }
+
+            // Validate refresh token
+            var refreshToken = await _context.RefreshTokens
+                .FirstOrDefaultAsync(rt => rt.Token == request.RefreshToken && rt.UserId == user.Id);
+
+            if (refreshToken == null || refreshToken.IsRevoked || refreshToken.ExpiryDate < DateTime.UtcNow)
+            {
+                return new AuthResponseDto();
+            }
+
+            // Generate new access token
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var authClaims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Surname, user.Surname),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            };
+
+            foreach (var userRole in userRoles)
+            {
+                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+            }
+
+            var authSignkey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:SecretKey"]));
+            var accessTokenExpiry = DateTime.UtcNow.AddHours(1);
+            var newToken = new JwtSecurityToken(
+                issuer: _configuration["JWT:ValidIssuer"],
+                audience: _configuration["JWT:ValidAudience"],
+                expires: accessTokenExpiry,
+                claims: authClaims,
+                signingCredentials: new SigningCredentials(authSignkey, SecurityAlgorithms.HmacSha256)
+            );
+
+            // Revoke old refresh token and generate new one
+            refreshToken.IsRevoked = true;
+            refreshToken.RevokedAt = DateTime.UtcNow;
+
+            var newRefreshToken = GenerateRefreshToken();
+            var newRefreshTokenEntity = new RefreshToken
+            {
+                Token = newRefreshToken,
+                UserId = user.Id,
+                ExpiryDate = DateTime.UtcNow.AddDays(7),
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.RefreshTokens.Add(newRefreshTokenEntity);
+            await _context.SaveChangesAsync();
+
+            return new AuthResponseDto
+            {
+                AccessToken = new JwtSecurityTokenHandler().WriteToken(newToken),
+                RefreshToken = newRefreshToken,
+                AccessTokenExpiry = accessTokenExpiry,
+                RefreshTokenExpiry = newRefreshTokenEntity.ExpiryDate,
+                UserId = user.Id,
+                UserName = user.Name,
+                UserEmail = user.Email,
+                Name = user.Name,
+                Surname = user.Surname,
+                Roles = userRoles.ToList()
+            };
+        }
+        catch (Exception)
+        {
+            return new AuthResponseDto();
+        }
+    }
+
+    public async Task<bool> RevokeToken(RevokeTokenRequestDto request)
+    {
+        try
+        {
+            var refreshToken = await _context.RefreshTokens
+                .FirstOrDefaultAsync(rt => rt.Token == request.RefreshToken);
+
+            if (refreshToken == null)
+            {
+                return false;
+            }
+
+            refreshToken.IsRevoked = true;
+            refreshToken.RevokedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> RevokeAllUserTokens(string userId)
+    {
+        try
+        {
+            var refreshTokens = await _context.RefreshTokens
+                .Where(rt => rt.UserId == userId && !rt.IsRevoked)
+                .ToListAsync();
+
+            foreach (var token in refreshTokens)
+            {
+                token.IsRevoked = true;
+                token.RevokedAt = DateTime.UtcNow;
+            }
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
+    private string GenerateRefreshToken()
+    {
+        return Convert.ToBase64String(System.Security.Cryptography.RandomNumberGenerator.GetBytes(64));
     }
 }
