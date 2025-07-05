@@ -9,6 +9,8 @@ public class AuthResponseDto
     public string UserId { get; set; } = string.Empty;
     public string UserName { get; set; } = string.Empty;
     public string UserEmail { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string Surname { get; set; } = string.Empty;
     public List<string> Roles { get; set; } = new List<string>();
 }
 

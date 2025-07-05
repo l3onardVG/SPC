@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import DarkModeToggle from "../components/DarkModeToggle";
+import Avatar from "../components/Avatar";
 import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
@@ -8,9 +8,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout();
-  };
+
 
   return (
     <nav className="navbar bg-[#618EB4] px-6 h-24 shadow-md flex justify-between items-center fixed top-0 w-full z-50">
@@ -50,32 +48,23 @@ export default function Navbar() {
         </ul>
       </div>
 
-      <div className="navbar-end space-x-20">
-        <div className="text-white flex items-center gap-2 text-lg font-[Be Vietnam Pro] font-bold">
-          {isLoading ? (
-            <div className="flex items-center gap-2">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-              <span>Cargando...</span>
-            </div>
-          ) : isAuthenticated && user ? (
-            <div className="flex items-center gap-2">
-              <span>Hola, {user.userName}</span>
-              <button
-                onClick={handleLogout}
-                className="btn btn-ghost text-white hover:bg-white hover:text-[#618EB4]"
-              >
-                <i className="fas fa-sign-out-alt text-lg"></i>
-                Cerrar sesión
-              </button>
-            </div>
-          ) : (
-            <Link to="/login">
-              <i className="fas fa-user-circle text-lg"></i>
-              Mi cuenta
-            </Link>
-          )}
-        </div>
-        <DarkModeToggle />
+      <div className="navbar-end flex items-center gap-4">
+        {isLoading ? (
+          <div className="flex items-center gap-2 text-white text-lg font-[Be Vietnam Pro] font-bold">
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+            <span>Cargando...</span>
+          </div>
+        ) : isAuthenticated && user ? (
+          <span className="text-white text-lg font-[Be Vietnam Pro] font-bold">
+            Hola, {user.name && user.surname ? `${user.name} ${user.surname}` : user.userName}
+          </span>
+        ) : (
+          <Link to="/login" className="text-white text-lg font-[Be Vietnam Pro] font-bold flex items-center gap-2">
+            <i className="fas fa-user-circle text-lg"></i>
+            Mi cuenta
+          </Link>
+        )}
+        <Avatar />
       </div>
 
       <div className="lg:hidden">

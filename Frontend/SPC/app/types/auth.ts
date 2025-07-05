@@ -6,6 +6,8 @@ export interface AuthResponse {
   userId: string;
   userName: string;
   userEmail: string;
+  name: string;
+  surname: string;
   roles: string[];
 }
 

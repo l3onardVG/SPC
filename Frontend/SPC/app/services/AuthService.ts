@@ -101,6 +101,8 @@ export class AuthService {
     localStorage.removeItem('userId');
     localStorage.removeItem('userName');
     localStorage.removeItem('userEmail');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('userSurname');
     localStorage.removeItem('userRoles');
   }
 }

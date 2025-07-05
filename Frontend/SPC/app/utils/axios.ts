@@ -130,6 +130,8 @@ const logoutUser = () => {
   localStorage.removeItem('userId');
   localStorage.removeItem('userName');
   localStorage.removeItem('userEmail');
+  localStorage.removeItem('userName');
+  localStorage.removeItem('userSurname');
   localStorage.removeItem('userRoles');
   
   // Redirect to login page
@@ -145,6 +147,8 @@ export const setAuthTokens = (authResponse: AuthResponse) => {
   localStorage.setItem('userId', authResponse.userId);
   localStorage.setItem('userName', authResponse.userName);
   localStorage.setItem('userEmail', authResponse.userEmail);
+  localStorage.setItem('userName', authResponse.name);
+  localStorage.setItem('userSurname', authResponse.surname);
   localStorage.setItem('userRoles', JSON.stringify(authResponse.roles));
 };
 
@@ -153,6 +157,8 @@ export const getCurrentUser = () => {
   const userId = localStorage.getItem('userId');
   const userName = localStorage.getItem('userName');
   const userEmail = localStorage.getItem('userEmail');
+  const name = localStorage.getItem('userName');
+  const surname = localStorage.getItem('userSurname');
   const userRoles = localStorage.getItem('userRoles');
 
   if (!userId || !userName || !userEmail) {
@@ -163,6 +169,8 @@ export const getCurrentUser = () => {
     userId,
     userName,
     userEmail,
+    name: name || '',
+    surname: surname || '',
     roles: userRoles ? JSON.parse(userRoles) : [],
   };
 };

@@ -8,6 +8,8 @@ interface User {
   userId: string;
   userName: string;
   userEmail: string;
+  name: string;
+  surname: string;
   roles: string[];
 }
 
@@ -70,6 +72,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         userId: authResponse.userId,
         userName: authResponse.userName,
         userEmail: authResponse.userEmail,
+        name: authResponse.name,
+        surname: authResponse.surname,
         roles: authResponse.roles,
       };
 

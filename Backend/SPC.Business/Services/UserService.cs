@@ -436,6 +436,8 @@ public class UserService : IUserService
                 UserId = user.Id,
                 UserName = user.Name,
                 UserEmail = user.Email,
+                Name = user.Name,
+                Surname = user.Surname,
                 Roles = userRoles.ToList()
             };
         }
@@ -532,6 +534,8 @@ public class UserService : IUserService
                 UserId = user.Id,
                 UserName = user.Name,
                 UserEmail = user.Email,
+                Name = user.Name,
+                Surname = user.Surname,
                 Roles = userRoles.ToList()
             };
         }
