@@ -61,8 +61,8 @@ export default function UserDropdown({ isOpen, onToggle }: UserDropdownProps) {
 
       {/* Avatar y nombre */}
       <div className="px-4 py-3 flex items-center space-x-3">
-        <div className="avatar">
-          <div className="w-12 h-12 bg-neutral text-neutral-content rounded-full flex items-center justify-center">
+        <div className="avatar avatar-placeholder">
+          <div className="w-12 h-12 bg-orange-600 text-neutral-content rounded-full flex items-center justify-center">
             <span className="text-lg font-semibold flex items-center justify-center">{getUserInitials()}</span>
           </div>
         </div>
