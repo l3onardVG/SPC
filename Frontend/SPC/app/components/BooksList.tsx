@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import useSWR from 'swr';
 import { Link } from '@remix-run/react';
 import { getBookColor } from '~/utils/colorUtils';
+import BookSearch from './BookSearch';
 
 interface Book {
   id: number;
@@ -14,6 +15,8 @@ interface Book {
   yearOfPubliction: number;
   cover: string;
   summary: string;
+  format: number; // 0 = libro, 1 = audiolibro
+  averageRating: number; // Rating promedio del libro
 }
 
 interface BooksResponse {
@@ -25,6 +28,94 @@ interface BooksResponse {
 
 const BooksList: React.FC = () => {
   const { data, error, isLoading, mutate } = useSWR<BooksResponse>('/Book/GetAllBooks');
+  const [filters, setFilters] = useState<{
+    title?: string;
+    author?: string;
+    year?: number;
+  }>({});
+  const [showSearch, setShowSearch] = useState(false);
+
+  // Filtrar libros basado en los criterios de búsqueda
+  const filteredBooks = useMemo(() => {
+    if (!data?.responseElements) return [];
+    
+    return data.responseElements.filter(book => {
+      // Filtro por título
+      if (filters.title && !book.name.toLowerCase().includes(filters.title.toLowerCase())) {
+        return false;
+      }
+      
+      // Filtro por autor
+      if (filters.author) {
+        const authorFullName = `${book.author.name} ${book.author.surname}`.toLowerCase();
+        if (!authorFullName.includes(filters.author.toLowerCase())) {
+          return false;
+        }
+      }
+      
+      // Filtro por año
+      if (filters.year && book.yearOfPubliction !== filters.year) {
+        return false;
+      }
+      
+      return true;
+    });
+  }, [data?.responseElements, filters]);
+
+  const handleSearch = (searchFilters: {
+    title?: string;
+    author?: string;
+    year?: number;
+  }) => {
+    setFilters(searchFilters);
+  };
+
+  const handleClearFilters = () => {
+    setFilters({});
+  };
+
+  const toggleSearch = () => {
+    setShowSearch(!showSearch);
+    // Si se oculta el buscador, también limpiamos los filtros
+    if (showSearch) {
+      setFilters({});
+    }
+  };
+
+  // Función para renderizar el icono de formato
+  const renderFormatIcon = (format: number) => {
+    if (format === 1) {
+      return (
+        <div className="flex items-center gap-1">
+          <i className="fas fa-book text-sm text-blue-600"></i>
+          <i className="fas fa-headphones text-sm text-purple-600"></i>
+        </div>
+      );
+    }
+    return <i className="fas fa-book text-sm text-blue-600"></i>;
+  };
+
+  // Función para renderizar el rating basado en averageRating
+  const renderRating = (averageRating: number) => {
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+      const isActive = i <= averageRating;
+      stars.push(
+        <div 
+          key={i}
+          className={`mask mask-star ${isActive ? 'bg-yellow-400' : 'bg-gray-300'}`} 
+          aria-label={`${i} star`}
+          aria-current={i === Math.ceil(averageRating) ? 'true' : undefined}
+        ></div>
+      );
+    }
+    
+    return (
+      <div className="rating rating-sm">
+        {stars}
+      </div>
+    );
+  };
 
 
 
@@ -64,7 +155,20 @@ const BooksList: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto p-6">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Biblioteca</h2>
+        <div className="flex items-center gap-3">
+          <h2 className="text-2xl font-bold text-gray-900">Biblioteca</h2>
+          <button
+            onClick={toggleSearch}
+            className={`p-2 rounded-md transition-colors ${
+              showSearch 
+                ? 'bg-blue-100 text-blue-600 hover:bg-blue-200' 
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+            title={showSearch ? "Ocultar búsqueda" : "Mostrar búsqueda"}
+          >
+            <i className="fas fa-search"></i>
+          </button>
+        </div>
         <button
           onClick={() => mutate()}
           className="bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition-colors"
@@ -74,12 +178,17 @@ const BooksList: React.FC = () => {
         </button>
       </div>
 
+      {/* Componente de búsqueda - condicional */}
+      {showSearch && (
+        <BookSearch onSearch={handleSearch} onClear={handleClearFilters} />
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {data.responseElements.map((book) => (
+        {filteredBooks.map((book) => (
           <Link
             key={book.id}
             to={`/books/${book.id}`}
-            className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+            className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col h-full"
           >
             <div className={`h-48 flex items-center justify-center ${book.cover ? 'bg-gray-200' : getBookColor(book.name).bg}`}>
               {book.cover ? (
@@ -95,8 +204,8 @@ const BooksList: React.FC = () => {
               )}
             </div>
             
-            <div className="p-4">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2 hover:text-blue-600 transition-colors">
+            <div className="p-4 flex flex-col flex-1">
+              <h3 className="text-lg font-semibold text-gray-900 hover:text-blue-600 transition-colors mb-2">
                 {book.name}
               </h3>
               
@@ -108,14 +217,22 @@ const BooksList: React.FC = () => {
                 {book.editorial} • {book.yearOfPubliction}
               </p>
               
+              {/* Rating */}
+              <div className="mb-2">
+                {renderRating(book.averageRating)}
+              </div>
+              
               {book.summary && (
-                <p className="text-sm text-gray-700 line-clamp-3">
+                <p className="text-sm text-gray-700 line-clamp-3 mb-3">
                   {book.summary}
                 </p>
               )}
               
-              <div className="mt-3 text-blue-600 text-sm font-medium">
-                View details →
+              <div className="flex justify-between items-center mt-auto pt-3 border-t border-gray-100">
+                <div className="text-orange-600 text-sm font-medium flex-1">
+                  Ver detalles →
+                </div>
+                {renderFormatIcon(book.format)}
               </div>
             </div>
           </Link>
@@ -123,7 +240,14 @@ const BooksList: React.FC = () => {
       </div>
 
       <div className="mt-6 text-center text-sm text-gray-500">
-        Total books: {data.totalElements}
+        {Object.keys(filters).length > 0 ? (
+          <span>
+            Mostrando {filteredBooks.length} de {data.totalElements} libros
+            {filteredBooks.length === 0 && ' - No se encontraron resultados'}
+          </span>
+        ) : (
+          <span>Total libros: {data.totalElements}</span>
+        )}
       </div>
     </div>
   );
