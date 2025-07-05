@@ -46,7 +46,7 @@ export default function DonationForm({ name }: { name: string }) {
     <>
       <div className="min-h-screen flex items-center justify-center bg-white px-4 pt-4">
         <div className="card w-full max-w-3xl bg-white shadow-lg p-8">
-          <h2 className="text-3xl font-bold text-center text-[#002847] mb-8 font-[Be Vietnam Pro]">
+          <h2 className="text-3xl font-bold text-center text-gray-700 mb-8 font-[Be Vietnam Pro]">
             Realiza una donación
           </h2>
 

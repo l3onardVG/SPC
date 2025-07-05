@@ -66,28 +66,28 @@ export default function EstadisticasAdmin() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="bg-white rounded-2xl shadow p-4">
-          <h2 className="text-xl font-semibold mb-2 text-[#002847]">
+          <h2 className="text-xl font-semibold mb-2 text-gray-700 tracking-wide uppercase">
             Usuarios activos vs inactivos
           </h2>
           <Pie data={dataUsuariosActivos} />
         </div>
 
         <div className="bg-white rounded-2xl shadow p-4">
-          <h2 className="text-xl font-semibold mb-2 text-[#002847]">
+          <h2 className="text-xl font-semibold mb-2 text-gray-700 tracking-wide uppercase">
             Descargas por mes
           </h2>
           <Bar data={dataDescargasMes} />
         </div>
 
         <div className="bg-white rounded-2xl shadow p-4">
-          <h2 className="text-xl font-semibold mb-2 text-[#002847]">
+          <h2 className="text-xl font-semibold mb-2 text-gray-700 tracking-wide uppercase">
             Comparativa de formatos
           </h2>
           <Radar data={dataComparativaFormatos} />
         </div>
 
         <div className="bg-white rounded-2xl shadow p-4">
-          <h2 className="text-xl font-semibold mb-2 text-[#002847]">
+          <h2 className="text-xl font-semibold mb-2 text-gray-700 tracking-wide uppercase">
             Actividad semanal
           </h2>
           <Line data={dataActividad} />

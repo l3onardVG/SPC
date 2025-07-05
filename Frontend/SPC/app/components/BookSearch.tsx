@@ -44,7 +44,7 @@ const BookSearch: React.FC<BookSearchProps> = ({ onSearch, onClear }) => {
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6 mb-6 animate-in slide-in-from-top-2 duration-300">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">Buscar libros</h3>
+      <h3 className="text-lg font-semibold text-gray-700 mb-4 tracking-wide uppercase">Buscar libros</h3>
       
       <form onSubmit={handleSearch} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

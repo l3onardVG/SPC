@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import useSWR from 'swr';
 import { Link } from '@remix-run/react';
 import { getBookColor } from '~/utils/colorUtils';
+import { renderRating } from '~/utils/ratingUtils';
 import BookSearch from './BookSearch';
 
 interface Book {
@@ -95,27 +96,7 @@ const BooksList: React.FC = () => {
     return <i className="fas fa-book text-sm text-blue-600"></i>;
   };
 
-  // Función para renderizar el rating basado en averageRating
-  const renderRating = (averageRating: number) => {
-    const stars = [];
-    for (let i = 1; i <= 5; i++) {
-      const isActive = i <= averageRating;
-      stars.push(
-        <div 
-          key={i}
-          className={`mask mask-star ${isActive ? 'bg-yellow-400' : 'bg-gray-300'}`} 
-          aria-label={`${i} star`}
-          aria-current={i === Math.ceil(averageRating) ? 'true' : undefined}
-        ></div>
-      );
-    }
-    
-    return (
-      <div className="rating rating-sm">
-        {stars}
-      </div>
-    );
-  };
+
 
 
 
@@ -156,7 +137,7 @@ const BooksList: React.FC = () => {
     <div className="max-w-4xl mx-auto p-6">
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-3">
-          <h2 className="text-2xl font-bold text-gray-900">Biblioteca</h2>
+          <h2 className="text-2xl font-bold text-gray-700 tracking-wide uppercase">Biblioteca</h2>
           <button
             onClick={toggleSearch}
             className={`p-2 rounded-md transition-colors ${

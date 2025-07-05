@@ -51,7 +51,7 @@ export default function Ejemplo() {
               key={book.id}
               className="bg-white rounded-lg shadow-md p-6 border border-gray-200"
             >
-              <h2 className="text-xl font-semibold text-black mb-2">
+              <h2 className="text-xl font-semibold text-gray-700 mb-2">
                 {book.name}
               </h2>
               <p className="text-gray-600 mb-2">
