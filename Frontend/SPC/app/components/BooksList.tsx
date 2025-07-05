@@ -4,36 +4,11 @@ import { Link } from '@remix-run/react';
 import { getBookColor } from '~/utils/colorUtils';
 import { renderRating } from '~/utils/ratingUtils';
 import BookSearch from './BookSearch';
-
-interface Book {
-  id: number;
-  name: string;
-  author: {
-    name: string;
-    surname: string;
-  };
-  editorial: string;
-  yearOfPubliction: number;
-  cover: string;
-  summary: string;
-  format: number; // 0 = libro, 1 = audiolibro
-  averageRating: number; // Rating promedio del libro
-}
-
-interface BooksResponse {
-  message: string;
-  statusCode: number;
-  totalElements: number;
-  responseElements: Book[];
-}
+import { Book, BooksResponse, BookFilters } from '~/interfaces/BookInterfaces';
 
 const BooksList: React.FC = () => {
   const { data, error, isLoading, mutate } = useSWR<BooksResponse>('/Book/GetAllBooks');
-  const [filters, setFilters] = useState<{
-    title?: string;
-    author?: string;
-    year?: number;
-  }>({});
+  const [filters, setFilters] = useState<BookFilters>({});
   const [showSearch, setShowSearch] = useState(false);
 
   // Filtrar libros basado en los criterios de búsqueda
@@ -63,11 +38,7 @@ const BooksList: React.FC = () => {
     });
   }, [data?.responseElements, filters]);
 
-  const handleSearch = (searchFilters: {
-    title?: string;
-    author?: string;
-    year?: number;
-  }) => {
+  const handleSearch = (searchFilters: BookFilters) => {
     setFilters(searchFilters);
   };
 

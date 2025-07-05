@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
+import { BookFilters } from '~/interfaces/BookInterfaces';
 
 interface BookSearchProps {
-  onSearch: (filters: {
-    title?: string;
-    author?: string;
-    year?: number;
-  }) => void;
+  onSearch: (filters: BookFilters) => void;
   onClear: () => void;
 }
 
@@ -17,11 +14,7 @@ const BookSearch: React.FC<BookSearchProps> = ({ onSearch, onClear }) => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const filters: {
-      title?: string;
-      author?: string;
-      year?: number;
-    } = {};
+    const filters: BookFilters = {};
 
     if (title.trim()) filters.title = title.trim();
     if (author.trim()) filters.author = author.trim();
