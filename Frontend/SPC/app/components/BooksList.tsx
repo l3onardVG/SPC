@@ -1,6 +1,7 @@
 import React from 'react';
 import useSWR from 'swr';
 import { Link } from '@remix-run/react';
+import { getBookColor } from '~/utils/colorUtils';
 
 interface Book {
   id: number;
@@ -24,6 +25,8 @@ interface BooksResponse {
 
 const BooksList: React.FC = () => {
   const { data, error, isLoading, mutate } = useSWR<BooksResponse>('/Book/GetAllBooks');
+
+
 
   if (isLoading) {
     return (
@@ -78,15 +81,19 @@ const BooksList: React.FC = () => {
             to={`/books/${book.id}`}
             className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
           >
-            {book.cover && (
-              <div className="h-48 bg-gray-200 flex items-center justify-center">
+            <div className={`h-48 flex items-center justify-center ${book.cover ? 'bg-gray-200' : getBookColor(book.name).bg}`}>
+              {book.cover ? (
                 <img
                   src={`data:image/jpeg;base64,${book.cover}`}
                   alt={book.name}
                   className="h-full w-full object-cover"
                 />
-              </div>
-            )}
+              ) : (
+                <div className="h-24 w-24 flex items-center justify-center">
+                  <i className={`fas fa-book text-4xl ${getBookColor(book.name).text}`}></i>
+                </div>
+              )}
+            </div>
             
             <div className="p-4">
               <h3 className="text-lg font-semibold text-gray-900 mb-2 hover:text-blue-600 transition-colors">
