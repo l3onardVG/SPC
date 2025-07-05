@@ -1,15 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function DonationForm({ name }: { name: string }) {
+  const [mounted, setMounted] = useState(false);
   const [formData, setFormData] = useState({
     name: name || "",
     amount: "",
-    date: new Date().toLocaleDateString("en-CA"),
+    date: "",
     paymentMethod: "",
     currency: "COP",
   });
 
   const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    setFormData(prev => ({
+      ...prev,
+      date: new Date().toLocaleDateString("en-CA"),
+    }));
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>

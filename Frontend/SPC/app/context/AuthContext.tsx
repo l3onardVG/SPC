@@ -27,10 +27,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isClient, setIsClient] = useState(false);
   const navigate = useNavigate();
 
-  // Inicializar el estado de autenticación
+  // Verificar que estamos en el cliente
   useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Inicializar el estado de autenticación solo en el cliente
+  useEffect(() => {
+    if (!isClient) return;
+
     const initializeAuth = () => {
       try {
         const authenticated = AuthService.isAuthenticated();
@@ -48,7 +56,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     initializeAuth();
-  }, []);
+  }, [isClient]);
 
   const login = async (email: string, password: string) => {
     try {
@@ -103,17 +111,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const hasRole = (role: string): boolean => {
+    if (!isClient) return false;
     return AuthService.hasRole(role);
   };
 
   const isAdmin = (): boolean => {
+    if (!isClient) return false;
     return AuthService.isAdmin();
   };
 
   const value: AuthContextType = {
     user,
     isAuthenticated,
-    isLoading,
+    isLoading: isLoading || !isClient, // Mostrar loading hasta que estemos en el cliente
     login,
     logout,
     hasRole,

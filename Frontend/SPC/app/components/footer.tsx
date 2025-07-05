@@ -1,6 +1,13 @@
 import { Link } from "@remix-run/react";
+import { useState, useEffect } from "react";
 
 export default function Footer() {
+  const [currentYear, setCurrentYear] = useState("2024");
+
+  useEffect(() => {
+    setCurrentYear(new Date().getFullYear().toString());
+  }, []);
+
   return (
     <footer className="bg-[#618EB4] text-white p-6 flex justify-between items-center relative">
       <div className="flex flex-col items-center">
@@ -10,7 +17,7 @@ export default function Footer() {
           className="h-20 w-auto"
         />
         <p className="mt-2 text-sm font-[Be Vietnam Pro] font-normal">
-          {new Date().getFullYear()} © Todos los derechos reservados
+          {currentYear} © Todos los derechos reservados
         </p>
       </div>
 

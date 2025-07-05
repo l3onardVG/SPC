@@ -47,48 +47,34 @@ export default function Navbar() {
           <li>
             <Link to="/listBookShop">Tienda</Link>
           </li>
-          {user && user.roles.includes('Admin') && (
-            <li>
-              <Link to="/admin" className="text-white px-4 py-2 rounded">
-                Panel Admin
-              </Link>
-            </li>
-          )}
         </ul>
       </div>
 
       <div className="navbar-end space-x-20">
-        {!isLoading && (
-          <>
-            {isAuthenticated && user ? (
-              <div className="relative">
-                <button
-                  tabIndex={0}
-                  className="text-white flex items-center gap-2 text-lg font-[Be Vietnam Pro] font-bold"
-                >
-                  <i className="fas fa-user-circle text-lg"></i>
-                  {user.userName}
-                </button>
-                <ul className="absolute right-0 mt-2 w-48 bg-[#618EB4] text-white rounded-md shadow-lg">
-                  <button
-                    className="p-2 w-full text-left hover:bg-[#4A769D] cursor-pointer"
-                    onClick={handleLogout}
-                  >
-                    Cerrar sesión
-                  </button>
-                </ul>
-              </div>
-            ) : (
-              <Link
-                to="/login"
-                className="text-white flex items-center gap-2 text-lg font-[Be Vietnam Pro] font-bold"
+        <div className="text-white flex items-center gap-2 text-lg font-[Be Vietnam Pro] font-bold">
+          {isLoading ? (
+            <div className="flex items-center gap-2">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+              <span>Cargando...</span>
+            </div>
+          ) : isAuthenticated && user ? (
+            <div className="flex items-center gap-2">
+              <span>Hola, {user.userName}</span>
+              <button
+                onClick={handleLogout}
+                className="btn btn-ghost text-white hover:bg-white hover:text-[#618EB4]"
               >
-                <i className="fas fa-user-circle text-lg"></i>
-                Mi cuenta
-              </Link>
-            )}
-          </>
-        )}
+                <i className="fas fa-sign-out-alt text-lg"></i>
+                Cerrar sesión
+              </button>
+            </div>
+          ) : (
+            <Link to="/login">
+              <i className="fas fa-user-circle text-lg"></i>
+              Mi cuenta
+            </Link>
+          )}
+        </div>
         <DarkModeToggle />
       </div>
 
@@ -127,11 +113,6 @@ export default function Navbar() {
             <li className="p-2 hover:bg-[#4A769D]">
               <Link to="#">Tienda</Link>
             </li>
-            {user && user.roles.includes('Admin') && (
-              <li className="p-2 hover:bg-[#4A769D]">
-                <Link to="/admin">Panel Admin</Link>
-              </li>
-            )}
           </ul>
         )}
       </div>

@@ -76,8 +76,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <Navbar />
             {children}
             <Footer />
-          </SWRConfig>
-        </AuthProvider>
+                      </SWRConfig>
+          </AuthProvider>
         <ScrollRestoration />
         <Scripts />
       </body>
