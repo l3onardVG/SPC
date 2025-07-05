@@ -64,9 +64,10 @@ const BooksList: React.FC = () => {
         <h2 className="text-2xl font-bold text-gray-900">Books Library</h2>
         <button
           onClick={() => mutate()}
-          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+          className="bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition-colors"
+          title="Actualizar lista"
         >
-          Refresh
+          <i className="fas fa-sync-alt"></i>
         </button>
       </div>
 
