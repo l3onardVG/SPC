@@ -40,7 +40,7 @@ const BooksList: React.FC = () => {
     return (
       <div className="max-w-4xl mx-auto p-6">
         <div className="bg-red-50 border border-red-200 rounded-md p-4">
-          <h3 className="text-red-800 font-medium">Error loading books</h3>
+          <h3 className="text-red-800 font-medium">Error cargando libros</h3>
           <p className="text-red-600 mt-1">{error.message}</p>
           <button
             onClick={() => mutate()}
@@ -56,7 +56,7 @@ const BooksList: React.FC = () => {
   if (!data || !data.responseElements) {
     return (
       <div className="max-w-4xl mx-auto p-6">
-        <p className="text-gray-500 text-center">No books found</p>
+        <p className="text-gray-500 text-center">Libros no encontrados</p>
       </div>
     );
   }
@@ -64,7 +64,7 @@ const BooksList: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto p-6">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Books Library</h2>
+        <h2 className="text-2xl font-bold text-gray-900">Biblioteca</h2>
         <button
           onClick={() => mutate()}
           className="bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition-colors"
