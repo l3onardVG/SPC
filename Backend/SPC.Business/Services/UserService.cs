@@ -372,8 +372,8 @@ public class UserService : IUserService
             Email = "admin@eafit.edu.co",
             Password = "fdkreeArd24%",
             //UserName = "admin"
-            Name = "Jose",
-            Surname = "Garcia",
+            Name = "Mark",
+            Surname = "Twain",
             DocumentType = "CC",
             DocumentNumber = "1234567890",
             UserType = "Admin",

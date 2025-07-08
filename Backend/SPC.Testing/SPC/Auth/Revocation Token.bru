@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: http://localhost:5197/api/auth/refresh
+  url: http://localhost:5197/api/auth/revoke
   body: json
   auth: none
 }
@@ -16,7 +16,6 @@ headers {
 
 body:json {
   {
-    "accessToken": "{{access_token}}",
     "refreshToken": "{{refresh_token}}"
   }
 }
