@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using DotNetEnv;  // Import the package
+using System.Security.Claims; // Added for ClaimTypes
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -63,6 +64,13 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap.Clear();
 
+// Mapear los claims personalizados
+JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap["sub"] = ClaimTypes.NameIdentifier;
+JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap["email"] = ClaimTypes.Email;
+JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap["given_name"] = ClaimTypes.Name;
+JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap["family_name"] = ClaimTypes.Surname;
+JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap["role"] = ClaimTypes.Role;
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -79,8 +87,9 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidAudience = builder.Configuration["JWT:ValidAudience"],
         ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]))
-
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"])),
+        NameClaimType = ClaimTypes.NameIdentifier,
+        RoleClaimType = ClaimTypes.Role
     };
 });
 builder.Services.AddDbContext<NikolaContext>(

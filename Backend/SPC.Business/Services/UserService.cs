@@ -41,6 +41,7 @@ public class UserService : IUserService
             var userRoles = await _userManager.GetRolesAsync(user);
             var authClaims = new List<Claim>
           {
+              new Claim(ClaimTypes.NameIdentifier, user.Id),
               new Claim(ClaimTypes.Email, user.Email),
               new Claim(ClaimTypes.Name,user.Name),
               new Claim(ClaimTypes.Surname, user.Surname),
@@ -389,6 +390,7 @@ public class UserService : IUserService
             var userRoles = await _userManager.GetRolesAsync(user);
             var authClaims = new List<Claim>
             {
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Name, user.Name),
                 new Claim(ClaimTypes.Surname, user.Surname),
@@ -488,6 +490,7 @@ public class UserService : IUserService
             var userRoles = await _userManager.GetRolesAsync(user);
             var authClaims = new List<Claim>
             {
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Name, user.Name),
                 new Claim(ClaimTypes.Surname, user.Surname),

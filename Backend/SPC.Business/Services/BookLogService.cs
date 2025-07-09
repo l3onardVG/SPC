@@ -1,5 +1,7 @@
 using System.Net;
+using Microsoft.AspNetCore.Identity;
 using SPC.Business.Interfaces;
+using SPC.Business.Dtos;
 using SPC.Data;
 using SPC.Data.Models;
 namespace SPC.Business.Services;
@@ -7,9 +9,12 @@ namespace SPC.Business.Services;
 public class BookLogService : IBookLogService
 {
     private readonly IUnitOfWork _unitOfWork;
-    public BookLogService(IUnitOfWork unitOfWork)
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public BookLogService(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager)
     {
         _unitOfWork = unitOfWork;
+        _userManager = userManager;
     }
 
     public async Task<BaseMessage<BookLog>> GetList()
@@ -59,6 +64,92 @@ public class BookLogService : IBookLogService
             TotalElements = 1,
             ResponseElements = new List<BookLog> { bookLog }
         };
+    }
+
+    public async Task<BaseMessage<BookLog>> RateBook(int bookId, string userId, BookRatingDto ratingDto)
+    {
+        try
+        {
+            // Verificar que el libro existe
+            var book = await _unitOfWork.BookRepository.FindAsync(bookId);
+            if (book == null)
+            {
+                return new BaseMessage<BookLog>()
+                {
+                    Message = "El libro no existe.",
+                    StatusCode = HttpStatusCode.NotFound,
+                    TotalElements = 0,
+                    ResponseElements = new()
+                };
+            }
+
+            // Verificar que el usuario existe usando UserManager
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return new BaseMessage<BookLog>()
+                {
+                    Message = "El usuario no existe.",
+                    StatusCode = HttpStatusCode.NotFound,
+                    TotalElements = 0,
+                    ResponseElements = new()
+                };
+            }
+
+            // Verificar si el usuario ya calificó este libro
+            var existingRating = await _unitOfWork.BookLogRepository.GetAllAsync(
+                filter: x => x.BookId == bookId && 
+                            x.UserId == userId && 
+                            x.Action == SPC.Data.Models.Action.Rate
+            );
+
+            if (existingRating.Any())
+            {
+                return new BaseMessage<BookLog>()
+                {
+                    Message = "Ya has calificado este libro anteriormente.",
+                    StatusCode = HttpStatusCode.BadRequest,
+                    TotalElements = 0,
+                    ResponseElements = new()
+                };
+            }
+
+            // Crear el BookLog para la calificación
+            var bookLog = new BookLog
+            {
+                Action = SPC.Data.Models.Action.Rate,
+                UserId = userId,
+                BookId = bookId,
+                Timestamp = DateTime.UtcNow,
+                Rating = ratingDto.Rating,
+                Comment = ratingDto.Comment
+            };
+
+            // Guardar la calificación
+            await _unitOfWork.BookLogRepository.AddAsync(bookLog);
+            await _unitOfWork.SaveAsync();
+
+            // Actualizar el rating promedio del libro
+            await UpdateBookRating(bookId);
+
+            return new BaseMessage<BookLog>()
+            {
+                Message = "Libro calificado exitosamente.",
+                StatusCode = HttpStatusCode.OK,
+                TotalElements = 1,
+                ResponseElements = new List<BookLog> { bookLog }
+            };
+        }
+        catch (Exception ex)
+        {
+            return new BaseMessage<BookLog>()
+            {
+                Message = $"[Exception]: {ex.Message}",
+                StatusCode = HttpStatusCode.InternalServerError,
+                TotalElements = 0,
+                ResponseElements = new()
+            };
+        }
     }
 
     public async Task<BaseMessage<BookLog>> FindById(int id)
@@ -201,10 +292,9 @@ public class BookLogService : IBookLogService
         Message = $"[Exception]: {ex.Message}",
         StatusCode = HttpStatusCode.InternalServerError,
         TotalElements = 0,
-        ResponseElements = new ()
+        ResponseElements = new()
       };
     }
-
   }
 
     private BaseMessage<BookLog> BuildResponse(List<BookLog> list, string message = "", HttpStatusCode status = HttpStatusCode.OK, int totalElements = 0)
@@ -217,5 +307,4 @@ public class BookLogService : IBookLogService
             ResponseElements = list
         };
     }
-
 }

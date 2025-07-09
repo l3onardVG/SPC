@@ -1,4 +1,6 @@
 using SPC.Data.Models;
+using SPC.Business.Dtos;
+
 namespace SPC.Business.Interfaces;
 
 public interface IBookLogService
@@ -11,4 +13,5 @@ public interface IBookLogService
   Task<BaseMessage<BookLog>> DeleteBookLogId(int id);
   Task<BaseMessage<BookLog>> GetRatingsForBook(int bookId);
   Task UpdateBookRating(int bookId);
+  Task<BaseMessage<BookLog>> RateBook(int bookId, string userId, BookRatingDto ratingDto);
 }

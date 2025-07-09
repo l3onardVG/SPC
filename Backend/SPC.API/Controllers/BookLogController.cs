@@ -2,6 +2,7 @@ using System.Net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SPC.Business.Interfaces;
+using SPC.Business.Dtos;
 using SPC.Data.Models;
 namespace SPC.API.Controllers
 {
@@ -31,6 +32,33 @@ namespace SPC.API.Controllers
         public async Task<IActionResult> AddBookLog(BookLog bookLog)
         {
             var result = await _bookLogService.AddBookLog(bookLog);
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("RateBook/{bookId}")]
+        public async Task<IActionResult> RateBook(int bookId, [FromBody] BookRatingDto ratingDto)
+        {
+            // Obtener el ID del usuario autenticado
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized(new { Message = "Usuario no autenticado" });
+            }
+
+            var result = await _bookLogService.RateBook(bookId, userId, ratingDto);
+            
+            if (result.StatusCode == HttpStatusCode.NotFound)
+            {
+                return NotFound(result);
+            }
+            
+            if (result.StatusCode == HttpStatusCode.BadRequest)
+            {
+                return BadRequest(result);
+            }
+            
             return Ok(result);
         }
 
