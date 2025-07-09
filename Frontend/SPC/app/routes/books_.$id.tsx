@@ -2,11 +2,24 @@ import { useParams } from "@remix-run/react";
 import { useBook } from "../hooks/useApi";
 import { Book, BooksResponse } from "../interfaces/BookInterfaces";
 import PageWrapper from "../components/PageWrapper";
+import RatingModal from "../components/RatingModal";
+import Notification from "../components/Notification";
+import { useState } from "react";
 
 export default function BookDetailPage() {
   const { id } = useParams();
   const bookId = id ? parseInt(id) : null;
   const { data, error, isLoading } = useBook(bookId);
+  const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
+  const [notification, setNotification] = useState<{
+    message: string;
+    type: "success" | "error" | "info";
+    isVisible: boolean;
+  }>({
+    message: "",
+    type: "info",
+    isVisible: false,
+  });
 
   if (isLoading) {
     return (
@@ -45,6 +58,20 @@ export default function BookDetailPage() {
   }
 
   const book = data.responseElements[0] as Book;
+
+  const handleRatingSuccess = () => {
+    // SWR automáticamente revalidará los datos del libro
+    // Mostrar notificación de éxito
+    setNotification({
+      message: "¡Libro calificado exitosamente!",
+      type: "success",
+      isVisible: true,
+    });
+  };
+
+  const handleNotificationClose = () => {
+    setNotification(prev => ({ ...prev, isVisible: false }));
+  };
 
   return (
     <PageWrapper>
@@ -107,26 +134,13 @@ export default function BookDetailPage() {
                       </p>
                     </div>
 
-                    {/* Rating Input */}
-                    <div className="space-y-3">
-                      <label className="block text-sm font-medium text-gray-700">
-                        Tu calificación:
-                      </label>
-                      <div className="flex space-x-1">
-                        {[1, 2, 3, 4, 5].map((rating) => (
-                          <button
-                            key={rating}
-                            className="text-2xl text-gray-300 hover:text-yellow-400 transition-colors"
-                            onClick={() => console.log(`Rating: ${rating}`)}
-                          >
-                            ☆
-                          </button>
-                        ))}
-                      </div>
-                      <button className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors">
-                        Calificar
-                      </button>
-                    </div>
+                    {/* Rating Button */}
+                    <button
+                      onClick={() => setIsRatingModalOpen(true)}
+                      className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
+                    >
+                      Calificar libro
+                    </button>
                   </div>
                 </div>
               </div>
@@ -219,6 +233,23 @@ export default function BookDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Rating Modal */}
+      <RatingModal
+        isOpen={isRatingModalOpen}
+        onClose={() => setIsRatingModalOpen(false)}
+        bookId={book.id}
+        bookName={book.name}
+        onRatingSuccess={handleRatingSuccess}
+      />
+
+      {/* Notification */}
+      <Notification
+        message={notification.message}
+        type={notification.type}
+        isVisible={notification.isVisible}
+        onClose={handleNotificationClose}
+      />
     </PageWrapper>
   );
 } 

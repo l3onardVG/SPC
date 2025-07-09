@@ -26,9 +26,6 @@ const createFetcher = (method: 'GET' | 'POST' | 'PUT' | 'DELETE') => {
       
       return response.data;
     } catch (error: any) {
-      if (error.response?.status === 401) {
-        throw error;
-      }
       throw new Error(error.response?.data?.message || 'An error occurred');
     }
   };
@@ -93,6 +90,7 @@ export const useBooks = () => {
 export const useBook = (id: number | null) => {
   return useGet(id ? `/Book/GetBookById/${id}` : null, {
     revalidateOnFocus: false,
+    revalidateOnReconnect: true,
   });
 };
 
