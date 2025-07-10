@@ -12,6 +12,23 @@ export default function EditBookPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
 
+  // Mapeo de géneros basado en el enum del backend
+  const genres = [
+    { value: 0, label: 'Ficción Literaria' },
+    { value: 1, label: 'Ficción Histórica' },
+    { value: 2, label: 'Ciencia Ficción' },
+    { value: 3, label: 'Fantasía' },
+    { value: 4, label: 'Aventura' },
+    { value: 5, label: 'Realismo Mágico' },
+    { value: 6, label: 'Otro' }
+  ];
+
+  // Mapeo de idiomas
+  const languages = [
+    { value: 'ES', label: 'Español' },
+    { value: 'EN', label: 'English' }
+  ];
+
   useEffect(() => {
     if (data) {
       const dataAny = data as any;
@@ -189,24 +206,34 @@ export default function EditBookPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Género
                 </label>
-                <input
-                  type="number"
-                  value={book?.genrre || ''}
+                <select
+                  value={book?.genrre || 0}
                   onChange={(e) => handleInputChange('genrre', parseInt(e.target.value))}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#002847] focus:border-transparent"
-                />
+                >
+                  {genres.map((genre) => (
+                    <option key={genre.value} value={genre.value}>
+                      {genre.label}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Idioma
                 </label>
-                <input
-                  type="text"
-                  value={book?.language || ''}
+                <select
+                  value={book?.language || 'ES'}
                   onChange={(e) => handleInputChange('language', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#002847] focus:border-transparent"
-                />
+                >
+                  {languages.map((language) => (
+                    <option key={language.value} value={language.value}>
+                      {language.label}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div>
