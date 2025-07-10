@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from '@remix-run/react';
 import { useBookDetail } from '../hooks/useApi';
 import { BookDetail } from '../interfaces/BookInterfaces';
+import { BookService } from '../services/BookService';
+import Notification from '../components/Notification';
 
 export default function EditBookPage() {
   const { id } = useParams();
@@ -11,6 +13,15 @@ export default function EditBookPage() {
   const [book, setBook] = useState<BookDetail | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [notification, setNotification] = useState<{
+    message: string;
+    type: "success" | "error" | "info";
+    isVisible: boolean;
+  }>({
+    message: "",
+    type: "info",
+    isVisible: false,
+  });
 
   // Mapeo de géneros basado en el enum del backend
   const genres = [
@@ -65,13 +76,49 @@ export default function EditBookPage() {
 
     setIsSubmitting(true);
     try {
-      // Aquí iría la llamada a la API para actualizar el libro
-      console.log('Actualizando libro:', book);
-      alert('Libro actualizado correctamente');
-      navigate('/admin');
-    } catch (error) {
+      // Crear objeto para actualizar incluyendo el campo cover
+      const updateData = {
+        id: book.id,
+        name: book.name,
+        authorId: book.authorId,
+        isbN13: book.isbN13,
+        editorial: book.editorial,
+        yearOfPubliction: book.yearOfPubliction,
+        format: book.format,
+        genrre: book.genrre,
+        language: book.language,
+        edition: book.edition,
+        summary: book.summary,
+        deleted: book.deleted,
+        long: book.long,
+        averageRating: book.averageRating,
+        filePath: book.filePath,
+        isCurrentUserRated: book.isCurrentUserRated,
+        cover: book.cover || ''
+      };
+
+      await BookService.updateBook(updateData);
+      
+      // Mostrar notificación de éxito
+      setNotification({
+        message: "Libro actualizado correctamente",
+        type: "success",
+        isVisible: true,
+      });
+      
+      // Navegar después de un breve delay para que se vea la notificación
+      setTimeout(() => {
+        navigate('/admin/libros');
+      }, 1500);
+    } catch (error: any) {
       console.error('Error al actualizar libro:', error);
-      alert('Error al actualizar el libro');
+      
+      // Mostrar notificación de error
+      setNotification({
+        message: `Error al actualizar el libro: ${error.message}`,
+        type: "error",
+        isVisible: true,
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -79,6 +126,10 @@ export default function EditBookPage() {
 
   const handleCancel = () => {
     navigate('/admin');
+  };
+
+  const handleNotificationClose = () => {
+    setNotification(prev => ({ ...prev, isVisible: false }));
   };
 
   if (isLoading) {
@@ -330,12 +381,31 @@ export default function EditBookPage() {
                     onChange={(e) => {
                       const file = e.target.files?.[0];
                       if (file) {
+                        // Validar tamaño del archivo (máximo 5MB)
+                        if (file.size > 5 * 1024 * 1024) {
+                          alert('El archivo es demasiado grande. Máximo 5MB permitido.');
+                          return;
+                        }
+
                         const reader = new FileReader();
                         reader.onload = (event) => {
-                          const result = event.target?.result as string;
-                          // Extraer solo la parte base64 (remover el prefijo data:image/...;base64,)
-                          const base64 = result.split(',')[1];
-                          handleInputChange('cover', base64);
+                          try {
+                            const result = event.target?.result as string;
+                            // Extraer solo la parte base64 (remover el prefijo data:image/...;base64,)
+                            const base64 = result.split(',')[1];
+                            if (base64) {
+                              handleInputChange('cover', base64);
+                              console.log('Imagen convertida a base64 exitosamente');
+                            } else {
+                              alert('Error al procesar la imagen');
+                            }
+                          } catch (error) {
+                            console.error('Error al convertir imagen:', error);
+                            alert('Error al procesar la imagen');
+                          }
+                        };
+                        reader.onerror = () => {
+                          alert('Error al leer el archivo');
                         };
                         reader.readAsDataURL(file);
                       }
@@ -383,6 +453,14 @@ export default function EditBookPage() {
           </form>
         </div>
       </div>
+
+      {/* Notification */}
+      <Notification
+        message={notification.message}
+        type={notification.type}
+        isVisible={notification.isVisible}
+        onClose={handleNotificationClose}
+      />
     </div>
   );
 } 
