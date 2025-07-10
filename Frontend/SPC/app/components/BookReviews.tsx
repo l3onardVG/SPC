@@ -1,5 +1,6 @@
 import React from 'react';
 import { useBookReviews } from '../hooks/useApi';
+import { getBookColor } from '../utils/colorUtils';
 
 interface BookReview {
   id: number;
@@ -57,49 +58,61 @@ export default function BookReviews({ bookId }: BookReviewsProps) {
           <p className="text-sm text-gray-400 mt-1">Sé el primero en compartir tu opinión</p>
         </div>
       ) : (
-        <div className="space-y-6">
-          {reviews.map((review: BookReview) => (
-            <div key={review.id} className="border-b border-gray-200 pb-6 last:border-b-0">
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center space-x-3">
-                  <div className="flex text-yellow-400">
-                    {[...Array(5)].map((_, i) => (
-                      <span key={i} className="text-lg">
-                        {i < review.rating ? '★' : '☆'}
-                      </span>
-                    ))}
+        <div className="grid grid-cols-[auto_1fr] gap-x-8 gap-y-6 w-full max-w-4xl">
+          {reviews.map((review: BookReview) => {
+            const initials = `${review.userName.charAt(0)}${review.userSurname.charAt(0)}`.toUpperCase();
+            const avatarColors = getBookColor(`${review.userName} ${review.userSurname}`);
+            
+            return (
+              <React.Fragment key={review.id}>
+                {/* Avatar y nombre del usuario */}
+                <div className="flex flex-col items-center space-y-2">
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center text-sm font-semibold ${avatarColors.bg} ${avatarColors.text}`}>
+                    {initials}
                   </div>
-                  <span className="text-sm text-gray-500">
-                    {review.rating}/5
-                  </span>
+                  <div className="text-center">
+                    <p className="text-sm font-medium text-gray-900">
+                      {review.userName} {review.userSurname}
+                    </p>
+                    {review.isCurrentUserReview && (
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mt-1">
+                        Tu reseña
+                      </span>
+                    )}
+                  </div>
                 </div>
-                {review.isCurrentUserReview && (
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    Tu reseña
-                  </span>
-                )}
-              </div>
-              
-              <div className="mb-3">
-                <p className="text-gray-800 leading-relaxed">{review.comment}</p>
-              </div>
-              
-              <div className="flex items-center justify-between text-sm text-gray-500">
-                <span>
-                  Por <span className="font-medium text-gray-700">
-                    {review.userName} {review.userSurname}
-                  </span>
-                </span>
-                <span>
-                  {new Date(review.timestamp).toLocaleDateString('es-ES', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}
-                </span>
-              </div>
-            </div>
-          ))}
+                
+                {/* Contenido de la reseña */}
+                <div className="min-w-0 pb-6 border-b border-gray-200 last:border-b-0">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center space-x-3">
+                      <div className="flex text-yellow-400">
+                        {[...Array(5)].map((_, i) => (
+                          <span key={i} className="text-lg">
+                            {i < review.rating ? '★' : '☆'}
+                          </span>
+                        ))}
+                      </div>
+                      <span className="text-sm text-gray-500">
+                        {review.rating}/5
+                      </span>
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      {new Date(review.timestamp).toLocaleDateString('es-ES', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}
+                    </div>
+                  </div>
+                  
+                  <div className="mb-3">
+                    <p className="text-gray-800 leading-relaxed">{review.comment}</p>
+                  </div>
+                </div>
+              </React.Fragment>
+            );
+          })}
         </div>
       )}
     </div>
