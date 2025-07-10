@@ -118,41 +118,40 @@ export default function BookDetailPage() {
                     )}
                   </div>
 
-                  {/* Rating Section */}
-                  <div className="bg-white rounded-lg shadow-md p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Calificar este libro</h3>
-                    
-                    {/* Current Rating Display */}
-                    <div className="mb-4">
-                      <div className="flex items-center mb-2">
-                        <div className="flex text-yellow-400">
-                          {[...Array(5)].map((_, i) => (
-                            <span key={i} className="text-2xl">
-                              {i < Math.floor(book.averageRating || 0) ? '★' : '☆'}
-                            </span>
-                          ))}
+                                    {/* Rating Section */}
+                  <div className="bg-transparent flex flex-col items-center">
+                   <button
+                       onClick={() => !book.isCurrentUserRated && setIsRatingModalOpen(true)}
+                       disabled={book.isCurrentUserRated}
+                       className={`w-full py-3 px-6 rounded-full transition-colors mb-6 ${
+                         book.isCurrentUserRated
+                           ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
+                           : 'bg-blue-600 text-white hover:bg-blue-700'
+                       }`}
+                     >
+                       {book.isCurrentUserRated ? 'Ya calificaste este libro' : 'Calificar'}
+                     </button>                    
+                      {/* Current Rating Display */}
+                                            <div className="text-center">
+                        <div className="flex items-center justify-center mb-2">
+                          <div className="flex text-yellow-400">
+                            {[...Array(5)].map((_, i) => (
+                              <span key={i} className="text-2xl">
+                                {i < Math.floor(book.averageRating || 0) ? '★' : '☆'}
+                              </span>
+                            ))}
+                          </div>
+                          <span className="ml-2 text-gray-600">
+                            {book.averageRating ? book.averageRating.toFixed(1) : '0.0'}
+                          </span>
                         </div>
-                        <span className="ml-2 text-gray-600">
-                          {book.averageRating ? book.averageRating.toFixed(1) : '0.0'}
-                        </span>
+                        <p className="text-sm text-gray-500">
+                          {book.averageRating ? 'Basado en las calificaciones de los usuarios' : 'No hay calificaciones todavía'}
+                        </p>
                       </div>
-                      <p className="text-sm text-gray-500">
-                        {book.averageRating ? 'Basado en las calificaciones de los usuarios' : 'No hay calificaciones todavía'}
-                      </p>
-                    </div>
 
                     {/* Rating Button */}
-                    <button
-                      onClick={() => !book.isCurrentUserRated && setIsRatingModalOpen(true)}
-                      disabled={book.isCurrentUserRated}
-                      className={`w-full py-2 px-4 rounded-md transition-colors ${
-                        book.isCurrentUserRated
-                          ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
-                          : 'bg-blue-600 text-white hover:bg-blue-700'
-                      }`}
-                    >
-                      {book.isCurrentUserRated ? 'Ya calificaste este libro' : 'Calificar libro'}
-                    </button>
+
                   </div>
                 </div>
               </div>
