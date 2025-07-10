@@ -297,6 +297,60 @@ public class BookLogService : IBookLogService
     }
   }
 
+          public async Task<BaseMessage<BookReviewResponseDto>> GetBookReviews(int bookId, string currentUserId)
+  {
+    try
+    {
+              // Verificar si el libro existe
+        var book = await _unitOfWork.BookRepository.FindAsync(bookId);
+        if (book == null)
+        {
+            return new BaseMessage<BookReviewResponseDto>
+            {
+                StatusCode = HttpStatusCode.NotFound,
+                Message = "Libro no encontrado"
+            };
+        }
+
+        // Obtener las reseñas del libro con la información del usuario
+        var bookLogs = await _unitOfWork.BookLogRepository.GetAllAsync(
+            filter: x => x.BookId == bookId && 
+                        x.Action == SPC.Data.Models.Action.Rate && 
+                        !string.IsNullOrEmpty(x.Comment),
+            orderBy: x => x.OrderByDescending(r => r.Timestamp),
+            includeProperties: "User"
+        );
+
+        // Mapear a DTO de respuesta
+        var reviews = bookLogs.Select(bl => new BookReviewResponseDto
+        {
+            Id = bl.Id,
+            Rating = bl.Rating ?? 0,
+            Comment = bl.Comment ?? string.Empty,
+            UserName = bl.User?.Name ?? string.Empty,
+            UserSurname = bl.User?.Surname ?? string.Empty,
+            Timestamp = bl.Timestamp,
+            IsCurrentUserReview = string.Equals(bl.UserId, currentUserId, StringComparison.OrdinalIgnoreCase)
+        }).ToList();
+
+              return new BaseMessage<BookReviewResponseDto>
+        {
+            StatusCode = HttpStatusCode.OK,
+            Message = "Reseñas obtenidas exitosamente",
+            TotalElements = reviews.Count,
+            ResponseElements = reviews
+        };
+    }
+            catch (Exception ex)
+        {
+            return new BaseMessage<BookReviewResponseDto>
+            {
+                StatusCode = HttpStatusCode.InternalServerError,
+                Message = $"Error al obtener las reseñas: {ex.Message}"
+            };
+        }
+  }
+
     private BaseMessage<BookLog> BuildResponse(List<BookLog> list, string message = "", HttpStatusCode status = HttpStatusCode.OK, int totalElements = 0)
     {
         return new BaseMessage<BookLog>()

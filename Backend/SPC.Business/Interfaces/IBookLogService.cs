@@ -14,4 +14,5 @@ public interface IBookLogService
   Task<BaseMessage<BookLog>> GetRatingsForBook(int bookId);
   Task UpdateBookRating(int bookId);
   Task<BaseMessage<BookLog>> RateBook(int bookId, string userId, BookRatingDto ratingDto);
+          Task<BaseMessage<BookReviewResponseDto>> GetBookReviews(int bookId, string currentUserId);
 }

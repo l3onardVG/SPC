@@ -108,5 +108,26 @@ namespace SPC.API.Controllers
         var ratings = await _bookLogService.GetRatingsForBook(bookId);
         return Ok(ratings);
     }
+
+    [HttpGet("reviews/{bookId}")]
+    public async Task<IActionResult> GetBookReviews(int bookId)
+    {
+        // Obtener el ID del usuario autenticado
+        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized(new { Message = "Usuario no autenticado" });
+        }
+
+        var reviews = await _bookLogService.GetBookReviews(bookId, userId);
+        
+        if (reviews.StatusCode == HttpStatusCode.NotFound)
+        {
+            return NotFound(reviews);
+        }
+        
+        return Ok(reviews);
+    }
   }
 }
