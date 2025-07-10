@@ -1,9 +1,10 @@
 import { useParams } from "@remix-run/react";
-import { useBookDetail, revalidateBookDetail } from "../hooks/useApi";
+import { useBookDetail, revalidateBookDetail, revalidateBookReviews } from "../hooks/useApi";
 import { BookDetail } from "../interfaces/BookInterfaces";
 import PageWrapper from "../components/PageWrapper";
 import RatingModal from "../components/RatingModal";
 import Notification from "../components/Notification";
+import BookReviews from "../components/BookReviews";
 import { useState } from "react";
 
 export default function BookDetailPage() {
@@ -60,9 +61,12 @@ export default function BookDetailPage() {
   const book = data.responseElements[0] as BookDetail;
 
   const handleRatingSuccess = async () => {
-    // Revalidar los datos del libro para obtener la información actualizada
+    // Revalidar los datos del libro y las reseñas para obtener la información actualizada
     if (bookId) {
-      await revalidateBookDetail(bookId);
+      await Promise.all([
+        revalidateBookDetail(bookId),
+        revalidateBookReviews(bookId)
+      ]);
     }
     
     // Mostrar notificación de éxito
@@ -238,6 +242,11 @@ export default function BookDetailPage() {
                   </div>
                 </div>
               </div>
+            </div>
+
+            {/* Reviews Section */}
+            <div className="mt-8">
+              <BookReviews bookId={book.id} />
             </div>
           </div>
         </div>

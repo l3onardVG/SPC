@@ -108,6 +108,20 @@ export const revalidateBookDetail = async (bookId: number) => {
   await revalidateData(`/Book/GetBookDetail/${bookId}`);
 };
 
+// Utility function to revalidate book reviews
+export const revalidateBookReviews = async (bookId: number) => {
+  await revalidateData(`/BookLog/reviews/${bookId}`);
+};
+
+// Hook for book reviews
+export const useBookReviews = (id: number | null) => {
+  const url = id ? `/BookLog/reviews/${id}` : null;
+  return useGet(url, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: true,
+  });
+};
+
 // Hook for authors
 export const useAuthors = () => {
   return useGet('/Author/GetAllAuthors', {
