@@ -126,7 +126,7 @@ export default function BookDetailPage() {
                        className={`w-full py-3 px-6 rounded-full transition-colors mb-6 ${
                          book.isCurrentUserRated
                            ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
-                           : 'bg-blue-600 text-white hover:bg-blue-700'
+                           : 'bg-orange-500 text-white hover:bg-orange-600'
                        }`}
                      >
                        {book.isCurrentUserRated ? 'Ya calificaste este libro' : 'Calificar'}
@@ -226,10 +226,10 @@ export default function BookDetailPage() {
                   {/* Action Buttons */}
                   <div className="mt-8 pt-6 border-t border-gray-200">
                     <div className="flex flex-wrap gap-4">
-                      <button className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-colors">
+                      <button className="text-blue-600 px-6 py-3 rounded-md hover:bg-blue-600 hover:text-white transition-colors">
                         Leer en línea
                       </button>
-                      <button className="bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700 transition-colors">
+                      <button className="text-green-600 px-6 py-3 rounded-md hover:bg-green-600 hover:text-white transition-colors">
                         Descargar PDF
                       </button>
                       {book.format === 1 && (
