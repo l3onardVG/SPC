@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from '@remix-run/react';
 import { useBooks } from '../hooks/useApi';
 import { Book } from '../interfaces/BookInterfaces';
 
 export default function BooksListAdmin() {
+  const navigate = useNavigate();
   const { data, error, isLoading } = useBooks();
   const [books, setBooks] = useState<Book[]>([]);
 
@@ -13,10 +15,7 @@ export default function BooksListAdmin() {
   }, [data]);
 
   const handleEdit = (bookId: number) => {
-    // Aquí puedes navegar a una página de edición o abrir un modal
-    console.log('Editar libro:', bookId);
-    // Por ahora solo muestra un alert
-    alert(`Editar libro con ID: ${bookId}`);
+    navigate(`/admin/book/edit/${bookId}`);
   };
 
   if (isLoading) {
