@@ -104,7 +104,7 @@ export default function BookDetailPage() {
                     </ol>
                   </nav>
                   {/* Book Cover */}
-                  <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+                  <div className="bg-white rounded-r-lg shadow-lg overflow-hidden mb-6 backdrop-blur-sm">
                     {book.cover ? (
                       <img
                         src={`data:image/jpeg;base64,${book.cover}`}
