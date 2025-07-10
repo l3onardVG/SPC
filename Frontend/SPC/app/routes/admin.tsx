@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import EstadisticasAdmin from "../components/EstadisticasAdmin";
-import LibrosAdmin from "../components/LibrosAdmin";
+import BooksListAdmin from "../components/BooksListAdmin";
 import AudiolibrosAdmin from "../components/AudiolibrosAdmin";
 import AutoresAdmin from "../components/AutoresAdmin";
 import UsersAdmin from "../components/UsersAdmin";
@@ -22,7 +22,7 @@ export default function PanelAdmin() {
       case "Estadísticas":
         return <EstadisticasAdmin />;
       case "Libros":
-        return <LibrosAdmin />;
+        return <BooksListAdmin />;
       case "Audiolibros":
         return <AudiolibrosAdmin />;
       case "Autores":
