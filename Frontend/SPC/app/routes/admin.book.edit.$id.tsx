@@ -249,29 +249,77 @@ export default function EditBookPage() {
 
             {/* Imagen de portada */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Imagen de portada (Base64)
+              <label className="block text-sm font-medium text-gray-700 mb-4">
+                Imagen de portada
               </label>
-              <textarea
-                value={book?.cover || ''}
-                onChange={(e) => handleInputChange('cover', e.target.value)}
-                rows={3}
-                placeholder="Pega aquí el código base64 de la imagen"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#002847] focus:border-transparent resize-none font-mono text-sm"
-              />
-              {book?.cover && (
-                <div className="mt-2">
-                  <p className="text-sm text-gray-600 mb-2">Vista previa:</p>
-                  <img
-                    src={`data:image/jpeg;base64,${book.cover}`}
-                    alt="Vista previa"
-                    className="h-32 w-auto border border-gray-300 rounded"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = 'none';
-                    }}
-                  />
+              
+              {/* Imagen actual */}
+              {book?.cover && book.cover.trim() !== '' ? (
+                <div className="mb-4">
+                  <p className="text-sm text-gray-600 mb-3">Imagen actual:</p>
+                  <div className="relative inline-block">
+                    <img
+                      src={`data:image/jpeg;base64,${book.cover}`}
+                      alt="Portada actual"
+                      className="h-48 w-auto border border-gray-300 rounded-lg shadow-sm"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = 'none';
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleInputChange('cover', '')}
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 transition-colors"
+                      title="Eliminar imagen"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="mb-4">
+                  <div className="h-48 w-32 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
+                    <div className="text-center">
+                      <svg className="w-12 h-12 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      <p className="text-sm text-gray-500">Sin imagen</p>
+                    </div>
+                  </div>
                 </div>
               )}
+              
+              {/* Botón para subir/editar imagen */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {book?.cover && book.cover.trim() !== '' ? 'Cambiar imagen' : 'Subir imagen'}
+                </label>
+                <div className="flex items-center space-x-4">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                          const result = event.target?.result as string;
+                          // Extraer solo la parte base64 (remover el prefijo data:image/...;base64,)
+                          const base64 = result.split(',')[1];
+                          handleInputChange('cover', base64);
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[#002847] file:text-white hover:file:bg-[#001a2e] transition-colors"
+                  />
+                  <span className="text-xs text-gray-500">
+                    Formatos: JPG, PNG, GIF (máx. 5MB)
+                  </span>
+                </div>
+              </div>
             </div>
 
             {/* Estado */}
