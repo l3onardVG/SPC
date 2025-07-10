@@ -1,6 +1,6 @@
 import { useParams } from "@remix-run/react";
-import { useBook } from "../hooks/useApi";
-import { Book, BooksResponse } from "../interfaces/BookInterfaces";
+import { useBookDetail } from "../hooks/useApi";
+import { BookDetail } from "../interfaces/BookInterfaces";
 import PageWrapper from "../components/PageWrapper";
 import RatingModal from "../components/RatingModal";
 import Notification from "../components/Notification";
@@ -9,7 +9,7 @@ import { useState } from "react";
 export default function BookDetailPage() {
   const { id } = useParams();
   const bookId = id ? parseInt(id) : null;
-  const { data, error, isLoading } = useBook(bookId);
+  const { data, error, isLoading } = useBookDetail(bookId);
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
   const [notification, setNotification] = useState<{
     message: string;
@@ -57,7 +57,7 @@ export default function BookDetailPage() {
     );
   }
 
-  const book = data.responseElements[0] as Book;
+  const book = data.responseElements[0] as BookDetail;
 
   const handleRatingSuccess = () => {
     // SWR automáticamente revalidará los datos del libro
@@ -136,10 +136,15 @@ export default function BookDetailPage() {
 
                     {/* Rating Button */}
                     <button
-                      onClick={() => setIsRatingModalOpen(true)}
-                      className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
+                      onClick={() => !book.isCurrentUserRated && setIsRatingModalOpen(true)}
+                      disabled={book.isCurrentUserRated}
+                      className={`w-full py-2 px-4 rounded-md transition-colors ${
+                        book.isCurrentUserRated
+                          ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
+                          : 'bg-blue-600 text-white hover:bg-blue-700'
+                      }`}
                     >
-                      Calificar libro
+                      {book.isCurrentUserRated ? 'Ya calificaste este libro' : 'Calificar libro'}
                     </button>
                   </div>
                 </div>

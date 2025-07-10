@@ -14,6 +14,31 @@ export interface Book {
   averageRating: number; // Rating promedio del libro
 }
 
+// Interfaz para el detalle del libro con información del usuario
+export interface BookDetail {
+  authorId: number;
+  name: string;
+  isbN13: string;
+  editorial: string;
+  yearOfPubliction: number;
+  format: number;
+  genrre: number;
+  language: string;
+  cover: string;
+  edition: string;
+  summary: string;
+  deleted: boolean;
+  long: number;
+  averageRating: number;
+  filePath: string;
+  author: {
+    name: string;
+    surname: string;
+  } | null;
+  id: number;
+  isCurrentUserRated: boolean;
+}
+
 // Interfaz para la respuesta de la API de libros
 export interface BooksResponse {
   message: string;

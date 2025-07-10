@@ -94,6 +94,14 @@ export const useBook = (id: number | null) => {
   });
 };
 
+// Hook for book detail with user rating info
+export const useBookDetail = (id: number | null) => {
+  return useGet(id ? `/Book/GetBookDetail/${id}` : null, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: true,
+  });
+};
+
 // Hook for authors
 export const useAuthors = () => {
   return useGet('/Author/GetAllAuthors', {
