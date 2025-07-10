@@ -84,26 +84,25 @@ export default function BookDetailPage() {
   return (
     <PageWrapper>
       <div className="min-h-screen bg-gray-50">
-        <div className="container mx-auto py-8 px-4">
-          <div className="max-w-6xl mx-auto">
-            {/* Breadcrumb */}
-            <nav className="mb-8">
-              <ol className="flex items-center space-x-2 text-sm text-gray-500">
-                <li>
-                  <a href="/books" className="hover:text-blue-600">Libros</a>
-                </li>
-                <li>
-                  <span className="mx-2">/</span>
-                </li>
-                <li className="text-gray-900">{book.name}</li>
-              </ol>
-            </nav>
-
-            {/* Main Content - Two Column Layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Left Column - Book Cover and Rating */}
+        <div className="container mx-auto py-2 px-4">
+          <div className="max-w-7xl mx-auto">
+            {/* Main Grid Layout */}
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+              {/* Left Column - Fixed/Sticky */}
               <div className="lg:col-span-1">
-                <div className="sticky top-8">
+                <div className="sticky top-40">
+                  {/* Breadcrumb */}
+                  <nav className="mb-4">
+                    <ol className="flex items-center space-x-2 text-sm text-gray-500">
+                      <li>
+                        <a href="/books" className="hover:text-blue-600">Libros</a>
+                      </li>
+                      <li>
+                        <span className="mx-2">/</span>
+                      </li>
+                      <li className="text-gray-900">{book.name}</li>
+                    </ol>
+                  </nav>
                   {/* Book Cover */}
                   <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6">
                     {book.cover ? (
@@ -158,8 +157,9 @@ export default function BookDetailPage() {
                 </div>
               </div>
 
-              {/* Right Column - Book Information */}
-              <div className="lg:col-span-2">
+              {/* Right Column - Scrollable Content */}
+              <div className="lg:col-span-3 space-y-8">
+                {/* Book Information Card */}
                 <div className="bg-white rounded-lg shadow-md p-8">
                   {/* Title */}
                   <h1 className="text-4xl font-bold text-gray-900 mb-4">
@@ -241,12 +241,10 @@ export default function BookDetailPage() {
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            {/* Reviews Section */}
-            <div className="mt-8">
-              <BookReviews bookId={book.id} />
+                {/* Reviews Section */}
+                <BookReviews bookId={book.id} />
+              </div>
             </div>
           </div>
         </div>

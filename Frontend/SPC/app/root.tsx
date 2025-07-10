@@ -55,7 +55,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="pt-24">
+      <body className="pt-13">
         <AuthProvider>
           <SWRConfig
             value={{
