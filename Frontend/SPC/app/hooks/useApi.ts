@@ -96,10 +96,16 @@ export const useBook = (id: number | null) => {
 
 // Hook for book detail with user rating info
 export const useBookDetail = (id: number | null) => {
-  return useGet(id ? `/Book/GetBookDetail/${id}` : null, {
+  const url = id ? `/Book/GetBookDetail/${id}` : null;
+  return useGet(url, {
     revalidateOnFocus: false,
     revalidateOnReconnect: true,
   });
+};
+
+// Utility function to revalidate book detail
+export const revalidateBookDetail = async (bookId: number) => {
+  await revalidateData(`/Book/GetBookDetail/${bookId}`);
 };
 
 // Hook for authors

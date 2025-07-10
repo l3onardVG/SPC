@@ -1,5 +1,5 @@
 import { useParams } from "@remix-run/react";
-import { useBookDetail } from "../hooks/useApi";
+import { useBookDetail, revalidateBookDetail } from "../hooks/useApi";
 import { BookDetail } from "../interfaces/BookInterfaces";
 import PageWrapper from "../components/PageWrapper";
 import RatingModal from "../components/RatingModal";
@@ -59,8 +59,12 @@ export default function BookDetailPage() {
 
   const book = data.responseElements[0] as BookDetail;
 
-  const handleRatingSuccess = () => {
-    // SWR automáticamente revalidará los datos del libro
+  const handleRatingSuccess = async () => {
+    // Revalidar los datos del libro para obtener la información actualizada
+    if (bookId) {
+      await revalidateBookDetail(bookId);
+    }
+    
     // Mostrar notificación de éxito
     setNotification({
       message: "¡Libro calificado exitosamente!",
