@@ -50,10 +50,7 @@ export default function BooksListAdmin() {
         <h3 className="text-2xl font-bold text-[#002847]">
           Gestión de Libros
         </h3>
-        <button 
-          onClick={() => navigate('/admin/book/create')}
-          className="bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition-colors"
-        >
+        <button className="bg-[#002847] text-white px-4 py-2 rounded-md hover:bg-[#001a2e] transition-colors">
           Agregar Nuevo Libro
         </button>
       </div>

@@ -375,52 +375,43 @@ export default function EditBookPage() {
                   {book?.cover && book.cover.trim() !== '' ? 'Cambiar imagen' : 'Subir imagen'}
                 </label>
                 <div className="flex items-center space-x-4">
-                  <div className="relative">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          // Validar tamaño del archivo (máximo 5MB)
-                          if (file.size > 5 * 1024 * 1024) {
-                            alert('El archivo es demasiado grande. Máximo 5MB permitido.');
-                            return;
-                          }
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        // Validar tamaño del archivo (máximo 5MB)
+                        if (file.size > 5 * 1024 * 1024) {
+                          alert('El archivo es demasiado grande. Máximo 5MB permitido.');
+                          return;
+                        }
 
-                          const reader = new FileReader();
-                          reader.onload = (event) => {
-                            try {
-                              const result = event.target?.result as string;
-                              // Extraer solo la parte base64 (remover el prefijo data:image/...;base64,)
-                              const base64 = result.split(',')[1];
-                              if (base64) {
-                                handleInputChange('cover', base64);
-                                console.log('Imagen convertida a base64 exitosamente');
-                              } else {
-                                alert('Error al procesar la imagen');
-                              }
-                            } catch (error) {
-                              console.error('Error al convertir imagen:', error);
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                          try {
+                            const result = event.target?.result as string;
+                            // Extraer solo la parte base64 (remover el prefijo data:image/...;base64,)
+                            const base64 = result.split(',')[1];
+                            if (base64) {
+                              handleInputChange('cover', base64);
+                              console.log('Imagen convertida a base64 exitosamente');
+                            } else {
                               alert('Error al procesar la imagen');
                             }
-                          };
-                          reader.onerror = () => {
-                            alert('Error al leer el archivo');
-                          };
-                          reader.readAsDataURL(file);
-                        }
-                      }}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                      id="cover-file-edit"
-                    />
-                    <label
-                      htmlFor="cover-file-edit"
-                      className="block w-full px-4 py-2 text-sm text-gray-500 bg-white border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50"
-                    >
-                      <span className="text-gray-500">Seleccionar archivo</span>
-                    </label>
-                  </div>
+                          } catch (error) {
+                            console.error('Error al convertir imagen:', error);
+                            alert('Error al procesar la imagen');
+                          }
+                        };
+                        reader.onerror = () => {
+                          alert('Error al leer el archivo');
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[#002847] file:text-white hover:file:bg-[#001a2e] transition-colors"
+                  />
                   <span className="text-xs text-gray-500">
                     Formatos: JPG, PNG, GIF (máx. 5MB)
                   </span>
@@ -454,7 +445,7 @@ export default function EditBookPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-6 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-6 py-2 bg-[#002847] text-white rounded-md hover:bg-[#001a2e] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? 'Guardando...' : 'Guardar cambios'}
               </button>

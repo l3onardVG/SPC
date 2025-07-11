@@ -341,95 +341,31 @@ public class BookService : IBookService
 
     private string ValidateModel(Book book)
     {
-        var errors = new List<string>();
+        string message = string.Empty;
 
-        // Validar nombre
-        if (string.IsNullOrEmpty(book.Name?.Trim()))
+        if (string.IsNullOrEmpty(book.Name))
         {
-            errors.Add("El nombre del libro es requerido");
+            message += "El nombre es requerido";
         }
-        else if (book.Name.Trim().Length < 2)
+        if(string.IsNullOrEmpty(book.ISBN13))
         {
-            errors.Add("El nombre del libro debe tener al menos 2 caracteres");
+            message += "El ISBN13 es requerido";
         }
-        else if (book.Name.Trim().Length > 200)
+        if (!ISBNIsValid(book.ISBN13))
         {
-            errors.Add("El nombre del libro no puede exceder 200 caracteres");
+            message += $"El ISBN debe tener un formato válido";
         }
-
-        // Validar autor
-        if (book.AuthorId <= 0)
+        if (book.YearOfPubliction < 1450 || book.YearOfPubliction > DateTime.Now.Year)
         {
-            errors.Add("Debe seleccionar un autor válido");
+            message += "El año de publicación debe ser entre 1450 y 2025";
         }
-
-        // Validar ISBN
-        if (string.IsNullOrEmpty(book.ISBN13?.Trim()))
+        if (string.IsNullOrEmpty(book.Editorial))
         {
-            errors.Add("El ISBN es requerido");
-        }
-        else if (!ISBNIsValid(book.ISBN13.Trim()))
-        {
-            errors.Add("El ISBN debe tener un formato válido (ej: 978-0-000000-0-0)");
+            message += "La editorial es requerida";
         }
 
-        // Validar año de publicación
-        if (book.YearOfPubliction < 1450 || book.YearOfPubliction > DateTime.Now.Year + 1)
-        {
-            errors.Add($"El año de publicación debe ser entre 1450 y {DateTime.Now.Year + 1}");
-        }
+        return message;
 
-        // Validar editorial
-        if (string.IsNullOrEmpty(book.Editorial?.Trim()))
-        {
-            errors.Add("La editorial es requerida");
-        }
-        else if (book.Editorial.Trim().Length < 2)
-        {
-            errors.Add("La editorial debe tener al menos 2 caracteres");
-        }
-        else if (book.Editorial.Trim().Length > 100)
-        {
-            errors.Add("La editorial no puede exceder 100 caracteres");
-        }
-
-        // Validar formato
-        if (book.Format < 0 || book.Format > 1)
-        {
-            errors.Add("El formato debe ser 0 (Libro) o 1 (Audiolibro)");
-        }
-
-        // Validar género
-        if (book.Genrre < 1 || book.Genrre > 10)
-        {
-            errors.Add("El género debe ser un valor válido entre 1 y 10");
-        }
-
-        // Validar idioma
-        if (string.IsNullOrEmpty(book.Language?.Trim()))
-        {
-            errors.Add("El idioma es requerido");
-        }
-
-        // Validar edición
-        if (string.IsNullOrEmpty(book.Edition?.Trim()))
-        {
-            errors.Add("La edición es requerida");
-        }
-
-        // Validar longitud/páginas
-        if (book.Long < 0)
-        {
-            errors.Add("La longitud/páginas no puede ser negativa");
-        }
-
-        // Validar resumen (opcional pero si se proporciona, debe tener sentido)
-        if (!string.IsNullOrEmpty(book.Summary?.Trim()) && book.Summary.Trim().Length < 10)
-        {
-            errors.Add("El resumen debe tener al menos 10 caracteres");
-        }
-
-        return string.Join("; ", errors);
     }
 
     static bool ISBNIsValid(string input)
