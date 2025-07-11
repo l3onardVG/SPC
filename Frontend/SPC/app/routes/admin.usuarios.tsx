@@ -55,13 +55,23 @@ export default function UsersAdminPage() {
     <div className="max-w-6xl mx-auto p-6">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-gray-700 tracking-wide uppercase">Gestión de Usuarios</h2>
-        <button
-          onClick={fetchUsers}
-          className="bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition-colors"
-          title="Actualizar lista"
-        >
-          <i className="fas fa-sync-alt"></i>
-        </button>
+        <div className="flex space-x-3">
+          <button
+            onClick={() => {/* TODO: Implementar modal de crear usuario */}}
+            className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors flex items-center space-x-2"
+            title="Crear nuevo usuario"
+          >
+            <i className="fas fa-plus"></i>
+            <span>Nuevo Usuario</span>
+          </button>
+          <button
+            onClick={fetchUsers}
+            className="bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition-colors"
+            title="Actualizar lista"
+          >
+            <i className="fas fa-sync-alt"></i>
+          </button>
+        </div>
       </div>
 
       <div className="bg-white shadow-md rounded-lg overflow-hidden">
