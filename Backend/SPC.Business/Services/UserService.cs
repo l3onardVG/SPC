@@ -273,6 +273,7 @@ public class UserService : IUserService
             DocumentNumber = userModel.DocumentNumber,
             UserType = userModel.UserType,
             TermsAceptance = userModel.TermsAceptance,
+            PhoneNumber = userModel.PhoneNumber
         };
         var result = await _userManager.CreateAsync(user, userModel.Password);
         if (!result.Succeeded)
@@ -313,6 +314,7 @@ public class UserService : IUserService
             DocumentNumber = userModel.DocumentNumber,
             UserType = userModel.UserType,
             TermsAceptance = userModel.TermsAceptance,
+            PhoneNumber = userModel.PhoneNumber
         };
         var result = await _userManager.CreateAsync(user, userModel.Password);
         if (!result.Succeeded)
