@@ -1,4 +1,3 @@
-import Login from "../components/loginForm";
 import LoginExample from "../components/LoginExample";
 import DonateButton from "../components/DonateButton";
 import PageWrapper from "../components/PageWrapper";

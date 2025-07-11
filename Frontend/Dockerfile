@@ -18,6 +18,16 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY SPC/ .
 
+# Definir argumentos de build
+ARG REACT_APP_API_URL
+ARG NODE_ENV
+ARG VITE_MODE
+
+# Establecer variables de entorno para el build
+ENV REACT_APP_API_URL=$REACT_APP_API_URL
+ENV NODE_ENV=$NODE_ENV
+ENV VITE_MODE=$VITE_MODE
+
 # Generar build de producción
 RUN npm run build
 

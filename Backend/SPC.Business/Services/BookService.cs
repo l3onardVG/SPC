@@ -245,6 +245,69 @@ public class BookService : IBookService
 
     }
 
+    public async Task<BaseMessage<BookDetailDto>> GetBookDetail(int id, string currentUserId)
+    {
+        try
+        {
+            // Obtener el libro
+            var book = await _unitOfWork.BookRepository.FindAsync(id);
+            if (book == null)
+            {
+                return new BaseMessage<BookDetailDto>
+                {
+                    StatusCode = HttpStatusCode.NotFound,
+                    Message = "Libro no encontrado"
+                };
+            }
+
+            // Verificar si el usuario actual ya calificó este libro
+            var userRating = await _unitOfWork.BookLogRepository.GetAllAsync(
+                filter: x => x.BookId == id && 
+                            x.UserId == currentUserId && 
+                            x.Action == SPC.Data.Models.Action.Rate
+            );
+
+            // Mapear a DTO
+            var bookDetail = new BookDetailDto
+            {
+                AuthorId = book.AuthorId,
+                Name = book.Name,
+                IsbN13 = book.ISBN13,
+                Editorial = book.Editorial,
+                YearOfPubliction = book.YearOfPubliction,
+                Format = (int)book.Format,
+                Genrre = (int)book.Genrre,
+                Language = book.Language,
+                Cover = book.cover,
+                Edition = book.Edition,
+                Summary = book.Summary,
+                Deleted = book.Deleted,
+                Long = book.Long,
+                AverageRating = book.AverageRating,
+                FilePath = book.FilePath,
+                Author = book.Author,
+                Id = book.Id,
+                IsCurrentUserRated = userRating.Any()
+            };
+
+            return new BaseMessage<BookDetailDto>
+            {
+                StatusCode = HttpStatusCode.OK,
+                Message = "Detalle del libro obtenido exitosamente",
+                TotalElements = 1,
+                ResponseElements = new List<BookDetailDto> { bookDetail }
+            };
+        }
+        catch (Exception ex)
+        {
+            return new BaseMessage<BookDetailDto>
+            {
+                StatusCode = HttpStatusCode.InternalServerError,
+                Message = $"Error al obtener el detalle del libro: {ex.Message}"
+            };
+        }
+    }
+
     private BaseMessage<Book> BuildResponse(List<Book> lista, string message = "", HttpStatusCode status = HttpStatusCode.OK, int totalElements = 0)
     {
         return new BaseMessage<Book>()

@@ -50,6 +50,28 @@ namespace SPC.API.Controllers
             return Ok(result);
         }
 
+        [HttpGet]
+        [Route("GetBookDetail/{id}")]
+        public async Task<IActionResult> GetBookDetail(int id)
+        {
+            // Obtener el ID del usuario autenticado
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized(new { Message = "Usuario no autenticado" });
+            }
+
+            var result = await _bookService.GetBookDetail(id, userId);
+            
+            if (result.StatusCode == HttpStatusCode.NotFound)
+            {
+                return NotFound(result);
+            }
+            
+            return Ok(result);
+        }
+
         [HttpPut]
         [AdminOrReadOnly]
         [Route("UpdateBook")]

@@ -1,0 +1,15 @@
+meta {
+  name: Get Book By Id copy
+  type: http
+  seq: 10
+}
+
+get {
+  url: http://localhost:5197/api/book/getbookbyid/7
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer {{access_token}}
+}

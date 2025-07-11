@@ -26,9 +26,6 @@ const createFetcher = (method: 'GET' | 'POST' | 'PUT' | 'DELETE') => {
       
       return response.data;
     } catch (error: any) {
-      if (error.response?.status === 401) {
-        throw error;
-      }
       throw new Error(error.response?.data?.message || 'An error occurred');
     }
   };
@@ -93,6 +90,35 @@ export const useBooks = () => {
 export const useBook = (id: number | null) => {
   return useGet(id ? `/Book/GetBookById/${id}` : null, {
     revalidateOnFocus: false,
+    revalidateOnReconnect: true,
+  });
+};
+
+// Hook for book detail with user rating info
+export const useBookDetail = (id: number | null) => {
+  const url = id ? `/Book/GetBookDetail/${id}` : null;
+  return useGet(url, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: true,
+  });
+};
+
+// Utility function to revalidate book detail
+export const revalidateBookDetail = async (bookId: number) => {
+  await revalidateData(`/Book/GetBookDetail/${bookId}`);
+};
+
+// Utility function to revalidate book reviews
+export const revalidateBookReviews = async (bookId: number) => {
+  await revalidateData(`/BookLog/reviews/${bookId}`);
+};
+
+// Hook for book reviews
+export const useBookReviews = (id: number | null) => {
+  const url = id ? `/BookLog/reviews/${id}` : null;
+  return useGet(url, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: true,
   });
 };
 

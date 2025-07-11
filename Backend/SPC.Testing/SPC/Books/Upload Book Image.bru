@@ -6,6 +6,15 @@ meta {
 
 post {
   url: http://localhost:5197/api/Book/uploadImage/1
-  body: none
+  body: multipartForm
   auth: inherit
+}
+
+headers {
+  Content-Type: multipart/form-data
+  Authorization: Bearer {{access_token}}
+}
+
+body:multipart-form {
+  file: @file(/Users/leonard.villegas/Desktop/Screenshot 2025-07-04 at 4.44.02 PM.png)
 }
