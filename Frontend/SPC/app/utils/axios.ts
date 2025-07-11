@@ -8,7 +8,7 @@ const api: AxiosInstance = axios.create({
         ? `${window.location.protocol}//${window.location.hostname}:5197/api`
         : 'http://localhost:5197/api')
     : 'http://localhost:5197/api'),
-  timeout: 10000,
+  timeout: 30000, // Aumentar timeout para EC2
   headers: {
     'Content-Type': 'application/json',
   },
