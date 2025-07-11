@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { UserResponse, User } from '~/interfaces/UserInterface';
 import { UserService } from '~/services/UserService';
+import { validateUserForm, ValidationError, getFieldError } from '~/utils/validation';
 
 export default function UsersAdminPage() {
   const [data, setData] = useState<UserResponse | null>(null);
@@ -8,6 +9,8 @@ export default function UsersAdminPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<ValidationError[]>([]);
+  const [backendError, setBackendError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     surname: '',
@@ -43,28 +46,58 @@ export default function UsersAdminPage() {
       ...prev,
       [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
     }));
+    
+    // Limpiar error del campo cuando el usuario empiece a escribir
+    if (validationErrors.some(err => err.field === name)) {
+      setValidationErrors(prev => prev.filter(err => err.field !== name));
+    }
+    
+    // Limpiar error del backend cuando el usuario modifique cualquier campo
+    if (backendError) {
+      setBackendError(null);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Limpiar errores previos
+    setValidationErrors([]);
+    setBackendError(null);
+    
+    // Validar formulario
+    const validation = validateUserForm(formData);
+    if (!validation.isValid) {
+      setValidationErrors(validation.errors);
+      return;
+    }
+    
     try {
       setIsCreating(true);
-      await UserService.createUser(formData);
-      setShowModal(false);
-      setFormData({
-        name: '',
-        surname: '',
-        documentType: 'CC',
-        documentNumber: '',
-        userType: 'Usuario',
-        termsAceptance: true,
-        email: '',
-        password: '',
-        phoneNumber: ''
-      });
-      fetchUsers(); // Recargar la lista
+      const result = await UserService.createUser(formData);
+      
+      if (result.success) {
+        setShowModal(false);
+        setFormData({
+          name: '',
+          surname: '',
+          documentType: 'CC',
+          documentNumber: '',
+          userType: 'Usuario',
+          termsAceptance: true,
+          email: '',
+          password: '',
+          phoneNumber: ''
+        });
+        setValidationErrors([]);
+        setBackendError(null);
+        fetchUsers(); // Recargar la lista
+      } else {
+        setBackendError(result.message);
+      }
     } catch (err) {
       console.error('Error al crear usuario:', err);
+      setBackendError('Error inesperado al crear usuario');
     } finally {
       setIsCreating(false);
     }
@@ -213,6 +246,13 @@ export default function UsersAdminPage() {
               </button>
             </div>
 
+            {/* Error del backend */}
+            {backendError && (
+              <div className="bg-red-50 border border-red-200 rounded-md p-3 mb-4">
+                <p className="text-red-600 text-sm">{backendError}</p>
+              </div>
+            )}
+
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -225,8 +265,13 @@ export default function UsersAdminPage() {
                     value={formData.name}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      getFieldError(validationErrors, 'name') ? 'border-red-300 focus:ring-red-500' : 'border-gray-300'
+                    }`}
                   />
+                  {getFieldError(validationErrors, 'name') && (
+                    <p className="text-red-500 text-xs mt-1">{getFieldError(validationErrors, 'name')}</p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -238,8 +283,13 @@ export default function UsersAdminPage() {
                     value={formData.surname}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      getFieldError(validationErrors, 'surname') ? 'border-red-300 focus:ring-red-500' : 'border-gray-300'
+                    }`}
                   />
+                  {getFieldError(validationErrors, 'surname') && (
+                    <p className="text-red-500 text-xs mt-1">{getFieldError(validationErrors, 'surname')}</p>
+                  )}
                 </div>
               </div>
 
@@ -253,13 +303,18 @@ export default function UsersAdminPage() {
                     value={formData.documentType}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      getFieldError(validationErrors, 'documentType') ? 'border-red-300 focus:ring-red-500' : 'border-gray-300'
+                    }`}
                   >
                     <option value="CC">Cédula de Ciudadanía</option>
                     <option value="CE">Cédula de Extranjería</option>
                     <option value="TI">Tarjeta de Identidad</option>
                     <option value="PP">Pasaporte</option>
                   </select>
+                  {getFieldError(validationErrors, 'documentType') && (
+                    <p className="text-red-500 text-xs mt-1">{getFieldError(validationErrors, 'documentType')}</p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -271,8 +326,13 @@ export default function UsersAdminPage() {
                     value={formData.documentNumber}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      getFieldError(validationErrors, 'documentNumber') ? 'border-red-300 focus:ring-red-500' : 'border-gray-300'
+                    }`}
                   />
+                  {getFieldError(validationErrors, 'documentNumber') && (
+                    <p className="text-red-500 text-xs mt-1">{getFieldError(validationErrors, 'documentNumber')}</p>
+                  )}
                 </div>
               </div>
 
@@ -286,8 +346,13 @@ export default function UsersAdminPage() {
                   value={formData.email}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                    getFieldError(validationErrors, 'email') ? 'border-red-300 focus:ring-red-500' : 'border-gray-300'
+                  }`}
                 />
+                {getFieldError(validationErrors, 'email') && (
+                  <p className="text-red-500 text-xs mt-1">{getFieldError(validationErrors, 'email')}</p>
+                )}
               </div>
 
               <div>
@@ -300,8 +365,13 @@ export default function UsersAdminPage() {
                   value={formData.password}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                    getFieldError(validationErrors, 'password') ? 'border-red-300 focus:ring-red-500' : 'border-gray-300'
+                  }`}
                 />
+                {getFieldError(validationErrors, 'password') && (
+                  <p className="text-red-500 text-xs mt-1">{getFieldError(validationErrors, 'password')}</p>
+                )}
               </div>
 
               <div>
@@ -313,8 +383,13 @@ export default function UsersAdminPage() {
                   name="phoneNumber"
                   value={formData.phoneNumber}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                    getFieldError(validationErrors, 'phoneNumber') ? 'border-red-300 focus:ring-red-500' : 'border-gray-300'
+                  }`}
                 />
+                {getFieldError(validationErrors, 'phoneNumber') && (
+                  <p className="text-red-500 text-xs mt-1">{getFieldError(validationErrors, 'phoneNumber')}</p>
+                )}
               </div>
 
               <div>
@@ -326,12 +401,17 @@ export default function UsersAdminPage() {
                   value={formData.userType}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                    getFieldError(validationErrors, 'userType') ? 'border-red-300 focus:ring-red-500' : 'border-gray-300'
+                  }`}
                 >
                   <option value="Usuario">Usuario</option>
                   <option value="Educador">Educador</option>
                   <option value="Estudiante">Estudiante</option>
                 </select>
+                {getFieldError(validationErrors, 'userType') && (
+                  <p className="text-red-500 text-xs mt-1">{getFieldError(validationErrors, 'userType')}</p>
+                )}
               </div>
 
               <div className="flex items-center">
@@ -346,6 +426,9 @@ export default function UsersAdminPage() {
                   Acepto los términos y condiciones
                 </label>
               </div>
+              {getFieldError(validationErrors, 'termsAceptance') && (
+                <p className="text-red-500 text-xs mt-1">{getFieldError(validationErrors, 'termsAceptance')}</p>
+              )}
 
               <div className="flex justify-end space-x-3 pt-4">
                 <button

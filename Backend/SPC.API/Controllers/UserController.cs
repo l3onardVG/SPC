@@ -32,8 +32,38 @@ namespace SPC.API.Controllers
         [Route("AddUser")]
         public async Task<IActionResult> AddUser(RegisterModel user)
         {
-            var result = await _userService.RegisterUser(user);
-            return Ok(result);
+            try
+            {
+                var result = await _userService.RegisterUser(user);
+                
+                if (result)
+                {
+                    return Ok(new
+                    {
+                        message = "Usuario creado exitosamente",
+                        statusCode = 200,
+                        success = true
+                    });
+                }
+                else
+                {
+                    return BadRequest(new
+                    {
+                        message = "Error al crear usuario. Verifique que el email no esté en uso.",
+                        statusCode = 400,
+                        success = false
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    message = $"Error interno del servidor: {ex.Message}",
+                    statusCode = 500,
+                    success = false
+                });
+            }
         }
         
         [HttpPost]

@@ -8,6 +8,7 @@ export interface User {
   termsAceptance: boolean;
   userType: string;
   phoneNumber: string | null;
+  password?: string;
 }
 
 export interface UserResponse {

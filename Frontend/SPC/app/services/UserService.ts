@@ -15,9 +15,38 @@ export const UserService = {
   },
 
   // Crear nuevo usuario
-  async createUser(user: Omit<User, 'id'>): Promise<User> {
-    const response = await api.post('/user/adduser', user);
-    return response.data;
+  async createUser(user: Omit<User, 'id'> & { password: string }): Promise<{ success: boolean; message: string; data?: any }> {
+    const payload = {
+      name: user.name,
+      surname: user.surname,
+      documentType: user.documentType,
+      documentNumber: user.documentNumber,
+      userType: user.userType,
+      termsAceptance: user.termsAceptance,
+      email: user.email,
+      password: user.password,
+      phoneNumber: user.phoneNumber
+    };
+    
+    try {
+      const response = await api.post('/user/adduser', payload);
+      return {
+        success: true,
+        message: response.data.message || 'Usuario creado exitosamente',
+        data: response.data
+      };
+    } catch (error: any) {
+      if (error.response?.data?.message) {
+        return {
+          success: false,
+          message: error.response.data.message
+        };
+      }
+      return {
+        success: false,
+        message: 'Error al crear usuario. Intente nuevamente.'
+      };
+    }
   },
 
   // Actualizar usuario
