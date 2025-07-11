@@ -1,15 +1,28 @@
 export interface User {
-  id: number;
-  correo: string;
-  documento: number;
-  tipoUsuario:
-    | "Estudiante"
-    | "Docente"
-    | "Administrador/Fundación"
-    | "Otro/Externo";
-  habilitado: boolean;
+  id: string;
+  name: string;
+  surname: string;
+  email: string;
+  documentType: string;
+  documentNumber: string;
+  termsAceptance: boolean;
+  userType: string;
+  phoneNumber: string | null;
 }
 
-export interface AuthenticatedUser extends User {
+export interface UserResponse {
+  message: string;
+  statusCode: number;
+  totalElements: number;
+  responseElements: User[];
+}
+
+// Interfaz para compatibilidad con el código existente
+export interface AuthenticatedUser {
+  id: string;
   nombre: string;
+  correo: string;
+  documento: number;
+  tipoUsuario: string;
+  habilitado: boolean;
 }
