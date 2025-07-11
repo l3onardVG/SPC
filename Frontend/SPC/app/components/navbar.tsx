@@ -37,7 +37,7 @@ export default function Navbar() {
                   <Link to="#">Audiolibros</Link>
                 </li>
                 <li>
-                  <Link to="#">Autores</Link>
+                  <Link to="/author">Autores</Link>
                 </li>
               </ul>
             </details>
@@ -94,7 +94,7 @@ export default function Navbar() {
                     <Link to="#">Audiolibros</Link>
                   </li>
                   <li>
-                    <Link to="#">Autores</Link>
+                    <Link to="/author">Autores</Link>
                   </li>
                 </ul>
               </details>

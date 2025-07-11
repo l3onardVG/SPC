@@ -113,3 +113,10 @@ export const useUsers = () => {
     dedupingInterval: 30000,
   });
 }; 
+
+// Hook for a specific user
+export const useUser = (id: number | null) => {
+  return useGet(id ? `/User/GetUserById/${id}` : null, {
+    revalidateOnFocus: false,
+  });
+};

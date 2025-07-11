@@ -1,15 +1,19 @@
-export interface Autor {
+export interface Author {
   id: number;
+  name: string;
+  surname: string;
+  about: string;
+  isAlive: string;
+  delete: string;
+  }
+
+export interface AuthenticatedAuthor extends Author {
   nombre: string;
-  apellido: string;
-  fechaNacimiento: string;
-  pais: string;
-  idiomas: string;
-  generos: string;
-  galardones: string;
-  pseudonimo?: string;
-  estaVivo: boolean;
-  fechaMuerte?: string;
-  nacionalidad: string;
-  activo: boolean;
+}
+
+export interface AuthorResponse {
+  message: string;
+  statusCode: number;
+  totalElements: number;
+  responseElements: Author[];
 }
