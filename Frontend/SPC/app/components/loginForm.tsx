@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "@remix-run/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import { AuthService } from "../services/AuthorizationService";
+import AuthService from "../services/AuthService";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -42,7 +42,7 @@ export default function Login() {
     e.preventDefault();
     try {
       const response = await AuthService.login(formData);
-      localStorage.setItem("token", response.token);
+      localStorage.setItem("token", response.accessToken);
 
       if (formData.rememberMe) {
         localStorage.setItem("savedEmail", formData.email);
