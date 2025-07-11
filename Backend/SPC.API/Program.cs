@@ -25,7 +25,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(MyAllowSpecificOrigins,
         policy =>
         {
-            policy.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost")// Permitir el frontend
+            policy.SetIsOriginAllowed(origin => true) // Permitir cualquier origen
                   .AllowAnyHeader()
                   .AllowAnyMethod()
                   .AllowCredentials();

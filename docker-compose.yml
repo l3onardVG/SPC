@@ -34,7 +34,7 @@ services:
       - "5197:5197"
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - ASPNETCORE_URLS=${ASPNETCORE_URLS}
+      - ASPNETCORE_URLS=http://+:5197
       - NIKOLA_DATABASE=${NIKOLA_DATABASE}
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
       - JWT_VALID_AUDIENCE=${JWT_VALID_AUDIENCE}
@@ -52,7 +52,6 @@ services:
       context: ./Frontend
       dockerfile: Dockerfile
       args:
-        - REACT_APP_API_URL=${REACT_APP_API_URL}
         - NODE_ENV=production
         - VITE_MODE=production
     container_name: spc_frontend
@@ -61,7 +60,6 @@ services:
     environment:
       - NODE_ENV=production
       - VITE_MODE=production
-      - REACT_APP_API_URL=${REACT_APP_API_URL}
     depends_on:
       api:
         condition: service_started
