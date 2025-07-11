@@ -1,0 +1,15 @@
+meta {
+  name: Get Reseñas
+  type: http
+  seq: 10
+}
+
+get {
+  url: http://localhost:5197/api/booklog/ratings/1
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer {{access_token}}
+}

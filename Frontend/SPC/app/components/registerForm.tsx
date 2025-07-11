@@ -1,8 +1,20 @@
 import { useState } from "react";
-import { registerUser } from "../services/RegisterService";
+import api from "../utils/axios";
+
+interface RegisterData {
+  Name: string;
+  Surname: string;
+  documentType: string;
+  documentNumber: string;
+  userType: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  termsAccepted: boolean;
+}
 
 export default function RegisterForm() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<RegisterData>({
     Name: "",
     Surname: "",
     documentType: "",
@@ -51,7 +63,12 @@ export default function RegisterForm() {
     }
 
     try {
-      await registerUser(formData);
+      console.log("Datos a enviar:", formData);
+      const response = await api.post("/user/adduser", formData);
+
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+      }
 
       setTimeout(() => {
         setShowModal(true); // Mostrar modal de éxito
@@ -59,8 +76,9 @@ export default function RegisterForm() {
           window.location.href = "/login";
         }, 2000);
       }, 2000);
-    } catch (error) {
-      setError(error instanceof Error ? error.message : "Error desconocido");
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || "Error al registrar usuario";
+      setError(errorMessage);
     }
   };
 
@@ -68,7 +86,7 @@ export default function RegisterForm() {
     <div className="min-h-screen flex items-center justify-center bg-white px-4 pt-4">
       <div className="card w-full max-w-3xl bg-white shadow-lg p-8">
         <div className="w-full lg:w-2/3 flex flex-col justify-center p-8" />
-        <h2 className="text-3xl font-bold text-center text-[#002847] mb-8 font-[Be Vietnam Pro]">
+        <h2 className="text-3xl font-bold text-center text-gray-700 mb-8 font-[Be Vietnam Pro] tracking-wide uppercase">
           Crea tu cuenta
         </h2>
 

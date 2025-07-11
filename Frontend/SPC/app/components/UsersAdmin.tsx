@@ -6,13 +6,7 @@ import {
   toggleEnabled,
 } from "../services/UserService";
 import { User } from "../interfaces/UserInterface";
-
-interface History {
-  id: number;
-  usuarioCorreo: string;
-  accion: string;
-  fecha: string;
-}
+import { History } from "../interfaces/UserInterfaces";
 
 export default function UsersAdmin() {
   const [users, setUsers] = useState<User[]>([]);

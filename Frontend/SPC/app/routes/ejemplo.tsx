@@ -1,28 +1,12 @@
 import { Link } from "@remix-run/react";
-import { useEffect, useState } from "react";
-import { Book, BookService } from "../services/BookService";
+import { useBooks } from "../hooks/useApi";
+import { Book, BooksResponse } from "../interfaces/BookInterfaces";
 
 export default function Ejemplo() {
-  const [books, setBooks] = useState<Book[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data, error, isLoading } = useBooks();
+  const books = (data as BooksResponse)?.responseElements || [];
 
-  useEffect(() => {
-    const fetchBooks = async () => {
-      try {
-        const data = await BookService.getAllBooks();
-        setBooks(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Error al cargar los libros");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBooks();
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-xl">Cargando libros...</div>
@@ -33,7 +17,7 @@ export default function Ejemplo() {
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-xl text-red-500">{error}</div>
+        <div className="text-xl text-red-500">{error.message}</div>
       </div>
     );
   }
@@ -46,12 +30,12 @@ export default function Ejemplo() {
         </h1>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {books.map((book) => (
+          {books.map((book: Book) => (
             <div
               key={book.id}
               className="bg-white rounded-lg shadow-md p-6 border border-gray-200"
             >
-              <h2 className="text-xl font-semibold text-black mb-2">
+              <h2 className="text-xl font-semibold text-gray-700 mb-2">
                 {book.name}
               </h2>
               <p className="text-gray-600 mb-2">

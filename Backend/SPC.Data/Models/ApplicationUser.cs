@@ -11,4 +11,7 @@ public class ApplicationUser : IdentityUser
     public string DocumentNumber { get; set; } = string.Empty;
     public bool TermsAceptance { get; set; } = false;
     public string UserType { get; set; } = string.Empty;
+    
+    // Navigation property for refresh tokens
+    public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 }

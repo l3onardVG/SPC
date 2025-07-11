@@ -1,75 +1,151 @@
 import { createContext, useState, useEffect, useContext } from "react";
-import { AuthService } from "../services/AuthorizationService";
-import {
-  LoginResponse,
-  AuthenticatedUser,
-} from "../interfaces/AuthorizationInterface";
+import AuthService from "../services/AuthService";
+import { AuthResponse, LoginRequest } from "../types/auth";
 import { useNavigate } from "@remix-run/react";
 
+// Interfaz para el usuario en el contexto
+interface User {
+  userId: string;
+  userName: string;
+  userEmail: string;
+  name: string;
+  surname: string;
+  roles: string[];
+}
+
 interface AuthContextType {
-  user: AuthenticatedUser | null;
-  token: string | null;
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
+  hasRole: (role: string) => boolean;
+  isAdmin: () => boolean;
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<AuthenticatedUser | null>(null);
-  const [token, setToken] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isClient, setIsClient] = useState(false);
   const navigate = useNavigate();
 
+  // Verificar que estamos en el cliente
   useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    const storedUser = localStorage.getItem("user");
-
-    if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
-    }
+    setIsClient(true);
   }, []);
+
+  // Inicializar el estado de autenticación solo en el cliente
+  useEffect(() => {
+    if (!isClient) return;
+
+    const initializeAuth = () => {
+      try {
+        const authenticated = AuthService.isAuthenticated();
+        const currentUser = AuthService.getCurrentUser();
+
+        setIsAuthenticated(authenticated);
+        setUser(currentUser);
+      } catch (error) {
+        console.error('Error initializing auth:', error);
+        // Limpiar datos corruptos
+        AuthService.clearAuth();
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initializeAuth();
+  }, [isClient]);
 
   const login = async (email: string, password: string) => {
     try {
-      const response: LoginResponse = await AuthService.login({
-        email,
-        password,
-      });
+      setIsLoading(true);
+      
+      const credentials: LoginRequest = { email, password };
+      const authResponse: AuthResponse = await AuthService.login(credentials);
+      
+      // Crear objeto usuario para el contexto
+      const userData: User = {
+        userId: authResponse.userId,
+        userName: authResponse.userName,
+        userEmail: authResponse.userEmail,
+        name: authResponse.name,
+        surname: authResponse.surname,
+        roles: authResponse.roles,
+      };
 
-      localStorage.setItem("token", response.token);
-      localStorage.setItem("user", JSON.stringify(response.user));
-
-      setToken(response.token);
-      setUser(response.user);
+      setUser(userData);
+      setIsAuthenticated(true);
+      
+      // Navegar a la página principal
       navigate("/");
-    } catch (error) {
-      console.error("Error en inicio de sesión:", error);
-      throw new Error("Credenciales incorrectas");
+    } catch (error: any) {
+      console.error('Login error:', error);
+      throw new Error(error.response?.data?.message || 'Error en el inicio de sesión');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+  const logout = async () => {
+    try {
+      setIsLoading(true);
+      
+      // Intentar revocar el token en el servidor
+      await AuthService.logout();
+      
+      // Limpiar estado local
+      setUser(null);
+      setIsAuthenticated(false);
+      
+      // Navegar a login
+      navigate("/login");
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Aún así limpiar el estado local
+      setUser(null);
+      setIsAuthenticated(false);
+      navigate("/login");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    setToken(null);
-    setUser(null);
-    navigate("/login");
+  const hasRole = (role: string): boolean => {
+    if (!isClient) return false;
+    return AuthService.hasRole(role);
+  };
+
+  const isAdmin = (): boolean => {
+    if (!isClient) return false;
+    return AuthService.isAdmin();
+  };
+
+  const value: AuthContextType = {
+    user,
+    isAuthenticated,
+    isLoading: isLoading || !isClient, // Mostrar loading hasta que estemos en el cliente
+    login,
+    logout,
+    hasRole,
+    isAdmin,
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-// Hook personalizado para usar el contexto más fácilmente
+// Hook personalizado para usar el contexto
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error("useAuth debe ser usado dentro de un AuthProvider");
   }
   return context;
-};
+}; 

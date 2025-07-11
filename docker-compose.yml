@@ -34,7 +34,7 @@ services:
       - "5197:5197"
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - ASPNETCORE_URLS=${ASPNETCORE_URLS}
+      - ASPNETCORE_URLS=http://+:5197
       - NIKOLA_DATABASE=${NIKOLA_DATABASE}
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
       - JWT_VALID_AUDIENCE=${JWT_VALID_AUDIENCE}
@@ -51,11 +51,15 @@ services:
     build:
       context: ./Frontend
       dockerfile: Dockerfile
+      args:
+        - NODE_ENV=production
+        - VITE_MODE=production
     container_name: spc_frontend
     ports:
       - "3000:3000"
     environment:
       - NODE_ENV=production
+      - VITE_MODE=production
     depends_on:
       api:
         condition: service_started

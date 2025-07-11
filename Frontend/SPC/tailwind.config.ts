@@ -6,9 +6,7 @@ export default {
     extend: {
       fontFamily: {
         sans: [
-          "Be Vietnam Pro",
-          "Literata",
-          "Inter",
+          "Lato",
           "ui-sans-serif",
           "system-ui",
           "sans-serif",
