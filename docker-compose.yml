@@ -25,43 +25,49 @@ services:
     restart: unless-stopped
 
   # ASP.NET Core API
-  # api:
-  #   build:
-  #     context: ./Backend
-  #     dockerfile: Dockerfile
-  #   container_name: spc_api
-  #   ports:
-  #     - "5197:5197"
-  #   environment:
-  #     - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-  #     - ASPNETCORE_URLS=${ASPNETCORE_URLS}
-  #     - NIKOLA_DATABASE=${NIKOLA_DATABASE}
-  #     - JWT_SECRET_KEY=${JWT_SECRET_KEY}
-  #     - JWT_VALID_AUDIENCE=${JWT_VALID_AUDIENCE}
-  #     - JWT_VALID_ISSUER=${JWT_VALID_ISSUER}
-  #   depends_on:
-  #     db:
-  #       condition: service_healthy
-  #   networks:
-  #     - spc_network
-  #   restart: unless-stopped
+  api:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    container_name: spc_api
+    ports:
+      - "5197:5197"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_URLS=${ASPNETCORE_URLS}
+      - NIKOLA_DATABASE=${NIKOLA_DATABASE}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - JWT_VALID_AUDIENCE=${JWT_VALID_AUDIENCE}
+      - JWT_VALID_ISSUER=${JWT_VALID_ISSUER}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - spc_network
+    restart: unless-stopped
 
   # Remix Frontend
-  # frontend:
-  #   build:
-  #     context: ./Frontend
-  #     dockerfile: Dockerfile
-  #   container_name: spc_frontend
-  #   ports:
-  #     - "3000:3000"
-  #   environment:
-  #     - NODE_ENV=production
-  #   depends_on:
-  #     api:
-  #       condition: service_started
-  #   networks:
-  #     - spc_network
-  #   restart: unless-stopped
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+      args:
+        - REACT_APP_API_URL=${REACT_APP_API_URL}
+        - NODE_ENV=production
+        - VITE_MODE=production
+    container_name: spc_frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - VITE_MODE=production
+      - REACT_APP_API_URL=${REACT_APP_API_URL}
+    depends_on:
+      api:
+        condition: service_started
+    networks:
+      - spc_network
+    restart: unless-stopped
 
 volumes:
   postgres_data:

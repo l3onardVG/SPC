@@ -3,9 +3,9 @@ import { AuthResponse, RefreshTokenRequest } from '../types/auth';
 
 // Create axios instance
 const api: AxiosInstance = axios.create({
-  baseURL: process.env.NODE_ENV === 'production' 
-    ? 'https://your-production-api.com/api' 
-    : 'http://localhost:5197/api',
+  baseURL: process.env.REACT_APP_API_URL || (process.env.NODE_ENV === 'production' 
+    ? 'http://localhost:5197/api'  // Use localhost for browser access
+    : 'http://localhost:5197/api'),
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
